@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pbboard.Bh.shop.mapper.ShopMapper">
+
+    <select id="findMainCat" resultType="ShopVO">
+        SELECT DISTINCT SORTCODE_MAIN FROM SORTCODE
+    </select>
+
+    <select id="findSubCat" resultType="ShopVO">
+        SELECT SORTCODE_SUB FROM SORTCODE WHERE SORTCODE_MAIN = #{MAINCAT}
+    </select>
+
+    <select id="findColor" resultType="ShopVo">
+        SELECT COLOR_VALUE FROM COLOR ORDER BY COLOR_SEQ
+    </select>
+
+    <select id="findSize" resultType="ShopVO">
+        SELECT PRODUCTSIZE_VALUE FROM PRODUCTSIZE ORDER BY PRODUCTSIZE_SEQ
+    </select>
+</mapper>
