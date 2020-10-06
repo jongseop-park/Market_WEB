@@ -1,5 +1,6 @@
 package com.pbboard.Bh.shop.service.serviceImpl;
 
+import com.pbboard.Bh.shop.domain.ShopPageMaker;
 import com.pbboard.domain.ShopVO;
 import com.pbboard.Bh.shop.mapper.ShopMapper;
 import com.pbboard.Bh.shop.service.ShopService;
@@ -14,14 +15,34 @@ public class ShopServiceImpl implements ShopService {
     @Autowired
     ShopMapper shopMapper;
 
-    public List<ShopVO> findMainCat(){ return shopMapper.findMainCat(); }   //메인 카테고리 가져오기
+    //메인 카테고리 가져오기
+    public List<ShopVO> findMainCat(){ return shopMapper.findMainCat(); }
 
-    public List<ShopVO> findSubCat(String mainCat){ return shopMapper.findSubCat(mainCat); }    //메인 카테고리 별 서브 카테고리 가져오기
+    //메인 카테고리 별 서브 카테고리 가져오기
+    public List<ShopVO> findSubCat(String mainCat){ return shopMapper.findSubCat(mainCat); }
 
-    public List<ShopVO> findColor(){ return shopMapper.findColor(); }   //색상 상세 검색을 위해서
+    //색상 상세 검색을 위해서
+    public List<ShopVO> findColor(){ return shopMapper.findColor(); }
 
-    public List<ShopVO> findSize(){ return shopMapper.findSize(); }     //사이즈 상세 검색을 위해서
+    //사이즈 상세 검색을 위해서
+    public List<ShopVO> findSize(){ return shopMapper.findSize(); }
 
+    //제품 정보
+    public List<ShopVO> findProduct(ShopPageMaker shopPageMaker){ return shopMapper.findProduct(shopPageMaker); }
+
+    //제품 할인
+    public List<ShopVO> findDiscount(){ return shopMapper.findDiscount(); }
+
+    //신 제품 확인
+    public List<ShopVO> findNewProduct(){ return shopMapper.findNewProduct(); }
+
+    //품절 확인
+    public List<ShopVO> findOutOfStock(){ return shopMapper.findOutOfStock(); }
+
+    //제품 총 개수
+    public int productCount(){ return shopMapper.productCount(); }
+
+    //서브 카테고리 모음
     public String[][] subCategory(){
         List<ShopVO> mainCat = findMainCat();
         List<ShopVO> subCat;
@@ -30,6 +51,7 @@ public class ShopServiceImpl implements ShopService {
 
         String[][] subCategory = new String[mainCatSize][];
 
+        //각각 메인카테고리를 사용하여 해당하는 서브 카테고리를 가져온 다음 2차원 배열에 대입
         for(int x = 0; x < mainCatSize;x++){
 
             subCat = findSubCat(mainCat.get(x).getSortcodeMain());

@@ -19,4 +19,33 @@
     <select id="findSize" resultType="ShopVO">
         SELECT PRODUCTSIZE_VALUE FROM PRODUCTSIZE ORDER BY PRODUCTSIZE_SEQ
     </select>
+
+    <select id="findProduct" resultType="ShopVO">
+        SELECT PRODUCT_SEQ, PRODUCT_NAME, PRODUCT_PRICE , SORTCODE_SEQ
+        FROM
+        (
+            SELECT PRODUCT_SEQ, PRODUCT_NAME,
+            REGEXP_REPLACE(REVERSE(REGEXP_REPLACE(REVERSE(TO_CHAR(PRODUCT_PRICE / 100 * (100 - PRODUCT_DISCOUNT))),
+            '([0-9]{3})','\1,')),'^,','') PRODUCT_PRICE , SORTCODE_SEQ, ROW_NUMBER() OVER(ORDER BY PRODUCT_SEQ) AS RNUM
+            FROM PRODUCT
+        )
+        WHERE RNUM BETWEEN #{rowStart} AND #{rowEnd} ORDER BY PRODUCT_SEQ
+    </select>
+
+    <select id="findDiscount" resultType="ShopVO">
+        SELECT PRODUCT_SEQ FROM PRODUCT WHERE DECODE(PRODUCT_DISCOUNT,0,NULL,1) = 1
+    </select>
+
+    <select id="findNewProduct" resultType="ShopVO">
+        SELECT PRODUCT_SEQ FROM PRODUCT WHERE PRODUCT_REGDT > SYSDATE - 15
+    </select>
+
+    <select id="findOutOfStock" resultType="ShopVO">
+        SELECT PRODUCT_SEQ, TOT_QTY FROM (SELECT PRODUCT_SEQ, SUM(STOCK_QTY) AS TOT_QTY FROM STOCK GROUP BY PRODUCT_SEQ)
+         WHERE TOT_QTY <![CDATA[<=]]> 0
+    </select>
+
+    <select id="productCount" resultType="int">
+        SELECT COUNT(PRODUCT_SEQ) FROM PRODUCT
+    </select>
 </mapper>
