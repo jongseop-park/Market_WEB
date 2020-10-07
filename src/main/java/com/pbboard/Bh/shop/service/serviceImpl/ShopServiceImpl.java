@@ -39,8 +39,11 @@ public class ShopServiceImpl implements ShopService {
     //품절 확인
     public List<ShopVO> findOutOfStock(){ return shopMapper.findOutOfStock(); }
 
-    //제품 총 개수
+    //등록된 제품 수
     public int productCount(){ return shopMapper.productCount(); }
+
+    //현재 화면에 나오는 제품의 리뷰 점수
+    public List<ShopVO> productReviewStar(String productList){ return shopMapper.productReviewStar(productList); }
 
     //서브 카테고리 모음
     public String[][] subCategory(){
@@ -58,12 +61,40 @@ public class ShopServiceImpl implements ShopService {
             subCategory[x] = new String[subCat.size()];
 
             for(int y = 0; y < subCat.size(); y++ ){
-
                 subCategory[x][y] = subCat.get(y).getSortcodeSub();
-
             }
         }
 
         return subCategory;
+    }
+
+    //현재 화면에 나오는 제품 seq 모음
+    public String productList(List<ShopVO> productInfo){
+        String seqList = "";
+
+        for(int x = 0; x < productInfo.size(); x++){
+            seqList += productInfo.get(x).getProductSeq();
+            if(x != productInfo.size() - 1){
+                seqList += ',';
+            }
+        }
+
+        return seqList;
+    }
+
+    //제품 정보에 별점 추가
+    public List<ShopVO> addProductStar(List<ShopVO> productInfo){
+
+        List<ShopVO> reviewStar = productReviewStar(productList(productInfo));
+
+        for(int x = 0; x < productInfo.size();x++){
+            for(int y = 0; y < reviewStar.size();y++){
+                if(productInfo.get(x).getProductSeq() == reviewStar.get(y).getProductSeq()){
+                    productInfo.get(x).setReviewStar(reviewStar.get(y).getReviewStar());
+                }
+            }
+        }
+
+        return productInfo;
     }
 }

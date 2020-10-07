@@ -82,7 +82,7 @@
                     <!-- 카테고리 -->
                     <div class="sidebar__categories">
                         <div class="section-title">
-                            <h4>카테고리</h4>
+                            <h4>Category</h4>
                         </div>
                         <div class="categories__accordion">
                             <div class="accordion" id="accordionExample">
@@ -93,7 +93,7 @@
                                     </div>
                                     <div th:id="'collapse' + ${num.count}" class="collapse" data-parent="#accordionExample">
                                         <div class="card-body">
-                                            <ul th:each="subCategory:${subCat[num.index]}">
+                                            <ul th:each="subCategory : ${subCat[num.index]}">
                                                 <li><a href="#" th:text="${subCategory}"></a></li>
                                             </ul>
                                         </div>
@@ -107,7 +107,7 @@
                     <!-- 가격 상세 검색 -->
                     <div class="sidebar__filter">
                         <div class="section-title">
-                            <h4>가격 별</h4>
+                            <h4>Price</h4>
                         </div>
                         <div class="filter-range-wrap">
                             <div class="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"
@@ -127,7 +127,7 @@
                     <!-- 사이즈 상세 검색 -->
                     <div class="sidebar__sizes">
                         <div class="section-title">
-                            <h4>사이즈</h4>
+                            <h4>Size</h4>
                         </div>
                         <div class="size__list" th:each="size,sizeNum:${productSize}">
                             <label th:for="${size.productsizeValue}">
@@ -142,7 +142,7 @@
                     <!-- 색상 상세 검색 -->
                     <div class="sidebar__color">
                         <div class="section-title">
-                            <h4>컬러</h4>
+                            <h4>Color</h4>
                         </div>
                         <div class="size__list color__list" th:each="color,colorNum : ${productColor}">
                             <label th:for="${color.colorValue}">
@@ -190,8 +190,18 @@
                                 <h6><a href="#" th:text="${product.productName}"></a></h6>
                                 <div class="rating">
                                     <i class="fa fa-star"></i>
+                                    <span th:if="${product.reviewStar} > 1"
+                                          th:each="num : ${#numbers.sequence(2,product.reviewStar)}"
+                                          style="display: inline-block">
+                                        <i class="fa fa-star"></i>
+                                    </span>
                                 </div>
-                                <div class="product__price" th:text="${product.productPrice}"></div>
+                                <div class="product__price">
+                                    <div th:text="${product.productDiscount}"></div>
+                                    <span th:unless="${product.productPrice.equals(product.productDiscount)}"
+                                          th:text="${product.productPrice}">
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -199,15 +209,14 @@
                     <!-- 페이징 -->
                     <div class="col-lg-12 text-center">
                         <div class="pagination__option">
-                            <a th:if="${pageMaker.prev}" ><i class="fa fa-angle-left"></i></a>
+                            <a th:if="${pageMaker.prev}"
+                               th:href="'BhShop' + ${pageMaker.makeQuery(pageMaker.startPage - 1)}">
+                                <i class="fa fa-angle-left"></i></a>
                             <a th:each="page,num : ${#numbers.sequence(pageMaker.startPage,pageMaker.endPage)}"
-                               th:text="${num.count}" ></a>
-                            <a th:if="${pageMaker.next}" ><i class="fa fa-angle-right"></i></a>
-                            <!--
-                            th:href="BhShop${pageMaker.makeQuery(pageMaker.startPage - 1)}"
-                            th:href="BhShop${pageMaker.makeQuery(num.count)}"
-                            th:herf="BhShop${pageMaker.makeQuery(pageMaker.endPage + 1)}"
-                            -->
+                               th:text="${page}" th:href="'BhShop' + ${pageMaker.makeQuery(page)}"></a>
+                            <a th:if="${pageMaker.next}"
+                               th:href="'BhShop' + ${pageMaker.makeQuery(pageMaker.endPage + 1)}">
+                                <i class="fa fa-angle-right"></i></a>
                         </div>
                     </div>
                     <!-- 페이징 끝 -->

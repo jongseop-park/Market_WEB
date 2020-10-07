@@ -37,7 +37,15 @@ public class ShopVO {
     @Getter @Setter
     private String productPrice;
 
+    /** 제품 할인 가격 **/
+    @Getter @Setter
+    private String productDiscount;
+
     /** 제품 총 개수 **/
     @Getter @Setter
     private int totQty;
+
+    /** 제품 별점 **/
+    @Getter @Setter
+    private int reviewStar;
 }

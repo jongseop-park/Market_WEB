@@ -8,12 +8,13 @@ public class ShopPageMaker {
     private int perPageNum; //페이지 당 표시할 품목 개수
     private int rowStart;   //시작 페이지
     private int rowEnd;     //끝 페이지
-    private int totalCount;
-    private int startPage;
-    private int endPage;
-    private boolean prev;
-    private boolean next;
-    private int displayPageNum = 5;
+    private int totalCount; //총 수
+    private int startPage;  //현재 묶음?의 시작 페이지
+    private int endPage;    //현재 묶음?의 끝 페이지
+    private boolean prev;   //이전 버튼 활성화 여부
+    private boolean next;   //다음 버튼 활성화 여부
+    private int displayPageNum = 5; //묶음?의 페이지 수?
+    private int sortCode;
 
     public ShopPageMaker(){
         this.page = 1;
