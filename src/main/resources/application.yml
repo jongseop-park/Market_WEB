@@ -18,23 +18,24 @@ spring:
 ---
 #---
 ## ORACLE
-#spring:
-#  datasource:
-#    url: jdbc:oracle:thin:@dreamcapsule-db.cfzlzcz0pe0g.ap-northeast-2.rds.amazonaws.com:1521:ORCL
-#    driver-class-name: oracle.jdbc.driver.OracleDriver
-#    username: dreamcapsule
-#    password: dreamcap0902!
-#
+
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521:ORCL
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    username: board
+    password: board
+
 #---
 ## mybatis 세팅
-#mybatis:
-#  type-aliases-package: com.dreamcapsule.project.domain
-#  mapper-locations: classpath:mapper/**/*Mapper.xml
-#  configuration:
-#    lazy-loading-enabled: true
-#    aggressive-lazy-loading: false
-#    map-underscore-to-camel-case: true
-#
+mybatis:
+  type-aliases-package: com.pbboard.domain
+  mapper-locations: classpath:mapper/**/*Mapper.xml
+  configuration:
+    lazy-loading-enabled: true
+    aggressive-lazy-loading: false
+    map-underscore-to-camel-case: true
+
 #---
 ## ERROR 기본값 사용 안함
 #server:
