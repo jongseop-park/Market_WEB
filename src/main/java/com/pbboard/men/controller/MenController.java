@@ -4,10 +4,7 @@ import com.pbboard.men.service.MenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,28 +16,6 @@ public class MenController {
     public MenController(MenService menService) {
         this.menService = menService;
     }
-
-    /*    @GetMapping("/men")
-    public String test(Model model) {
-        List<ProductVO> productList = menService.list();
-        model.addAttribute("productList", productList);
-
-        return "/men/list";
-    }*/
-
-  /*  @GetMapping("/menList")
-    public String listPage(@ModelAttribute("cri") Criteria criteria, Model model) {
-        List<ProductVO> productVOList = menService.listPage(criteria);
-        model.addAttribute("productList", productVOList);
-
-        PageMaker pageMaker = new PageMaker();
-        pageMaker.setCri(criteria);
-        pageMaker.setTotalCount(menService.listCount());
-
-        model.addAttribute("pageMaker", pageMaker);
-
-        return "/men/list";
-    }*/
 
     @GetMapping("/men/list")
     public String listSearch(@ModelAttribute("scri")SearchCriteria searchCriteria,
@@ -57,15 +32,25 @@ public class MenController {
         return "/men/list";
     }
 
-    @GetMapping("/men/detail")
+    @RequestMapping("/men/detail")
     public String detail(@RequestParam("seq") int seq
             , Model model) {
         ProductVO productVO = menService.detail(seq);
         model.addAttribute("product", productVO);
 
-        List<GoodsVO> goods = menService.goods(seq);
-        model.addAttribute("goods", goods);
+        List<OptionVO> options = menService.option(seq);
+        model.addAttribute("option", options);
+
+        List<ReviewVO> reviews = menService.reviewList(seq);
+        model.addAttribute("review", reviews);
 
         return "/men/detail";
     }
+
+  /*  @PostMapping("/men/detail")
+    public String registReview(ReviewVO reviewVO) {
+        menService.registReview(reviewVO);
+
+        return "redirect:/men/detail?seq=" + reviewVO.getProductSeq();
+    }*/
 }

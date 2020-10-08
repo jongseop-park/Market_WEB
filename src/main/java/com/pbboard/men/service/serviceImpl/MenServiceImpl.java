@@ -1,9 +1,6 @@
 package com.pbboard.men.service.serviceImpl;
 
-import com.pbboard.men.domain.Criteria;
-import com.pbboard.men.domain.GoodsVO;
-import com.pbboard.men.domain.ProductVO;
-import com.pbboard.men.domain.SearchCriteria;
+import com.pbboard.men.domain.*;
 import com.pbboard.men.mapper.MenMapper;
 import com.pbboard.men.service.MenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,21 +16,6 @@ public class MenServiceImpl implements MenService {
     public MenServiceImpl(MenMapper menMapper) {
         this.menMapper = menMapper;
     }
-
-/*    @Override
-    public List<ProductVO> list() {
-        return menMapper.list();
-    }
-
-    @Override
-    public List<ProductVO> listPage(Criteria criteria) {
-        return menMapper.listPage(criteria);
-    }
-
-    @Override
-    public int listCount() {
-        return menMapper.listCount();
-    }*/
 
     @Override
     public ProductVO detail(int seq) {
@@ -51,7 +33,17 @@ public class MenServiceImpl implements MenService {
     }
 
     @Override
-    public List<GoodsVO> goods(int seq) {
-        return menMapper.goods(seq);
+    public List<OptionVO> option(int seq) {
+        return menMapper.option(seq);
+    }
+
+    @Override
+    public void registReview(ReviewVO reviewVO) {
+        menMapper.registReview(reviewVO);
+    }
+
+    @Override
+    public List<ReviewVO> reviewList(int seq) {
+        return menMapper.reviewList(seq);
     }
 }

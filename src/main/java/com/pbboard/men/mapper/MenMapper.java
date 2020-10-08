@@ -1,9 +1,6 @@
 package com.pbboard.men.mapper;
 
-import com.pbboard.men.domain.Criteria;
-import com.pbboard.men.domain.GoodsVO;
-import com.pbboard.men.domain.ProductVO;
-import com.pbboard.men.domain.SearchCriteria;
+import com.pbboard.men.domain.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -12,13 +9,6 @@ import java.util.List;
 @Repository
 @Mapper
 public interface MenMapper {
-/*    public List<ProductVO> list();
-
-    public List<ProductVO> listPage(Criteria criteria);
-
-    public int listCount();
-    */
-
     /* 상세 조회 */
     public ProductVO detail(int seq);
 
@@ -28,5 +18,9 @@ public interface MenMapper {
     /* 목록 개수 */
     public int menSearchCount(SearchCriteria searchCriteria);
 
-    public List<GoodsVO> goods(int seq);
+    public List<OptionVO> option(int seq);
+
+    public void registReview(ReviewVO reviewVO);
+
+    public List<ReviewVO> reviewList(int seq);
 }

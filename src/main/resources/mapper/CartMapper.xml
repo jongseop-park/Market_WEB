@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pbboard.cart.mapper.CartMapper">
+    <!-- 장바구니 추가 -->
+    <insert id="save" parameterType="com.pbboard.cart.domain.CartDTO">
+        merge into cart
+        using dual on
+        (product_seq = ${productSeq} and size_seq = ${sizeSeq})
+        when matched then
+        update set
+        cartstock = ${cartStock}
+        when not matched then
+        insert(seq, product_seq, cartstock, size_seq)
+        values(cart_sequence.nextVal, ${productSeq}, ${cartStock}, ${sizeSeq})
+    </insert>
+
+
+    <!-- 장바구니 목록 -->
+    <select id="list" resultType="com.pbboard.cart.domain.CartVO">
+     select c.seq,
+      p.name as productName,
+      s.size_name as sizeName,
+      to_char(p.price, '999,999,999,999') as price
+     , c.cartstock as quantity,
+     to_char(sum(p.price * c.cartstock)/count(c.seq), '999,999,999,999') as totalPrice
+        ,p.image
+        from cart c, product p, goods g, size_tbl s
+        where c.product_seq = p.seq
+        and s.seq = c.size_seq
+        group by c.seq, p.name, p.price, c.cartstock, s.size_name, p.image
+    </select>
+
+    <!-- 장바구니 삭제 -->
+    <delete id="delete" parameterType="int">
+        delete from cart where seq=${seq}
+    </delete>
+
+    <!-- 장바구니 총 합계 금액 -->
+    <select id="totalPrice" resultType="String">
+        select to_char(sum(p.price * c.cartstock) , '999,999,999,999') as totalPrice
+        from cart c, product p, size_tbl s
+        where c.product_seq = p.seq
+        and s.seq = c.size_seq
+    </select>
+</mapper>

@@ -52,10 +52,6 @@ public class PageMaker {
         return next;
     }
 
-    public int getDisplayPageNum() {
-        return displayPageNum;
-    }
-
     public Criteria getCri() {
         return cri;
     }

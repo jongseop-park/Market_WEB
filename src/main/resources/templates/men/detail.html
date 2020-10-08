@@ -81,28 +81,28 @@
                 <div class="product__details__pic">
                     <div class="product__details__pic__left product__thumb nice-scroll">
                         <a class="pt active" href="#product-1">
-                            <img th:attr="src=${product.image}" alt="">
+                            <img th:attr="src=${product.subImage1}" alt="">
                         </a>
                         <a class="pt" href="#product-2">
-                            <img th:attr="src=${product.image}" alt="">
+                            <img th:attr="src=${product.subImage2}" alt="">
                         </a>
                         <a class="pt" href="#product-3">
-                            <img th:attr="src=${product.image}" alt="">
+                            <img th:attr="src=${product.subImage3}" alt="">
                         </a>
                         <a class="pt" href="#product-4">
-                            <img th:attr="src=${product.image}" alt="">
+                            <img th:attr="src=${product.subImage4}" alt="">
                         </a>
                     </div>
                     <div class="product__details__slider__content">
                         <div class="product__details__pic__slider owl-carousel">
                             <img data-hash="product-1" class="product__big__img"
-                                 th:attr="src=${product.image}" alt="">
+                                 th:attr="src=${product.subImage1}" alt="">
                             <img data-hash="product-2" class="product__big__img"
-                                 th:attr="src=${product.image}" alt="">
+                                 th:attr="src=${product.subImage2}" alt="">
                             <img data-hash="product-3" class="product__big__img"
-                                 th:attr="src=${product.image}" alt="">
+                                 th:attr="src=${product.subImage3}" alt="">
                             <img data-hash="product-4" class="product__big__img"
-                                 th:attr="src=${product.image}" alt="">
+                                 th:attr="src=${product.subImage4}" alt="">
                         </div>
                     </div>
                 </div>
@@ -119,9 +119,10 @@
                         <span>( 138 reviews )</span>
                     </div>
                     <div class="product__details__price" th:text="${product.price}  + '원'"></div>
-                    <p th:text="${product.description}"></p>
+                    <p th:text="${product.summaryDesc}"></p>
                     <div class="product__details__button">
-                        <div class="quantity">
+                        <div class="quantity"
+                             th:if="${option.size() == 0}">
                             <span>수량:</span>
                             <div class="pro-qty">
                                 <input type="text" value="1">
@@ -135,65 +136,36 @@
                     </div>
                     <div class="product__details__widget">
                         <ul>
-                            <li>
-                                <span>주문 가능 색상:</span>
-                                <!--<div class="color__checkbox">
-                                    <label for="red">
-                                        <input type="radio" name="color__radio" id="red" checked>
-                                        <span class="checkmark"></span>
-                                    </label>
-                                    <label for="black">
-                                        <input type="radio" name="color__radio" id="black">
-                                        <span class="checkmark black-bg"></span>
-                                    </label>
-                                    <label for="grey">
-                                        <input type="radio" name="color__radio" id="grey">
-                                        <span class="checkmark grey-bg"></span>
-                                    </label>
-                                </div>-->
-                                <select>
+                            <li th:each="options : ${option}">
+                                <span th:text="${options.optionName}"></span>
+                                <select id="optionMenu">
                                     <option>옵션 선택</option>
-                                    <option>2</option>
-                                    <option>1</option>
-                                    <option>1</option>
+                                    <option th:each="optionValues : ${options.optionValues}"
+                                        th:attr="value=${optionValues}">
+                                        <td th:text="${optionValues}"></td>
+                                    </option>
                                 </select>
-                            </li>
-                            <li>
-                                <span>주문 가능 사이즈:</span>
-                                <select>
-                                    <option>옵션 선택</option>
-                                    <option>1</option>
-                                    <option>1</option>
-                                    <option>1</option>
-                                    <option>1</option>
-                                </select>
-                             <!--   <div class="size__btn">
-                                    <label for="xs-btn" class="active">
-                                        <input type="radio" id="xs-btn">
-                                        xs
-                                    </label>
-                                    <label for="s-btn">
-                                        <input type="radio" id="s-btn">
-                                        s
-                                    </label>
-                                    <label for="m-btn">
-                                        <input type="radio" id="m-btn">
-                                        m
-                                    </label>
-                                    <label for="l-btn">
-                                        <input type="radio" id="l-btn">
-                                        l
-                                    </label>
-                                </div>-->
-                                <div class="size__btn">
-                                    <label th:each="goods : ${goods}">
-                                        <input type="radio" id="" th:text="${goods.sizeName}">
-                                    </label>
-                                </div>
                             </li>
                         </ul>
                     </div>
-                </div>
+                    </div>
+                    <div class="product__details__widget">
+                          <div th:if="${option.size() != 0}">
+                                -<span class="optionName">블랙/L</span>
+                                <div class="pro-qty">
+                                    <input type="text" value="1">
+                                </div>
+                            <td class="cart__close"><span class="icon_close"></span></td>
+                          </div>
+                          <div th:if="${option.size() != 0}">
+                              -<span class="optionName">블랙/S</span>
+                              <div class="pro-qty">
+                                  <input type="text" class="quantity" value="1">
+                              </div>
+                              <td class="cart__close"><span class="icon_close"></span></td>
+                          </div>
+                    </div>
+
             </div>
             <div class="col-lg-12">
                 <div class="product__details__tab">
@@ -211,7 +183,7 @@
                     <div class="tab-content">
                         <div class="tab-pane active" id="tabs-1" role="tabpanel">
                             <h6>설명</h6>
-                            <p th:text="${product.description}"></p>
+                            <p th:text="${product.detailDesc}"></p>
                         </div>
                         <div class="tab-pane" id="tabs-2" role="tabpanel">
                             <h6>Specification</h6>
@@ -227,17 +199,45 @@
                                 quis, sem.</p>
                         </div>
                         <div class="tab-pane" id="tabs-3" role="tabpanel">
-                            <h6>Reviews ( 2 )</h6>
-                            <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut loret fugit, sed
-                                quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt loret.
-                                Neque porro lorem quisquam est, qui dolorem ipsum quia dolor si. Nemo enim ipsam
-                                voluptatem quia voluptas sit aspernatur aut odit aut loret fugit, sed quia ipsu
-                                consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Nulla
-                                consequat massa quis enim.</p>
-                            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget
-                                dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,
-                                nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
-                                quis, sem.</p>
+                            <div class="blog__details__comment">
+                                <h6>Reviews ( 2 )</h6>
+                                <a href="#" class="leave-btn">상품 후기 쓰기</a>
+                             <!--   <div class="blog__comment__item">
+                                    <div class="blog__comment__item__text">
+                                        <h6>Brandon Kelley</h6>
+                                        <p>Duis voluptatum. Id vis consequat consetetur dissentiet, ceteros commune perpetua
+                                            mei et. Simul viderer facilisis egimus tractatos splendi.</p>
+                                        <div class="rating">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                        </div>
+                                        <ul>
+                                            <li><i class="fa fa-clock-o"></i> 2020-01-03 11:33</li>
+                                        </ul>
+                                    </div>
+                                </div>-->
+
+                                <div class="blog__comment__item" th:each="review : ${review}">
+                                    <div class="blog__comment__item__text">
+                                        <h6 th:text="${review.nickName}"></h6>
+                                        <p th:text="${review.content}"></p>
+                                        <div class="rating">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <td th:text="${review.score}"></td>
+                                        </div>
+                                        <ul>
+                                            <li th:text="${review.regDt}"><i class="fa fa-clock-o"></i></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -344,3 +344,14 @@
 </body>
 
 </html>
+
+<script>
+    $('.cart-btn').on('click', function() {
+        alert($('.optionName').val());
+    });
+/*
+    $('#optionMenu').on('change', function() {
+       alert(this.value);
+    });*/
+
+</script>

@@ -41,3 +41,19 @@ spring:
 #  error:
 #    whitelabel:
 #      enabled: false
+
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521:orcl
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    username: test
+    password: 1234
+
+
+mybatis:
+  type-aliases-package: com.dreamcapsule.project.domain
+  mapper-locations: classpath:mapper/**/*Mapper.xml
+  configuration:
+    lazy-loading-enabled: true
+    aggressive-lazy-loading: false
+    map-underscore-to-camel-case: true

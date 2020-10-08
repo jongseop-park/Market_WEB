@@ -3,52 +3,38 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.pbboard.men.mapper.MenMapper">
- <!--   <select id="list" resultType="com.pbboard.men.domain.ProductVO">
-        select seq, name, to_char(price, '999,999,999') as price, image, catecode, description, brand
-        from men_product_tbl
-    </select>-->
-
-
-<!--
-    <select id="listPage" parameterType="com.pbboard.men.domain.Criteria"
-            resultType="com.pbboard.men.domain.ProductVO">
-        select seq, name, to_char(price,'999,999,999') as price, image, catecode, description, brand
-        from
-        (select seq, name, price, image, catecode, description, brand, row_number()
-        over(order by seq desc) as rNum from men_product_tbl
-        ) where rNum between #{rowStart} and #{rowEnd} order by seq desc
-    </select>
-
-    <select id="listCount" resultType="int">
-        <![CDATA[
-        select count(seq) from men_product_tbl where seq > 0
-        ]]>
-    </select>-->
-
     <!-- 상세 조회 -->
     <select id="detail" resultType="com.pbboard.men.domain.ProductVO">
-        select seq, name, brand, image, to_char(price, '999,999,999,999') as price,
-        description
-        from men_product_tbl
-        where seq= ${seq}
+        select seq, name, brand, image, to_char(price, '999,999,999') as price, summary_desc, detail_desc
+        , sub_image1 as subImage1
+        , sub_image2 as subImage2
+        , sub_image3 as subImage3
+        , sub_image4 as subImage4
+        from men_product_tbl2 where seq = #{seq}
+
     </select>
 
     <!-- 목록 조회 -->
     <select id="menListSearch" parameterType="com.pbboard.men.domain.SearchCriteria"
                             resultType="com.pbboard.men.domain.ProductVO">
-        select seq, name, to_char(price, '999,999,999') as price, image, catecode, description, brand
+        select seq, name, to_char(price, '999,999,999,999') as price , image
         from
-        (select seq, name, price, image, catecode, description, brand, row_number()
-        over(order by seq desc) as rNum from men_product_tbl
+        (select seq, name, price, image,  row_number()
+        over(order by seq desc) as rNum
+        from men_product_tbl2
         <include refid="search"></include>
-        ) where rNum between #{rowStart} and #{rowEnd} order by seq desc
+        ) where rNum between #{rowStart} and #{rowEnd}
+        order by seq desc
+
     </select>
 
     <!-- 목록 개수 -->
     <select id="menSearchCount" parameterType="com.pbboard.men.domain.SearchCriteria"
             resultType="int">
         <![CDATA[
-        select count(seq) from men_product_tbl where seq > 0
+        select count(seq)
+        from men_product_tbl2
+        where seq > 0
         ]]>
         <include refid="count"></include>
     </select>
@@ -64,16 +50,27 @@
         </if>
     </sql>
     
+
+    <!-- 옵션 조회 -->
+    <select id="option" parameterType="int" resultType="com.pbboard.men.domain.OptionVO">
+        select product_seq ,name as optionName, wm_concat(value) as optionValue
+        from option_tbl2
+        where product_seq = #{seq}
+        group by name, product_seq
+    </select>
     
-    <!---->
-    <select id="goods" parameterType="int" resultType="com.pbboard.men.domain.GoodsVO">
-        select p.name, s.size_name sizeName, g.stock
-        from men_goods_tbl g, men_product_tbl p, size_tbl s
-        where g.product_seq = #{seq}
-        and g.product_seq = p.seq
-        and g.size_seq = s.seq
-        group by p.name,  s.size_name, g.stock
-        order by sizeName desc
+    <insert id="registReview" parameterType="com.pbboard.men.domain.ReviewVO">
+        insert into review_tbl2
+        values(review_sequence.nextVal, 'psy1234', #{seq} , '테스트 제목', #{content} , '4.1', sysDate, sysDate, 'n')
+    </insert>
+
+    <select id="reviewList" parameterType="int"
+            resultType="com.pbboard.men.domain.ReviewVO">
+         select m.nickname as nickName, r.content, r.score , r.reg_dt as regDt
+        from review_tbl2 r, member_tbl2 m, order_tbl2 o
+        where o.seq = r.order_seq
+        and m.id = r.member_id
+        and o.product_seq = #{seq}
     </select>
     
 </mapper>
