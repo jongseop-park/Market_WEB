@@ -28,5 +28,7 @@ public interface ShopMapper {
 
     public List<ShopVO> findOutOfStock(); //품절 확인
 
-    public int productCount();
+    public int productCount();          //등록된 제품 수
+
+    public List<ShopVO> productReviewStar(@Param("PRODUCTLIST") String productList);    //제품 리뷰 점수
 }
