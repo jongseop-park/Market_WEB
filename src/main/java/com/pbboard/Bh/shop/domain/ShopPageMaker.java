@@ -1,9 +1,12 @@
 package com.pbboard.Bh.shop.domain;
 
+import com.pbboard.domain.ShopVO;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-public class ShopPageMaker {
+public class ShopPageMaker extends ShopVO {
     private int page;       //현재 페이지
     private int perPageNum; //페이지 당 표시할 품목 개수
     private int rowStart;   //시작 페이지
@@ -14,7 +17,6 @@ public class ShopPageMaker {
     private boolean prev;   //이전 버튼 활성화 여부
     private boolean next;   //다음 버튼 활성화 여부
     private int displayPageNum = 5; //묶음?의 페이지 수?
-    private int sortCode;
 
     public ShopPageMaker(){
         this.page = 1;
@@ -107,6 +109,8 @@ public class ShopPageMaker {
                 UriComponentsBuilder.newInstance()
                         .queryParam("page", page)
                         /*.queryParam("perPageNum", perPageNum)*/
+                        .queryParam("sortcodeMain",getSortcodeMain())
+                        .queryParam("sortcodeSub",getSortcodeSub())
                         .build();
 
         return uriComponents.toUriString();

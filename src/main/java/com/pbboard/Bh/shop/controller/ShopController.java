@@ -17,10 +17,9 @@ public class ShopController {
     ShopService shopService;
 
     @RequestMapping("/BhShop")
-    public String shop(Model model, ShopPageMaker shopPageMaker, ShopVO shopVO){
-        shopPageMaker.setTotalCount(shopService.productCount());
+    public String shop(Model model, ShopPageMaker shopPageMaker){
+        shopPageMaker.setTotalCount(shopService.productCount(shopPageMaker));
         List<ShopVO> productInfo = shopService.findProduct(shopPageMaker);
-        shopService.addProductStar(productInfo);    //제품 정보에 별점 추가
 
         model.addAttribute("mainCat",shopService.findMainCat());    //메인 카테고리
         model.addAttribute("subCat",shopService.subCategory());     //서브 카테고리

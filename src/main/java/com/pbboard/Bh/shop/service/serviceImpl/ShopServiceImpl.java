@@ -40,10 +40,7 @@ public class ShopServiceImpl implements ShopService {
     public List<ShopVO> findOutOfStock(){ return shopMapper.findOutOfStock(); }
 
     //등록된 제품 수
-    public int productCount(){ return shopMapper.productCount(); }
-
-    //현재 화면에 나오는 제품의 리뷰 점수
-    public List<ShopVO> productReviewStar(String productList){ return shopMapper.productReviewStar(productList); }
+    public int productCount(ShopPageMaker shopPageMaker){ return shopMapper.productCount(shopPageMaker); }
 
     //서브 카테고리 모음
     public String[][] subCategory(){
@@ -82,19 +79,4 @@ public class ShopServiceImpl implements ShopService {
         return seqList;
     }
 
-    //제품 정보에 별점 추가
-    public List<ShopVO> addProductStar(List<ShopVO> productInfo){
-
-        List<ShopVO> reviewStar = productReviewStar(productList(productInfo));
-
-        for(int x = 0; x < productInfo.size();x++){
-            for(int y = 0; y < reviewStar.size();y++){
-                if(productInfo.get(x).getProductSeq() == reviewStar.get(y).getProductSeq()){
-                    productInfo.get(x).setReviewStar(reviewStar.get(y).getReviewStar());
-                }
-            }
-        }
-
-        return productInfo;
-    }
 }

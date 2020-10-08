@@ -1,14 +1,14 @@
-# ¼­¹ö Æ÷Æ®
+# ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®
 server:
   port: 10001
 ---
-# ½Ç½Ã°£ ¹Ý¿µ
+# ï¿½Ç½Ã°ï¿½ ï¿½Ý¿ï¿½
 spring:
   devtools:
     livereload:
       enabled: true
 ---
-# static Á¤Àû ¸®¼Ò½º Á¢±Ù
+# static ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ò½ï¿½ ï¿½ï¿½ï¿½ï¿½
 spring:
   resources:
     static-locations: classpath:/static/
@@ -27,7 +27,7 @@ spring:
     password: board
 
 #---
-## mybatis ¼¼ÆÃ
+## mybatis ï¿½ï¿½ï¿½ï¿½
 mybatis:
   type-aliases-package: com.pbboard.domain
   mapper-locations: classpath:mapper/**/*Mapper.xml
@@ -37,7 +37,7 @@ mybatis:
     map-underscore-to-camel-case: true
 
 #---
-## ERROR ±âº»°ª »ç¿ë ¾ÈÇÔ
+## ERROR ï¿½âº»ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 #server:
 #  error:
 #    whitelabel:

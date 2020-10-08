@@ -21,41 +21,85 @@
     </select>
 
     <select id="findProduct" resultType="ShopVO">
-        SELECT PRODUCT_SEQ, PRODUCT_NAME, PRODUCT_PRICE , PRODUCT_DISCOUNT,SORTCODE_SEQ
+        SELECT PRODUCT_SEQ, PRODUCT_NAME, PRODUCT_PRICE , PRODUCT_DISCOUNT, SORTCODE_SEQ, REVIEW_STAR
         FROM
         (
-            SELECT PRODUCT_SEQ, PRODUCT_NAME,REGEXP_REPLACE(REVERSE(REGEXP_REPLACE(REVERSE(TO_CHAR(PRODUCT_PRICE)),
-            '([0-9]{3})','\1,')),'^,','') PRODUCT_PRICE,
-            REGEXP_REPLACE(REVERSE(REGEXP_REPLACE(REVERSE(TO_CHAR(PRODUCT_PRICE / 100 * (100 - PRODUCT_DISCOUNT))),
-            '([0-9]{3})','\1,')),'^,','') PRODUCT_DISCOUNT , SORTCODE_SEQ, ROW_NUMBER() OVER(ORDER BY PRODUCT_SEQ) AS RNUM
-            FROM PRODUCT
+            SELECT P.PRODUCT_SEQ,
+            P.PRODUCT_NAME,REGEXP_REPLACE(REVERSE(REGEXP_REPLACE(REVERSE(TO_CHAR(P.PRODUCT_PRICE)),
+                '([0-9]{3})','\1,')),'^,','') PRODUCT_PRICE
+            ,REGEXP_REPLACE(REVERSE(REGEXP_REPLACE(REVERSE(TO_CHAR(P.PRODUCT_PRICE / 100 * (100 - P.PRODUCT_DISCOUNT))),
+                '([0-9]{3})','\1,')),'^,','') PRODUCT_DISCOUNT
+            ,P.SORTCODE_SEQ
+            ,ROW_NUMBER() OVER(ORDER BY P.PRODUCT_SEQ) AS RNUM
+            ,(SELECT ROUND(SUM(R.REVIEW_STAR)/COUNT(R.REVIEW_STAR),0) AS REVIEW_STAR FROM REVIEW R ,PRODUCT PR
+                WHERE R.PRODUCT_SEQ = P.PRODUCT_SEQ GROUP BY P.PRODUCT_SEQ) AS REVIEW_STAR
+            FROM PRODUCT P
+            WHERE SORTCODE_SEQ IN
+                (<include refid="categoryChangeSort"></include>)
+            AND PRODUCT_SEQ IN
+                (<include refid="categoryChange"></include>)
         )
         WHERE RNUM BETWEEN #{rowStart} AND #{rowEnd} ORDER BY PRODUCT_SEQ
     </select>
 
     <select id="findDiscount" resultType="ShopVO">
         SELECT PRODUCT_SEQ FROM PRODUCT WHERE DECODE(PRODUCT_DISCOUNT,0,NULL,1) = 1
-
     </select>
 
     <select id="findNewProduct" resultType="ShopVO">
         SELECT PRODUCT_SEQ FROM PRODUCT WHERE PRODUCT_REGDT > SYSDATE - 15
-
     </select>
 
     <select id="findOutOfStock" resultType="ShopVO">
         SELECT PRODUCT_SEQ, TOT_QTY FROM (SELECT PRODUCT_SEQ, SUM(STOCK_QTY) AS TOT_QTY FROM STOCK GROUP BY PRODUCT_SEQ)
          WHERE TOT_QTY <![CDATA[<=]]> 0
-
     </select>
 
     <select id="productCount" resultType="int">
-        SELECT COUNT(PRODUCT_SEQ) FROM PRODUCT
-
+        SELECT COUNT(PRODUCT_SEQ) FROM
+        (
+            SELECT P.PRODUCT_SEQ
+            FROM PRODUCT P
+            WHERE SORTCODE_SEQ IN(<include refid="categoryChangeSort"></include>)
+            AND PRODUCT_SEQ IN(<include refid="categoryChange"></include>)
+        )
     </select>
 
-    <select id="productReviewStar" resultType="ShopVO">
-        SELECT PRODUCT_SEQ, ROUND(SUM(REVIEW_STAR)/COUNT(REVIEW_STAR),0) AS REVIEW_STAR FROM REVIEW
-        WHERE PRODUCT_SEQ IN(${PRODUCTLIST})GROUP BY PRODUCT_SEQ
-    </select>
+    <sql id="categoryChangeSort">
+        (SELECT SORTCODE_SEQ FROM SORTCODE
+        <choose>
+            <when test="sortcodeMain != null and sortcodeSub != null">
+                 WHERE SORTCODE_MAIN=#{sortcodeMain} AND SORTCODE_SUB=#{sortcodeSub})
+            </when>
+            <otherwise>
+                )
+            </otherwise>
+        </choose>
+    </sql>
+
+    <sql id="categoryChange">
+        SELECT DISTINCT S.PRODUCT_SEQ FROM STOCK S
+        INNER JOIN PRODUCTSIZE P ON  S.PRODUCTSIZE_SEQ = P.PRODUCTSIZE_SEQ
+        INNER JOIN COLOR C ON S.COLOR_SEQ = C.COLOR_SEQ
+        <choose>
+            <when test="productsizeValue != null and colorValue == null">
+                WHERE P.PRODUCTSIZE_VALUE IN(#{productsizeValue})
+                AND C.COLOR_VALUE IN(SELECT COLOR_VALUE FROM COLOR)
+            </when>
+            <when test="productsizeValue == null and colorValue != null">
+                WHERE P.PRODUCTSIZE_VALUE IN(SELECT PRODUCTSIZE_VALUE FROM PRODUCTSIZE)
+                AND C.COLOR_VALUE IN(#{colorValue})
+            </when>
+            <when test="productsizeValue != null and colorValue != null">
+                WHERE P.PRODUCTSIZE_VALUE IN(#{productsizeValue})
+                AND C.COLOR_VALUE IN(#{colorValue})
+            </when>
+            <otherwise>
+                WHERE P.PRODUCTSIZE_VALUE IN(SELECT PRODUCTSIZE_VALUE FROM PRODUCTSIZE)
+                AND C.COLOR_VALUE IN(SELECT COLOR_VALUE FROM COLOR)
+            </otherwise>
+        </choose>
+                    AND S.STOCK_QTY != 0
+    </sql>
+
 </mapper>

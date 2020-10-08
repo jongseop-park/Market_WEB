@@ -24,13 +24,9 @@ public interface ShopService {
 
     public List<ShopVO> findOutOfStock();//품절 확인
 
-    public int productCount();  //등록된 제품 수
-
-    public List<ShopVO> productReviewStar(String productList);  //현재 화면에 나오는 제품의 리뷰 점수
+    public int productCount(ShopPageMaker shopPageMaker);  //등록된 제품 수
 
     public String[][] subCategory();    //각 카테고리 모아서 가져가기 위해 사용
 
     public String productList(List<ShopVO> productInfo);    //현재 화면에 나오는 제품의 seq 모음
-
-    public List<ShopVO> addProductStar(List<ShopVO> productInfo);   //제품 정보에 별점 추가
 }

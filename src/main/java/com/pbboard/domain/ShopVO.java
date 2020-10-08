@@ -48,4 +48,5 @@ public class ShopVO {
     /** 제품 별점 **/
     @Getter @Setter
     private int reviewStar;
+
 }
