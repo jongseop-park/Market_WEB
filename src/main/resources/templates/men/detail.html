@@ -65,7 +65,8 @@
                 <div class="breadcrumb__links">
                     <a href="./index.html"><i class="fa fa-home"></i> Home</a>
                     <a href="#">Men’s </a>
-                    <span th:text="${product.name}">Essential structured blazer</span>
+                    <input type="hidden" id="productSeq" th:attr="value=${product.seq}">
+                    <span th:attr="value=${product.name}">Essential structured blazer</span>
                 </div>
             </div>
         </div>
@@ -116,16 +117,15 @@
                         <i class="fa fa-star"></i>
                         <i class="fa fa-star"></i>
                         <i class="fa fa-star"></i>
-                        <span>( 138 reviews )</span>
+                        <span th:text="'(' + ${review.size()} + ' reviews )'"></span>
                     </div>
                     <div class="product__details__price" th:text="${product.price}  + '원'"></div>
                     <p th:text="${product.summaryDesc}"></p>
                     <div class="product__details__button">
-                        <div class="quantity"
-                             th:if="${option.size() == 0}">
+                        <div class="quantity">
                             <span>수량:</span>
                             <div class="pro-qty">
-                                <input type="text" value="1">
+                                <input type="text" class="quantityValue" value="1">
                             </div>
                         </div>
                         <a href="#" class="cart-btn"><span class="icon_bag_alt"></span> 장바구니 담기</a>
@@ -137,11 +137,11 @@
                     <div class="product__details__widget">
                         <ul>
                             <li th:each="options : ${option}">
-                                <span th:text="${options.optionName}"></span>
-                                <select id="optionMenu">
+                                <span class="optionName" th:text="${options.optionName}"></span>
+                                <select class="optionMenu" name="optionMenu">
                                     <option>옵션 선택</option>
                                     <option th:each="optionValues : ${options.optionValues}"
-                                        th:attr="value=${optionValues}">
+                                        th:attr="value=${optionValues}, etc=${optionValues} ">
                                         <td th:text="${optionValues}"></td>
                                     </option>
                                 </select>
@@ -149,22 +149,22 @@
                         </ul>
                     </div>
                     </div>
-                    <div class="product__details__widget">
+               <!--     <div class="product__details__widget">
                           <div th:if="${option.size() != 0}">
-                                -<span class="optionName">블랙/L</span>
+                                -<span class="optionNames">블랙/L</span>
                                 <div class="pro-qty">
-                                    <input type="text" value="1">
+                                    <input type="text" class="quantityValue" value="1">
                                 </div>
                             <td class="cart__close"><span class="icon_close"></span></td>
                           </div>
                           <div th:if="${option.size() != 0}">
-                              -<span class="optionName">블랙/S</span>
+                              -<span class="optionNames">블랙/S</span>
                               <div class="pro-qty">
-                                  <input type="text" class="quantity" value="1">
+                                  <input type="text" class="quantityValue" value="1">
                               </div>
                               <td class="cart__close"><span class="icon_close"></span></td>
                           </div>
-                    </div>
+                    </div>-->
 
             </div>
             <div class="col-lg-12">
@@ -200,7 +200,7 @@
                         </div>
                         <div class="tab-pane" id="tabs-3" role="tabpanel">
                             <div class="blog__details__comment">
-                                <h6>Reviews ( 2 )</h6>
+                                <h6 th:text="'Reviews ( ' + ${review.size()} + ' )'">Reviews ( 2 )</h6>
                                 <a href="#" class="leave-btn">상품 후기 쓰기</a>
                              <!--   <div class="blog__comment__item">
                                     <div class="blog__comment__item__text">
@@ -347,11 +347,53 @@
 
 <script>
     $('.cart-btn').on('click', function() {
-        alert($('.optionName').val());
-    });
-/*
-    $('#optionMenu').on('change', function() {
-       alert(this.value);
-    });*/
+        var option = '';
 
+        // 선택해야할 옵션 개수만큼 for문 반복
+        $('select[name=optionMenu] option:selected').each(function(index) {
+            option += $(this).attr('etc') + '/';
+        });
+
+        option = option.substring(0, option.length - 1);
+
+        if(option.indexOf(undefined) == -1) {
+            var data = {
+                memberId: 'psy1234',
+                productSeq: getParameter("seq"),
+                quantity: $('.quantityValue').val(),
+                optionName: option
+            };
+
+            Save(data);
+        } else {
+            alert("옵션을 선택해주세요.");
+        }
+    });
+
+    function getParameter(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+    function Save(data) {
+        $.ajax({
+            url: "/men/cart",
+            type: "POST",
+            contentType : "application/json",
+            data : JSON.stringify(data),
+            success : function(data) {
+                alert(data);
+                if(confirm("장바구니에 담겼습니다. 장바구니로 이동하시겠습니까?") == true) {
+                    document.location.href="/cart/list";
+                } else {
+                    return ;
+                }
+            },
+            error : function(jqXhr) {
+                alert("작업실패");
+            }
+        });
+    }
 </script>

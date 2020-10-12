@@ -1,27 +1,28 @@
 package com.pbboard.cart.controller;
 
-
-import com.pbboard.cart.domain.CartDTO;
 import com.pbboard.cart.domain.CartVO;
 import com.pbboard.cart.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
-import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
 
 @Controller
 public class CartController {
+    final CartService cartService;
+
     @Autowired
-    CartService cartService;
+    public CartController(CartService cartService) {
+        this.cartService = cartService;
+    }
 
     /* 장바구니 목록 */
-    @GetMapping("/cart")
+    @GetMapping("/cart/list")
     public String cart(Model model) {
         List<CartVO> cartVOList = cartService.list();
         model.addAttribute("list", cartVOList);
@@ -33,19 +34,13 @@ public class CartController {
     }
 
     /* 장바구니 삭제 */
-    @GetMapping("/delete")
-    public String delete(@RequestParam(value = "seq"
-            , required = false) int seq) {
-        cartService.delete(seq);
-
-        return "redirect:cart";
-    }
-
-    /* 장바구니 추가 */
     @ResponseBody
-    @PostMapping("save")
-    public String save(@RequestBody CartDTO cartDTO) {
-        cartService.save(cartDTO);
+    @PostMapping("/cart/delete")
+    public String delete(@RequestBody Map<String, Integer> map) throws Exception {
+        cartService.delete(map.get("seq"));
+
         return "성공";
     }
+
+
 }

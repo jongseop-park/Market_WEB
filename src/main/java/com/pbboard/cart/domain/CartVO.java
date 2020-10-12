@@ -7,8 +7,8 @@ public class CartVO {
     /** 상품명 */
     private String productName;
 
-    /** 사이즈 */
-    private String sizeName;
+    /** 옵션 */
+    private String optionName;
 
     /** 가격 */
     private String price;
@@ -62,12 +62,12 @@ public class CartVO {
         this.totalPrice = totalPrice;
     }
 
-    public String getSizeName() {
-        return sizeName;
+    public String getOptionName() {
+        return optionName;
     }
 
-    public void setSizeName(String sizeName) {
-        this.sizeName = sizeName;
+    public void setOptionName(String optionName) {
+        this.optionName = optionName;
     }
 
     public String getSeq() {

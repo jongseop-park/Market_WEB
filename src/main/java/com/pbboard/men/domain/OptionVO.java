@@ -3,8 +3,12 @@ package com.pbboard.men.domain;
 import java.util.List;
 
 public class OptionVO {
+    /** 옵션명 */
     private String optionName;
+
+    /** 옵션값 */
     private String optionValue;
+
     private String[] optionValues;
 
     public String getOptionName() {

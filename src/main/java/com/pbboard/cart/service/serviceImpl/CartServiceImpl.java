@@ -12,8 +12,13 @@ import java.util.List;
 
 @Service
 public class CartServiceImpl implements CartService {
-    @Autowired
+    final
     CartMapper cartMapper;
+
+    @Autowired
+    public CartServiceImpl(CartMapper cartMapper) {
+        this.cartMapper = cartMapper;
+    }
 
     @Override
     public void save(CartDTO cartDTO) {

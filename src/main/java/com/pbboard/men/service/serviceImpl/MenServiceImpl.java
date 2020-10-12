@@ -46,4 +46,9 @@ public class MenServiceImpl implements MenService {
     public List<ReviewVO> reviewList(int seq) {
         return menMapper.reviewList(seq);
     }
+
+    @Override
+    public void addCart(CartDTO cartDTO) {
+        menMapper.addCart(cartDTO);
+    }
 }

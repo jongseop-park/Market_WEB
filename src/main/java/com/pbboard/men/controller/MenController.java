@@ -47,10 +47,37 @@ public class MenController {
         return "/men/detail";
     }
 
+    @ResponseBody
+    @PostMapping("/men/cart")
+    public String cart(@RequestBody CartDTO cartDTO) {
+        menService.addCart(cartDTO);
+
+        return "성공";
+    }
+
   /*  @PostMapping("/men/detail")
     public String registReview(ReviewVO reviewVO) {
         menService.registReview(reviewVO);
 
         return "redirect:/men/detail?seq=" + reviewVO.getProductSeq();
     }*/
+
+   /* @ResponseBody
+    @PostMapping("/men/cart")
+    public String cart(@RequestBody List<CartVO> cartVO) {
+        System.out.println(cartVO.size());
+       for(CartVO cartVO1 : cartVO) {
+           System.out.println(cartVO1.getProductSeq());
+           System.out.println(cartVO1.getMemberId());
+           System.out.println(cartVO1.getOptionName());
+           System.out.println(cartVO1.getQuantity());
+
+       }
+
+       menService.addCart(cartVO);
+
+        return "test";
+    }*/
+
+
 }

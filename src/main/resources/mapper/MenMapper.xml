@@ -72,5 +72,43 @@
         and m.id = r.member_id
         and o.product_seq = #{seq}
     </select>
-    
+
+<!--    <insert id="addCart" parameterType="java.util.List">
+     INSERT into cart_tbl2(seq, product_seq, option_name, quantity, member_id)
+     SELECT cart_sequence.nextval, A.*
+     FROM(
+     <foreach item="item" collection="list" separator="UNION ALL ">
+         select #{item.productSeq} as product_seq,
+         #{item.optionName, jdbcType=VARCHAR} as option_name,
+         #{item.quantity} as quantity,
+         #{item.memberId} as member_Id
+         from dual
+     </foreach>) A
+    </insert>-->
+
+   <!-- <insert id="addCart" parameterType="com.pbboard.men.domain.CartVO">
+        INSERT into cart_tbl2
+        (seq, product_seq, option_name, quantity, member_id)
+        VALUES
+        (cart_sequence.nextval, #{productSeq}, #{optionName, jdbcType=VARCHAR}
+        , #{quantity}, #{memberId})
+    </insert> -->
+
+    <insert id="addCart" parameterType="com.pbboard.men.domain.CartDTO">
+       merge into cart_tbl2
+       using dual on
+       (product_seq = ${productSeq} <include refid="optionName"></include>)
+       when matched then
+       update set
+       quantity = ${quantity}
+       when not matched then
+       insert(seq, product_seq, option_name, quantity, member_id)
+       values(cart_sequence.nextVal, ${productSeq}, #{optionName, jdbcType=VARCHAR}, ${quantity}, #{memberId})
+    </insert>
+
+    <sql id="optionName">
+        <if test='optionName != ""'>
+            and option_name=#{optionName}
+        </if>
+    </sql>
 </mapper>

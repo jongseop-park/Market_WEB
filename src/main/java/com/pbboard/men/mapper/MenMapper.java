@@ -23,4 +23,6 @@ public interface MenMapper {
     public void registReview(ReviewVO reviewVO);
 
     public List<ReviewVO> reviewList(int seq);
+
+    public void addCart(CartDTO cartDTO);
 }
