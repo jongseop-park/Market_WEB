@@ -42,6 +42,15 @@ public class ShopServiceImpl implements ShopService {
     //등록된 제품 수
     public int productCount(ShopPageMaker shopPageMaker){ return shopMapper.productCount(shopPageMaker); }
 
+    //제품 정보
+    public ShopVO productDetail(Long productSeq){ return shopMapper.productDetail(productSeq); }
+
+    //제품 리뷰 총 개수
+    public int reviewCount(Long productSeq){ return shopMapper.reviewCount(productSeq); }
+
+    //제품 별점
+    public int reviewStar(Long productSeq){ return shopMapper.reviewStar(productSeq); }
+
     //서브 카테고리 모음
     public String[][] subCategory(){
         List<ShopVO> mainCat = findMainCat();

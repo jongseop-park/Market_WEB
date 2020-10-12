@@ -49,4 +49,11 @@ public class ShopVO {
     @Getter @Setter
     private int reviewStar;
 
+    /** 제품 브랜드 **/
+    @Getter @Setter
+    private String productBrand;
+
+    /** 제품 내용 **/
+    @Getter @Setter
+    private String productExplanation;
 }

@@ -33,4 +33,15 @@ public class ShopController {
 
         return "Bh/shop";
     }
+
+    @RequestMapping("/BhShop/detail")
+    public String detail(Model model, ShopVO shopVO){
+        Long productSeq = shopVO.getProductSeq();
+
+        model.addAttribute("productInfo",shopService.productDetail(productSeq));    //제품 정보
+        model.addAttribute("productReviewNum",shopService.reviewCount(productSeq)); //제품 리뷰 수
+        model.addAttribute("reviewStar",shopService.reviewStar(productSeq));    //제품 별점
+
+        return "Bh/product-details";
+    }
 }

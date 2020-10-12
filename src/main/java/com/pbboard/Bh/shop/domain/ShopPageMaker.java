@@ -105,13 +105,23 @@ public class ShopPageMaker extends ShopVO {
     }
 
     public String makeQuery(int page) {
-        UriComponents uriComponents =
-                UriComponentsBuilder.newInstance()
-                        .queryParam("page", page)
-                        /*.queryParam("perPageNum", perPageNum)*/
-                        .queryParam("sortcodeMain",getSortcodeMain())
-                        .queryParam("sortcodeSub",getSortcodeSub())
-                        .build();
+        String main = getSortcodeMain();
+        String sub = getSortcodeSub();
+        UriComponents uriComponents;
+
+        if((main != null && sub != null)) {
+            uriComponents =
+                    UriComponentsBuilder.newInstance()
+                            .queryParam("page", page)
+                            .queryParam("sortcodeMain", main)
+                            .queryParam("sortcodeSub", sub)
+                            .build();
+        }else{
+            uriComponents =
+                    UriComponentsBuilder.newInstance()
+                            .queryParam("page", page)
+                            .build();
+        }
 
         return uriComponents.toUriString();
     }
