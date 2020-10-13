@@ -28,5 +28,13 @@ public interface ShopMapper {
 
     public List<ShopVO> findOutOfStock(); //품절 확인
 
+    public ShopVO productDetail(@Param("productSeq") Long productSeq);   //제품 정보
+
     public int productCount(ShopPageMaker shopPageMaker);          //등록된 제품 수
+
+    public int reviewCount(@Param("productSeq") Long productSeq);   //제품 리뷰 총 수
+
+    public int reviewStar(@Param("productSeq") Long productSeq);   //제품 별점
+
+    public List<ShopVO> findProductSpec(@Param("productSeq") Long productSeq);    //제품 스팩
 }

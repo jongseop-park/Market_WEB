@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="zxx">
-
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="Ashion Template">
@@ -15,14 +14,14 @@
     rel="stylesheet">
 
     <!-- Css Styles -->
-    <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="../static/css/font-awesome.min.css" type="text/css">
-    <link rel="stylesheet" href="../static/css/elegant-icons.css" type="text/css">
-    <link rel="stylesheet" href="../static/css/jquery-ui.min.css" type="text/css">
-    <link rel="stylesheet" href="../static/css/magnific-popup.css" type="text/css">
-    <link rel="stylesheet" href="../static/css/owl.carousel.min.css" type="text/css">
-    <link rel="stylesheet" href="../static/css/slicknav.min.css" type="text/css">
-    <link rel="stylesheet" href="../static/css/style.css" type="text/css">
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/static/css/font-awesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/static/css/elegant-icons.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/static/css/jquery-ui.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/static/css/magnific-popup.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/static/css/owl.carousel.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/static/css/slicknav.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/static/css/style.css}" type="text/css">
 </head>
 
 <body>
@@ -55,75 +54,24 @@
     </div>
     <!-- Offcanvas Menu End -->
 
-    <!-- Header Section Begin -->
-    <header class="header">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xl-3 col-lg-2">
-                    <div class="header__logo">
-                        <a href="./index.html"><img src="../static/img/logo.png" alt=""></a>
-                    </div>
-                </div>
-                <div class="col-xl-6 col-lg-7">
-                    <nav class="header__menu">
-                        <ul>
-                            <li><a href="./index.html">Home</a></li>
-                            <li><a href="#">Women’s</a></li>
-                            <li><a href="#">Men’s</a></li>
-                            <li class="active"><a href="./shop.html">Shop</a></li>
-                            <li><a href="#">Pages</a>
-                                <ul class="dropdown">
-                                    <li><a href="./product-details.html">Product Details</a></li>
-                                    <li><a href="./shop-cart.html">Shop Cart</a></li>
-                                    <li><a href="./checkout.html">Checkout</a></li>
-                                    <li><a href="./blog-details.html">Blog Details</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="./blog.html">Blog</a></li>
-                            <li><a href="./contact.html">Contact</a></li>
-                        </ul>
-                    </nav>
-                </div>
-                <div class="col-lg-3">
-                    <div class="header__right">
-                        <div class="header__right__auth">
-                            <a href="#">Login</a>
-                            <a href="#">Register</a>
-                        </div>
-                        <ul class="header__right__widget">
-                            <li><span class="icon_search search-switch"></span></li>
-                            <li><a href="#"><span class="icon_heart_alt"></span>
-                                <div class="tip">2</div>
-                            </a></li>
-                            <li><a href="#"><span class="icon_bag_alt"></span>
-                                <div class="tip">2</div>
-                            </a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="canvas__open">
-                <i class="fa fa-bars"></i>
-            </div>
-        </div>
-    </header>
-    <!-- Header Section End -->
+    <!-- header -->
+    <div th:include="include/header"/>
 
-    <!-- Breadcrumb Begin -->
+    <!-- 상품 카테고리 및 이름 -->
     <div class="breadcrumb-option">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="breadcrumb__links">
                         <a href="./index.html"><i class="fa fa-home"></i> Home</a>
-                        <a href="#">Women’s </a>
-                        <span>Essential structured blazer</span>
+                        <a href="/BhShop" th:text="${productInfo.sortcodeMain}"></a>
+                        <span th:text="${productInfo.productName}"></span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Breadcrumb End -->
+    <!-- 상품 카테고리 및 이름 -->
 
     <!-- Product Details Section Begin -->
     <section class="product-details spad">
@@ -131,6 +79,7 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="product__details__pic">
+                        <!-- 제품 사진 -->
                         <div class="product__details__pic__left product__thumb nice-scroll">
                             <a class="pt active" href="#product-1">
                                 <img src="../static/img/product/details/thumb-1.jpg" alt="">
@@ -145,6 +94,8 @@
                                 <img src="../static/img/product/details/thumb-4.jpg" alt="">
                             </a>
                         </div>
+                        <!-- 제품 사진 -->
+                        <!-- 제품 사진(슬라이드) -->
                         <div class="product__details__slider__content">
                             <div class="product__details__pic__slider owl-carousel">
                                 <img data-hash="product-1" class="product__big__img" src="../static/img/product/details/product-1.jpg" alt="">
@@ -153,22 +104,37 @@
                                 <img data-hash="product-4" class="product__big__img" src="../static/img/product/details/product-4.jpg" alt="">
                             </div>
                         </div>
+                        <!-- 제품 사진 -->
                     </div>
                 </div>
+                <!-- 제품 정보 -->
                 <div class="col-lg-6">
                     <div class="product__details__text">
-                        <h3>Essential structured blazer <span>Brand: SKMEIMore Men Watches from SKMEI</span></h3>
-                        <div class="rating">
+                        <!-- 이름 및 브랜드 -->
+                        <h3 th:text="${productInfo.productName}">
+                            <span th:text="'Brand: ' + ${productInfo.productBrand}"></span></h3>
+                        <!-- 리뷰 점수 -->
+                        <div class="rating" style="display: inline">
                             <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <span>( 138 reviews )</span>
+                            <span th:if="${reviewStar} > 1" th:each="num : ${#numbers.sequence(2,reviewStar)}"
+                                  style="display: inline">
+                                        <i class="fa fa-star"></i>
+                            </span>
                         </div>
-                        <div class="product__details__price">$ 75.0 <span>$ 83.0</span></div>
-                        <p>Nemo enim ipsam voluptatem quia aspernatur aut odit aut loret fugit, sed quia consequuntur
-                        magni lores eos qui ratione voluptatem sequi nesciunt.</p>
+                            <!-- 총 리뷰 수 -->
+                            <span th:text="' ( ' + ${productReviewNum} + ' reivews )'"
+                                  style="font-size: 12px; color: #666666; margin-left: 5px;"></span>
+                    </div>
+                        <!-- 제품 가격 -->
+                    <div class="product__details__price">
+                        <div th:text="${productInfo.productDiscount}"></div>
+                        <span th:unless="${productInfo.productPrice.equals(productInfo.productDiscount)}"
+                              th:text="${productInfo.productPrice}">
+                                    </span>
+                    </div>
+                        <!-- 제품 설명 -->
+                        <p th:text="${productInfo.productExplanation}"></p>
+                        <!-- 제품 수량 선택 및 기타 -->
                         <div class="product__details__button">
                             <div class="quantity">
                                 <span>Quantity:</span>
@@ -182,7 +148,8 @@
                                 <li><a href="#"><span class="icon_adjust-horiz"></span></a></li>
                             </ul>
                         </div>
-                        <div class="product__details__widget">
+                        <!-- 수정 -->
+                        <!--<div class="product__details__widget">
                             <ul>
                                 <li>
                                     <span>Availability:</span>
@@ -237,11 +204,12 @@
                                     <p>Free shipping</p>
                                 </li>
                             </ul>
-                        </div>
+                        </div>-->
                     </div>
                 </div>
                 <div class="col-lg-12">
                     <div class="product__details__tab">
+                        <!-- 설명 / 스팩 / 리뷰 선택 부분 -->
                         <ul class="nav nav-tabs" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">Description</a>
@@ -250,9 +218,11 @@
                                 <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">Specification</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab">Reviews ( 2 )</a>
+                                <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab"
+                                   th:text="'Reviews ( ' + ${reviewStar} + ' )'"></a>
                             </li>
                         </ul>
+                        <!-- 해당 내용 -->
                         <div class="tab-content">
                             <div class="tab-pane active" id="tabs-1" role="tabpanel">
                                 <h6>Description</h6>
@@ -297,7 +267,8 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <!-- 제품 추천 ?? 부분 -->
+            <!--<div class="row">
                 <div class="col-lg-12 text-center">
                     <div class="related__title">
                         <h5>RELATED PRODUCTS</h5>
@@ -393,67 +364,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>-->
         </div>
     </section>
     <!-- Product Details Section End -->
-
-    <!-- Instagram Begin -->
-    <div class="instagram">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-2 col-md-4 col-sm-4 p-0">
-                    <div class="instagram__item set-bg" data-setbg="img/instagram/insta-1.jpg">
-                        <div class="instagram__text">
-                            <i class="fa fa-instagram"></i>
-                            <a href="#">@ ashion_shop</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-4 p-0">
-                    <div class="instagram__item set-bg" data-setbg="img/instagram/insta-2.jpg">
-                        <div class="instagram__text">
-                            <i class="fa fa-instagram"></i>
-                            <a href="#">@ ashion_shop</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-4 p-0">
-                    <div class="instagram__item set-bg" data-setbg="img/instagram/insta-3.jpg">
-                        <div class="instagram__text">
-                            <i class="fa fa-instagram"></i>
-                            <a href="#">@ ashion_shop</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-4 p-0">
-                    <div class="instagram__item set-bg" data-setbg="img/instagram/insta-4.jpg">
-                        <div class="instagram__text">
-                            <i class="fa fa-instagram"></i>
-                            <a href="#">@ ashion_shop</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-4 p-0">
-                    <div class="instagram__item set-bg" data-setbg="img/instagram/insta-5.jpg">
-                        <div class="instagram__text">
-                            <i class="fa fa-instagram"></i>
-                            <a href="#">@ ashion_shop</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-4 p-0">
-                    <div class="instagram__item set-bg" data-setbg="img/instagram/insta-6.jpg">
-                        <div class="instagram__text">
-                            <i class="fa fa-instagram"></i>
-                            <a href="#">@ ashion_shop</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Instagram End -->
 
     <!-- Footer Section Begin -->
     <footer class="footer">

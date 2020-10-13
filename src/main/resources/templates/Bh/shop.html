@@ -88,11 +88,14 @@
                             <div class="accordion" id="accordionExample">
                                 <div class="card" th:each="mainCategory,num : ${mainCat}">
                                     <div class="card-heading active">
-                                        <a data-toggle="collapse" th:attr="data-target='#collapse' + ${mainCategory.sortcodeMain}"
+                                        <a data-toggle="collapse" th:attr="data-target='#collapse'
+                                        + ${mainCategory.sortcodeMain}"
                                            th:text="${mainCategory.sortcodeMain}"></a>
                                     </div>
                                     <!-- 다른 방법 체크 -->
-                                    <div th:if="${pageMaker.sortcodeMain} != ${mainCategory.sortcodeMain}" th:id="'collapse' + ${mainCategory.sortcodeMain}" class="collapse" data-parent="#accordionExample">
+                                    <div th:if="${pageMaker.sortcodeMain} != ${mainCategory.sortcodeMain}"
+                                         th:id="'collapse' + ${mainCategory.sortcodeMain}"
+                                         class="collapse" data-parent="#accordionExample">
                                         <div class="card-body">
                                             <ul th:each="subCategory : ${subCat[num.index]}">
                                                 <li>
@@ -102,7 +105,9 @@
                                             </ul>
                                         </div>
                                     </div>
-                                    <div th:unless="${pageMaker.sortcodeMain} != ${mainCategory.sortcodeMain}" th:id="'collapse' + ${mainCategory.sortcodeMain}" class="collapse show" data-parent="#accordionExample">
+                                    <div th:unless="${pageMaker.sortcodeMain} != ${mainCategory.sortcodeMain}"
+                                         th:id="'collapse' + ${mainCategory.sortcodeMain}"
+                                         class="collapse show" data-parent="#accordionExample">
                                         <div class="card-body">
                                             <ul th:each="subCategory : ${subCat[num.index]}">
                                                 <li>
@@ -119,7 +124,7 @@
                     </div>
                     <!-- 카테고리 끝-->
 
-                    <!-- 가격 상세 검색 -->
+                    <!-- 가격 상세 검색
                     <div class="sidebar__filter">
                         <div class="section-title">
                             <h4>Price</h4>
@@ -131,13 +136,13 @@
                                 <div class="price-input">
                                     <p>Price:</p>
                                     <input type="text" id="minamount">
-                                    <input type="text" id="maxamount">  <!-- 길이 생각 하기 ex 35,0 -->
+                                    <input type="text" id="maxamount">
                                 </div>
                             </div>
                         </div>
                         <a href="#">Filter</a>
                     </div>
-                    <!-- 가격 상세 검색 끝 -->
+                     가격 상세 검색 끝 -->
 
                     <!-- 사이즈 상세 검색 -->
                     <div class="sidebar__sizes">
@@ -145,11 +150,13 @@
                             <h4>Size</h4>
                         </div>
                         <div class="size__list" th:each="size,sizeNum:${productSize}">
-                            <label th:for="${size.productsizeValue}">
-                                <span th:text="${size.productsizeValue}"></span>
-                                <input type="checkbox" th:id="${size.productsizeValue}">
-                                <span class="checkmark"></span>
-                            </label>
+                            <form action="shop.html" method="post">
+                                <label th:for="${size.productsizeValue}">
+                                    <span th:text="${size.productsizeValue}"></span>
+                                    <input type="checkbox" th:id="${size.productsizeValue}">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </form>
                         </div>
                     </div>
                     <!-- 사이즈 상세 검색 끝 -->
@@ -202,7 +209,8 @@
                                 <!-- 확대/찜/장바구니 끝 -->
                             </div>
                             <div class="product__item__text">
-                                <h6><a href="#" th:text="${product.productName}"></a></h6>
+                                <h6><a th:href="'BhShop/detail?productSeq=' + ${product.productSeq}"
+                                       th:text="${product.productName}"></a></h6>
                                 <div class="rating">
                                     <i class="fa fa-star"></i>
                                     <span th:if="${product.reviewStar} > 1"

@@ -65,10 +65,36 @@
         )
     </select>
 
+    <select id="productDetail" resultType="ShopVO">
+        SELECT P.PRODUCT_NAME, SORTCODE_MAIN,
+        P.PRODUCT_NAME,REGEXP_REPLACE(REVERSE(REGEXP_REPLACE(REVERSE(TO_CHAR(P.PRODUCT_PRICE)),
+                '([0-9]{3})','\1,')),'^,','') PRODUCT_PRICE
+        ,REGEXP_REPLACE(REVERSE(REGEXP_REPLACE(REVERSE(TO_CHAR(P.PRODUCT_PRICE / 100 * (100 - P.PRODUCT_DISCOUNT))),
+                '([0-9]{3})','\1,')),'^,','') PRODUCT_DISCOUNT
+        , P.PRODUCT_BRAND, P.PRODUCT_EXPLANATION
+        FROM PRODUCT P INNER JOIN SORTCODE S ON P.SORTCODE_SEQ = S.SORTCODE_SEQ
+        WHERE P.PRODUCT_SEQ = #{productSeq}
+    </select>
+
+    <select id="reviewCount" resultType="int">
+        SELECT COUNT(REVIEW_SEQ) FROM REVIEW WHERE PRODUCT_SEQ = #{productSeq}
+    </select>
+
+    <select id="reviewStar" resultType="int">
+        SELECT ROUND(SUM(R.REVIEW_STAR)/COUNT(R.REVIEW_STAR),0) AS REVIEW_STAR FROM REVIEW R ,PRODUCT PR
+        WHERE R.PRODUCT_SEQ = PR.PRODUCT_SEQ AND R.PRODUCT_SEQ = #{productSeq} GROUP BY PR.PRODUCT_SEQ
+    </select>
+
+    <select id="findProductSpec" resultType="ShopVO">
+        SELECT PRODUCTSIZE_VALUE ,SPECGROUP_NAME, SPECGROUP_CONTENT, SPEC_SIZE FROM SPEC S
+        INNER JOIN PRODUCTSIZE PS ON S.PRODUCTSIZE_SEQ = PS.PRODUCTSIZE_SEQ
+        INNER JOIN SPECGROUP SG ON S.SPECGROUP_SEQ = SG.SPECGROUP_SEQ WHERE PRODUCT_SEQ = #{productSeq};
+    </select>
+
     <sql id="categoryChangeSort">
         (SELECT SORTCODE_SEQ FROM SORTCODE
         <choose>
-            <when test="sortcodeMain != null and sortcodeSub != null">
+            <when test="(sortcodeMain != null and sortcodeSub != null)">
                  WHERE SORTCODE_MAIN=#{sortcodeMain} AND SORTCODE_SUB=#{sortcodeSub})
             </when>
             <otherwise>
@@ -83,23 +109,22 @@
         INNER JOIN COLOR C ON S.COLOR_SEQ = C.COLOR_SEQ
         <choose>
             <when test="productsizeValue != null and colorValue == null">
-                WHERE P.PRODUCTSIZE_VALUE IN(#{productsizeValue})
+                WHERE P.PRODUCTSIZE_VALUE IN(${productsizeValue})
                 AND C.COLOR_VALUE IN(SELECT COLOR_VALUE FROM COLOR)
             </when>
             <when test="productsizeValue == null and colorValue != null">
                 WHERE P.PRODUCTSIZE_VALUE IN(SELECT PRODUCTSIZE_VALUE FROM PRODUCTSIZE)
-                AND C.COLOR_VALUE IN(#{colorValue})
+                AND C.COLOR_VALUE IN(${colorValue})
             </when>
             <when test="productsizeValue != null and colorValue != null">
-                WHERE P.PRODUCTSIZE_VALUE IN(#{productsizeValue})
-                AND C.COLOR_VALUE IN(#{colorValue})
+                WHERE P.PRODUCTSIZE_VALUE IN(${productsizeValue})
+                AND C.COLOR_VALUE IN(${colorValue})
             </when>
             <otherwise>
                 WHERE P.PRODUCTSIZE_VALUE IN(SELECT PRODUCTSIZE_VALUE FROM PRODUCTSIZE)
                 AND C.COLOR_VALUE IN(SELECT COLOR_VALUE FROM COLOR)
             </otherwise>
         </choose>
-                    AND S.STOCK_QTY != 0
     </sql>
 
 </mapper>
