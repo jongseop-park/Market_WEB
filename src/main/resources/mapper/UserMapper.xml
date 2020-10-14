@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pbboard.user.mapper.UserMapper">
+    <select id="findByMemberId" parameterType="String"
+            resultType="com.pbboard.user.domain.UserInfo">
+             select ua.id as username, u.password as password, a.authority as auth
+             from user_authority_tbl2 ua, user_info2 u, authority2 a
+             where ua.id = u.id
+             and ua.authority_seq = a.seq
+            and ua.id = #{username}
+    </select>
+
+    <insert id="save" parameterType="com.pbboard.user.domain.UserInfoDTO">
+        insert into user_info2(id, password)
+        values(#{username}, #{password})
+    </insert>
+</mapper>

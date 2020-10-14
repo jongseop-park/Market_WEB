@@ -1,0 +1,56 @@
+package com.pbboard.user.controller;
+
+import com.pbboard.user.domain.UserInfoDTO;
+import com.pbboard.user.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@Controller
+public class UserController {
+    private final UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    /* 로그인 */
+    @GetMapping("/login")
+    public String login() {
+       /* System.out.println("UserController login");
+       */ return "/user/login";
+    }
+
+    @GetMapping("/")
+    public String main() {
+        return "index";
+    }
+
+    /* 회원가입 */
+    @PostMapping("/user")
+    public String signup(UserInfoDTO infoDTO) throws Exception {
+        userService.save(infoDTO);
+        return "redirect:/login";
+    }
+
+    /* 로그아웃 */
+    @GetMapping("/logout")
+    public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
+        new SecurityContextLogoutHandler().logout(request, response,
+                SecurityContextHolder.getContext().getAuthentication());
+        return "redirect:/index";
+    }
+
+    /* 회원가입 페이지 이동 */
+    @GetMapping("/signup")
+    public String signup() {
+        return "/user/signup";
+    }
+}

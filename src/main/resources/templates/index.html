@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="Ashion Template">
@@ -54,9 +55,12 @@
     </div>
     <!-- Offcanvas Menu End -->
 
-    <!-- header -->
-    <div th:include="include/header"/>
 
+
+
+
+    <!-- header -->
+    <div th:include="include/header" />
 
     <!-- Categories Section Begin -->
     <section class="categories">
@@ -66,7 +70,7 @@
                     <div class="categories__item categories__large__item set-bg"
                     data-setbg="/static/img/categories/category-1.jpg">
                     <div class="categories__text">
-                        <h1>Women’s fashion</h1>
+                        <h1 >Women’s fashion</h1>
                         <p>Sitamet, consectetur adipiscing elit, sed do eiusmod tempor incidid-unt labore
                         edolore magna aliquapendisse ultrices gravida.</p>
                         <a href="#">Shop now</a>
