@@ -26,8 +26,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<CartVO> list() {
-        return cartMapper.list();
+    public List<CartVO> list(String id) {
+        return cartMapper.list(id);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public String totalPrice() {
-        return cartMapper.totalPrice();
+    public String totalPrice(String id) {
+        return cartMapper.totalPrice(id);
     }
 }

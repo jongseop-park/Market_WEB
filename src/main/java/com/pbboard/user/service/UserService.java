@@ -4,6 +4,8 @@ import com.pbboard.user.domain.UserInfo;
 import com.pbboard.user.domain.UserInfoDTO;
 import com.pbboard.user.mapper.UserMapper;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,6 +19,7 @@ import java.util.Optional;
 @Service
 public class UserService implements UserDetailsService {
     private final UserMapper userMapper;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public UserService(UserMapper userMapper) {
@@ -24,32 +27,23 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserInfo loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserInfo> userInfo = userMapper.findByMemberId(username);
-
-       /* if(userInfo.isPresent()) {
-            System.out.println(userInfo.get().getPassword());
-            System.out.println(userInfo.get().getAuthorities());
-            System.out.println(userInfo.get().getUsername());
-        }*/
-
+    public UserInfo loadUserByUsername(String username) throws UsernameNotFoundException{
         // 아이디 존재하지 않을시 예외
         return userMapper.findByMemberId(username)
                 .orElseThrow(() -> new UsernameNotFoundException((username)));
     }
 
-    public String save(UserInfoDTO infoDTO)  {
-        // 암호화된 패스워드로 저장
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        infoDTO.setPassword(encoder.encode(infoDTO.getPassword()));
+    public String save(UserInfoDTO infoDTO) {
+        try {
+            // 암호화된 패스워드로 저장
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            infoDTO.setPassword(encoder.encode(infoDTO.getPassword()));
 
-/*
-        System.out.println(infoDTO.getUsername());
-        System.out.println(infoDTO.getPassword());
-        System.out.println(infoDTO.getAuth());
-*/
-        userMapper.save(infoDTO);
-
-        return "success";
+            userMapper.save(infoDTO);
+            return "success";
+        } catch(Exception e) {
+            e.printStackTrace();
+            return "fail";
+        }
     }
 }

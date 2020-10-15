@@ -5,15 +5,58 @@
     <title>sign up</title>
 </head>
 <body>
-<h1>Sign Up</h1> <hr>
+<h1>회원 가입</h1> <hr>
+<!--
+<form th:action="@{/user}" method="POST">-->
+    아이디 : <input type="text" id="username" name="username" value="adsfasdf"><br>
+    패스워드 : <input type="password" id="password" name="password" value="1234"> <br>
+    이름 : <input type="text" id="name" name="name" value="홍길동"> <br>
+    휴대폰 : <input type="text" id="phone" name="phone" value="010-3333-4444"> <br>
+    이메일 : <input type="text" id="email" name="email" value="sdafjlka@naver.com"> <br>
+    닉네임 : <input type="text" id="nickName" name="nickName" value="rnrnrlrl"> <br>
+    주소 : <input type="text" id="address" name="address" value="은평구 불고아동"> <br><!--
+   <input type="hidden" name="auth" value="ROLE_MEMBER">-->
 
-<form th:action="@{/user}" method="POST">
-    id : <input type="text" name="username"> <br>
-    password : <input type="password" name="password"> <br>
-    <input type="hidden" name="auth" value="ROLE_MEMBER">
+<!--
     <button type="submit">Join</button>
+-->
+<!--
 </form> <br>
+-->
 
+<input type="button" id="joinBtn" value="join">
 <a href="/login">Go to login →</a>
 </body>
 </html>
+<script src="../static/js/jquery-3.3.1.min.js"></script>
+<script>
+    $('#joinBtn').on('click', function() {
+        Save();
+    });
+
+    function Save() {
+        var data = {
+            username: $('#username').val(),
+            password: $('#password').val(),
+            name: $('#name').val(),
+            phone: $('#phone').val(),
+            email: $('#email').val(),
+            nickName: $('#nickName').val(),
+            address: $('#address').val()
+     };
+
+        $.ajax({
+            url: "/saveUser",
+            type: "POST",
+            contentType : "application/json",
+            data : JSON.stringify(data),
+            success : function(data) {
+                if(data == "success") {
+
+                }
+            },
+            error : function(jqXhr) {
+            }
+        });
+    }
+</script>

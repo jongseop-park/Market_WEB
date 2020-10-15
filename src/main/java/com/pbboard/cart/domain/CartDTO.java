@@ -13,6 +13,9 @@ public class CartDTO {
     /** 사이즈 시퀀스 */
     private int sizeSeq;
 
+    /** 회원아이디 */
+    private String memberId;
+
     public int getSeq() {
         return seq;
     }
@@ -43,5 +46,13 @@ public class CartDTO {
 
     public void setSizeSeq(int sizeSeq) {
         this.sizeSeq = sizeSeq;
+    }
+
+    public String getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(String memberId) {
+        this.memberId = memberId;
     }
 }

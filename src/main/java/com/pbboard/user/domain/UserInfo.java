@@ -10,6 +10,7 @@ import java.util.Set;
 
 public class UserInfo implements UserDetails {
     private String username;
+    private String name;
     private String password;
     private String auth;
 
@@ -77,5 +78,13 @@ public class UserInfo implements UserDetails {
 
     public void setAuth(String auth) {
         this.auth = auth;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

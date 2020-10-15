@@ -4,17 +4,17 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.pbboard.cart.mapper.CartMapper">
     <!-- 장바구니 총 합계 금액 -->
-    <select id="totalPrice" resultType="String">
+    <select id="totalPrice" resultType="String" parameterType="String">
         select to_char(sum(price*quantity), '999,999,999') as totalPrice
         from
         cart_tbl2 c, men_product_tbl2 p
         where
         c.product_seq = p.seq
-        and c.member_id = 'psy1234'
+        and c.member_id = #{id}
     </select>
 
     <!-- 장바구니 목록 -->
-    <select id="list" resultType="com.pbboard.cart.domain.CartVO">
+    <select id="list" resultType="com.pbboard.cart.domain.CartVO" parameterType="String">
         select c.seq, p.name as productName, p.image,
         to_char(p.price,'999,999,999') as price,
         c.quantity, c.option_name,
@@ -23,7 +23,7 @@
         cart_tbl2 c, men_product_tbl2 p
         where
         c.product_seq = p.seq
-        and c.member_id= 'psy1234'
+        and c.member_id= #{id}
     </select>
 
     <!-- 장바구니 삭제 -->

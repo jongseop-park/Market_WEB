@@ -1,7 +1,9 @@
 package com.pbboard.men.controller;
 import com.pbboard.men.domain.*;
 import com.pbboard.men.service.MenService;
+import com.pbboard.user.domain.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +37,13 @@ public class MenController {
     @RequestMapping("/men/detail")
     public String detail(@RequestParam("seq") int seq
             , Model model) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(principal != "anonymousUser") {
+            String userId = ((UserInfo) principal).getUsername();
+             model.addAttribute("id", userId);
+        }
+
         ProductVO productVO = menService.detail(seq);
         model.addAttribute("product", productVO);
 

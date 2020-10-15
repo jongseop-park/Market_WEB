@@ -11,6 +11,6 @@ import java.util.Optional;
 @Mapper
 public interface UserMapper {
     Optional<UserInfo> findByMemberId(String username);
+    public int save(UserInfoDTO InfoDTO);
 
-    public void save(UserInfoDTO InfoDTO);
 }

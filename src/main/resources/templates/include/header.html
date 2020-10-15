@@ -24,7 +24,7 @@
                 <div class="header__right">
                     <div class="header__right__auth">
                         <a href="#" sec:authorize="isAuthenticated()">
-                            <span sec:authentication="principal.username"></span> 님
+                            <span sec:authentication="principal.name"></span> 님
                         </a>
                         <a href="/login" sec:authorize="isAnonymous()">로그인</a>
                         <a href="/signup" sec:authorize="isAnonymous()">회원가입</a>

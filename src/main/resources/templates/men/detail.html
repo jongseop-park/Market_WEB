@@ -330,6 +330,8 @@
 </div>
 <!-- Search End -->
 
+<input type="hidden" id="id" th:attr="value=${id}">
+
 <!-- Js Plugins -->
 <script src="../static/js/jquery-3.3.1.min.js"></script>
 <script src="../static/js/bootstrap.min.js"></script>
@@ -353,21 +355,28 @@
         $('select[name=optionMenu] option:selected').each(function(index) {
             option += $(this).attr('etc') + '/';
         });
+        // 블랙/S, 화이트/M, 블랙/L
 
         option = option.substring(0, option.length - 1);
+        // 마지막 글자 제거
 
-        if(option.indexOf(undefined) == -1) {
+        // 선택하지 않은 옵션 있을 경우
+        if(option.indexOf(undefined) == -1 && $('#id').val() != "") {
             var data = {
-                memberId: 'psy1234',
+                memberId: $('#id').val(),
                 productSeq: getParameter("seq"),
                 quantity: $('.quantityValue').val(),
                 optionName: option
             };
-
+            alert(data.memberId);
             Save(data);
-        } else {
+
+        } else if(option.indexOf(undefined) != -1) {
             alert("옵션을 선택해주세요.");
+        } else if($('#id').val() == "") {
+            alert("로그인 후에 사용할 수 있습니다.")
         }
+
     });
 
     function getParameter(name) {

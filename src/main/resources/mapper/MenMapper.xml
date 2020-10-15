@@ -94,10 +94,13 @@
         , #{quantity}, #{memberId})
     </insert> -->
 
+
+    <!-- 장바구니 담기 -->
     <insert id="addCart" parameterType="com.pbboard.men.domain.CartDTO">
        merge into cart_tbl2
        using dual on
-       (product_seq = ${productSeq} <include refid="optionName"></include>)
+       (product_seq = ${productSeq} and member_id = #{memberId}
+       <include refid="optionName"></include>)
        when matched then
        update set
        quantity = ${quantity}
