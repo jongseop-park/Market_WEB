@@ -3,23 +3,25 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.pbboard.user.mapper.UserMapper">
+    <!-- 아이디 찾기 -->
     <select id="findByMemberId" parameterType="String"
             resultType="com.pbboard.user.domain.UserInfo">
-        select m.name, ua.id as username, m.password as password, a.authority as auth
+        select m.name, ua.id as id, m.password as password, a.authority as auth
         from user_authority_tbl2 ua, member_tbl2 m, authority2 a
         where ua.id = m.id
         and ua.authority_seq = a.seq
-        and ua.id = #{username}
+        and ua.id = #{id}
     </select>
 
 <!--    <insert id="save" parameterType="com.pbboard.user.domain.UserInfoDTO">
         insert into user_info2(id, password)
         values(#{username}, #{password})
     </insert>  -->
+    <!-- 회원가입 -->
     <insert id="save" parameterType="com.pbboard.user.domain.UserInfoDTO">
-  insert into member_tbl2(id, password, name, phone,
-  email, reg_dt, mod_dt, del_yn, nickName, address)
-  values (#{username}, #{password}, #{name},
-   #{phone}, #{email}, sysDate, sysDate, 'n', #{nickName}, #{address})
+       insert into member_tbl2(id, password, name, phone,
+                                email, reg_dt, mod_dt, del_yn, nickName, address)
+       values (#{id}, #{password}, #{name},
+                #{phone}, #{email}, sysDate, sysDate, 'n', #{nickName}, #{address})
     </insert>
 </mapper>

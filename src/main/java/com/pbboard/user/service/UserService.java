@@ -27,10 +27,10 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserInfo loadUserByUsername(String username) throws UsernameNotFoundException{
+    public UserInfo loadUserByUsername(String id) throws UsernameNotFoundException{
         // 아이디 존재하지 않을시 예외
-        return userMapper.findByMemberId(username)
-                .orElseThrow(() -> new UsernameNotFoundException((username)));
+        return userMapper.findByMemberId(id)
+                .orElseThrow(() -> new UsernameNotFoundException((id)));
     }
 
     public String save(UserInfoDTO infoDTO) {

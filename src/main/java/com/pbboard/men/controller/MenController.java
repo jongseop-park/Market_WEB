@@ -37,8 +37,10 @@ public class MenController {
     @RequestMapping("/men/detail")
     public String detail(@RequestParam("seq") int seq
             , Model model) {
+        // 인증 객체 가져오기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
+        // 만약 비회원이 아니면 아이디 저장
         if(principal != "anonymousUser") {
             String userId = ((UserInfo) principal).getUsername();
              model.addAttribute("id", userId);
@@ -50,8 +52,8 @@ public class MenController {
         List<OptionVO> options = menService.option(seq);
         model.addAttribute("option", options);
 
-        List<ReviewVO> reviews = menService.reviewList(seq);
-        model.addAttribute("review", reviews);
+    /*    List<ReviewVO> reviews = menService.reviewList(seq);
+        model.addAttribute("review", reviews);*/
 
         return "/men/detail";
     }
@@ -87,6 +89,4 @@ public class MenController {
 
         return "test";
     }*/
-
-
 }

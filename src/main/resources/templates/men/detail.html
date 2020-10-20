@@ -117,7 +117,7 @@
                         <i class="fa fa-star"></i>
                         <i class="fa fa-star"></i>
                         <i class="fa fa-star"></i>
-                        <span th:text="'(' + ${review.size()} + ' reviews )'"></span>
+<!--                        <span th:text="'(' + ${review.size()} + ' reviews )'"></span>-->
                     </div>
                     <div class="product__details__price" th:text="${product.price}  + '원'"></div>
                     <p th:text="${product.summaryDesc}"></p>
@@ -200,7 +200,7 @@
                         </div>
                         <div class="tab-pane" id="tabs-3" role="tabpanel">
                             <div class="blog__details__comment">
-                                <h6 th:text="'Reviews ( ' + ${review.size()} + ' )'">Reviews ( 2 )</h6>
+                                <!--<h6 th:text="'Reviews ( ' + ${review.size()} + ' )'">Reviews ( 2 )</h6>-->
                                 <a href="#" class="leave-btn">상품 후기 쓰기</a>
                              <!--   <div class="blog__comment__item">
                                     <div class="blog__comment__item__text">
@@ -220,7 +220,7 @@
                                     </div>
                                 </div>-->
 
-                                <div class="blog__comment__item" th:each="review : ${review}">
+                            <!--    <div class="blog__comment__item" th:each="review : ${review}">
                                     <div class="blog__comment__item__text">
                                         <h6 th:text="${review.nickName}"></h6>
                                         <p th:text="${review.content}"></p>
@@ -236,7 +236,7 @@
                                             <li th:text="${review.regDt}"><i class="fa fa-clock-o"></i></li>
                                         </ul>
                                     </div>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
                     </div>
@@ -368,7 +368,6 @@
                 quantity: $('.quantityValue').val(),
                 optionName: option
             };
-            alert(data.memberId);
             Save(data);
 
         } else if(option.indexOf(undefined) != -1) {
@@ -393,15 +392,12 @@
             contentType : "application/json",
             data : JSON.stringify(data),
             success : function(data) {
-                alert(data);
                 if(confirm("장바구니에 담겼습니다. 장바구니로 이동하시겠습니까?") == true) {
                     document.location.href="/cart/list";
-                } else {
-                    return ;
                 }
             },
             error : function(jqXhr) {
-                alert("작업실패");
+                alert("잠시 후 다시 시도해주세요.");
             }
         });
     }

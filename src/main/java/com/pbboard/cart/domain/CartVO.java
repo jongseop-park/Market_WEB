@@ -8,7 +8,7 @@ public class CartVO {
     private String productName;
 
     /** 옵션 */
-    private String optionName;
+    private String optionName = "";
 
     /** 가격 */
     private String price;

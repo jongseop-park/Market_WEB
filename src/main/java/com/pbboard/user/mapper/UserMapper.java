@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 @Mapper
 public interface UserMapper {
-    Optional<UserInfo> findByMemberId(String username);
+    Optional<UserInfo> findByMemberId(String id);
     public int save(UserInfoDTO InfoDTO);
 
 }

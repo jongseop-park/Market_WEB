@@ -1,7 +1,7 @@
 package com.pbboard.user.domain;
 
 public class UserInfoDTO {
-    private String username;
+    private String id;
     private String password;
     private String auth;
     private String name;
@@ -10,12 +10,12 @@ public class UserInfoDTO {
     private String nickName;
     private String address;
 
-    public String getUsername() {
-        return username;
+    public String getId() {
+        return id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getPassword() {

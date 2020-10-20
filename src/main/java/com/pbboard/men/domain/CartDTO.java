@@ -1,6 +1,9 @@
 package com.pbboard.men.domain;
 
 public class CartDTO {
+    /** 장바구니 시퀀스 */
+    private int seq;
+
     /** 제품번호 */
     private int productSeq;
 

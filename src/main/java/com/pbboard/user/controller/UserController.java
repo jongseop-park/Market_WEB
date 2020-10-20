@@ -60,6 +60,7 @@ public class UserController {
         return "/user/registration";
     }
 
+    /* 회원가입 */
     @PostMapping("/saveUser")
     @ResponseBody
     public String signupA(@RequestBody UserInfoDTO userInfoDTO) {

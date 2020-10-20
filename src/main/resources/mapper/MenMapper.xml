@@ -58,20 +58,22 @@
         where product_seq = #{seq}
         group by name, product_seq
     </select>
-    
-    <insert id="registReview" parameterType="com.pbboard.men.domain.ReviewVO">
+
+    <!-- 리뷰 등록 -->
+    <!--<insert id="registReview" parameterType="com.pbboard.men.domain.ReviewVO">
         insert into review_tbl2
         values(review_sequence.nextVal, 'psy1234', #{seq} , '테스트 제목', #{content} , '4.1', sysDate, sysDate, 'n')
-    </insert>
+    </insert>-->
 
-    <select id="reviewList" parameterType="int"
+    <!-- 리뷰 목록 -->
+   <!-- <select id="reviewList" parameterType="int"
             resultType="com.pbboard.men.domain.ReviewVO">
          select m.nickname as nickName, r.content, r.score , r.reg_dt as regDt
         from review_tbl2 r, member_tbl2 m, order_tbl2 o
         where o.seq = r.order_seq
         and m.id = r.member_id
         and o.product_seq = #{seq}
-    </select>
+    </select>-->
 
 <!--    <insert id="addCart" parameterType="java.util.List">
      INSERT into cart_tbl2(seq, product_seq, option_name, quantity, member_id)

@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class UserInfo implements UserDetails {
-    private String username;
+    private String id;
     private String name;
     private String password;
     private String auth;
@@ -36,36 +36,35 @@ public class UserInfo implements UserDetails {
     // 사용자 id 반환
     @Override
     public String getUsername() {
-        return username;
+        return id;
     }
 
-    // 계정 만료 여부 반환
+    // 계정 만료 여부
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
-    // 계정 잠금 여부 반환
+    // 계정 잠금 여부
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
-    // 패스워드 만료 여부 반환
+    // 패스워드 만료 여부
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
-    // 계정 사용 가능 여부 반환
+    // 계정 사용 가능 여부
     @Override
     public boolean isEnabled() {
         return true;
     }
 
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setPassword(String password) {

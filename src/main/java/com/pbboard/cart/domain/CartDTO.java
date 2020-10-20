@@ -14,7 +14,7 @@ public class CartDTO {
     private int sizeSeq;
 
     /** 회원아이디 */
-    private String memberId;
+    private String userId;
 
     public int getSeq() {
         return seq;
@@ -48,11 +48,11 @@ public class CartDTO {
         this.sizeSeq = sizeSeq;
     }
 
-    public String getMemberId() {
-        return memberId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setMemberId(String memberId) {
-        this.memberId = memberId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

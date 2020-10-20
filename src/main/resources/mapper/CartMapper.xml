@@ -27,7 +27,55 @@
     </select>
 
     <!-- 장바구니 삭제 -->
-    <delete id="delete" parameterType="int">
-        delete from cart_tbl2 where seq=${seq}
+    <delete id="delete" parameterType="com.pbboard.men.domain.CartDTO">
+        delete from cart_tbl2
+        where seq=${seq}
+        and member_id = #{userId}
     </delete>
+
+    <!-- 주문 확인 -->
+    <select id="checkout" parameterType="String"
+            resultType="com.pbboard.cart.domain.CartVO">
+         select c.seq, p.name as productName,
+         c.option_name,
+        to_char(price*quantity, '999,999,999') as totalPrice
+        from
+        cart_tbl2 c, men_product_tbl2 p
+        where
+        c.product_seq = p.seq
+        and c.member_id= #{id}
+    </select>
+
+    <!-- 주문 정보 -->
+    <insert id="orderInfo" parameterType="com.pbboard.cart.domain.OrderVO">
+        insert into order_tbl2(seq, user_id, name, address, phone, reg_dt, note, total_price)
+        values(#{seq}, #{userId}, #{name}, #{address}
+        , #{phone}, sysDate, #{note}, #{totalPrice})
+    </insert>
+
+    <!-- 주문 상세 정보-->
+    <insert id="orderInfoDetails" parameterType="com.pbboard.cart.domain.OrderDetailVO">
+        insert into order_details_tbl2(seq, order_seq, product_seq, option_name, quantity)
+        select tbl_order_details_seq.nextval as seq
+        , #{orderSeq} as orderSeq
+        , product_seq as productSeq
+        , option_name as optionName
+        , quantity
+        from cart_tbl2 where member_id = #{userId}
+    </insert>
+
+    <!-- 장바구니 비우기 -->
+    <delete id="cartAllDelete">
+        delete from cart_tbl2 where member_id = #{userId}
+    </delete>
+
+    <!-- 주문 확인 -->
+    <select id="orderConfirm" parameterType="com.pbboard.cart.domain.OrderVO"
+                                resultType="com.pbboard.cart.domain.OrderVO">
+        select name, phone, address, note, seq, reg_dt as regDt
+        , to_char(total_Price, '999,999,999') as totalPrice from order_tbl2
+        where user_id = #{userId}
+        and seq = #{seq}
+    </select>
+
 </mapper>

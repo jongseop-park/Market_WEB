@@ -129,7 +129,15 @@
                             <span th:text="${totalPrice == null ? '0' : totalPrice} + '원'">
                         </span></li>
                     </ul>
-                    <a href="#" class="primary-btn">Proceed to checkout</a>
+                         <!--<button class="primary-btn btn btn-block" id="checkoutBtn">
+                            주문 진행
+                        </button>-->
+                        <a href="/cart/checkout" class="primary-btn"
+                        th:if="${totalPrice != null}">주문 진행</a>
+                        <a href="/cart/list" class="primary-btn"
+                       th:if="${totalPrice == null}">주문 진행</a>
+
+                    </form>
                 </div>
             </div>
         </div>
@@ -164,6 +172,10 @@
 </div>
 <!-- Search End -->
 
+<!-- user id -->
+<input type="hidden" id="id" th:attr="value=${id}">
+
+
 <!-- Js Plugins -->
 <script src="../static/js/jquery-3.3.1.min.js"></script>
 <script src="../static/js/bootstrap.min.js"></script>
@@ -191,7 +203,8 @@
 
     function cartDelete(data) {
         var seq = {
-            seq: data
+            seq: data,
+            userId: $('#id').val()
         }
 
         $.ajax({
@@ -210,4 +223,29 @@
     }
 
 
+/*    $('#checkoutBtn').on('click', function() {
+        location.href="/checkout";
+
+        var seq = {
+            seq: data,
+            userId: $('#id').val()
+        }
+
+        alert(seq.seq);
+        alert(seq.userId);
+
+        $.ajax({
+            url: "/cart/delete",
+            type: "POST",
+            contentType : "application/json",
+            data : JSON.stringify(seq),
+            success : function(data) {
+                if(window.confirm("상품을 삭제하시겠습니까?"))
+                    location.reload();
+            },
+            error : function(jqXhr) {
+                alert("작업실패");
+            }
+        });
+    })*/
 </script>
