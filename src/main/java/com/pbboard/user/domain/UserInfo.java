@@ -9,10 +9,29 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class UserInfo implements UserDetails {
+    /** 아이디 */
     private String id;
+
+    /** 사용자 이름 */
     private String name;
+
+    /** 비밀번호 */
     private String password;
+
+    /** 권한 */
     private String auth;
+
+    /** 계정 만료 여부 */
+    private Boolean accountExpired;
+
+    /** 계정 잠금 여부 */
+    private Boolean accountLocked;
+
+    /** 비밀번호 만료 여부 */
+    private Boolean creExpired;
+
+    /** 사용 가능 여부 */
+    private Boolean enabled;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -25,7 +44,6 @@ public class UserInfo implements UserDetails {
         return roles;
     }
 
-    // 사용자 password 반환
     @Override
     public String getPassword() {
         getAuthorities();
@@ -33,34 +51,29 @@ public class UserInfo implements UserDetails {
         return password;
     }
 
-    // 사용자 id 반환
     @Override
     public String getUsername() {
         return id;
     }
 
-    // 계정 만료 여부
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return accountExpired;
     }
 
-    // 계정 잠금 여부
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return accountLocked;
     }
 
-    // 패스워드 만료 여부
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return creExpired;
     }
 
-    // 계정 사용 가능 여부
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 
     public void setId(String id) {
@@ -85,5 +98,21 @@ public class UserInfo implements UserDetails {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setAccountExpired(Boolean accountExpired) {
+        this.accountExpired = accountExpired;
+    }
+
+    public void setAccountLocked(Boolean accountLocked) {
+        this.accountLocked = accountLocked;
+    }
+
+    public void setCreExpired(Boolean creExpired) {
+        this.creExpired = creExpired;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 }

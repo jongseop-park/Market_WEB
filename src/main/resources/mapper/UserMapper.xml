@@ -6,17 +6,18 @@
     <!-- 아이디 찾기 -->
     <select id="findByMemberId" parameterType="String"
             resultType="com.pbboard.user.domain.UserInfo">
-        select m.name, ua.id as id, m.password as password, a.authority as auth
-        from user_authority_tbl2 ua, member_tbl2 m, authority2 a
+       select m.name, ua.id as id, m.password as password, a.authority as auth,
+        um.account_expired as accountExpired,
+        um.account_locked as accountLocked,
+        um.cre_expired as creExpired,
+        um.enabled as enabled
+        from user_authority_tbl2 ua, member_tbl2 m, authority2 a, user_mng_tbl2 um
         where ua.id = m.id
         and ua.authority_seq = a.seq
+        and um.user_id = m.id
         and ua.id = #{id}
     </select>
 
-<!--    <insert id="save" parameterType="com.pbboard.user.domain.UserInfoDTO">
-        insert into user_info2(id, password)
-        values(#{username}, #{password})
-    </insert>  -->
     <!-- 회원가입 -->
     <insert id="save" parameterType="com.pbboard.user.domain.UserInfoDTO">
        insert into member_tbl2(id, password, name, phone,
@@ -24,4 +25,26 @@
        values (#{id}, #{password}, #{name},
                 #{phone}, #{email}, sysDate, sysDate, 'n', #{nickName}, #{address})
     </insert>
+
+    <!-- 로그인 실패시 로그인실패 횟수 추가 -->
+    <update id="countFailure" parameterType="String">
+        update member_tbl2
+        set login_fail_cnt = login_fail_cnt + 1
+        where id = #{id}
+    </update>
+
+    <!-- 로그인 실패횟수 점검 -->
+    <select id="checkFailureCount" resultType="int"
+                                    parameterType="String">
+        select login_fail_cnt
+        from member_Tbl2
+        where id=#{id}
+    </select>
+
+    <!-- 계정 잠금 처리 -->
+    <update id="disabledUsername" parameterType="String">
+        update user_mng_tbl2
+        set account_Locked = 0
+        where user_id = #{id}
+    </update>
 </mapper>

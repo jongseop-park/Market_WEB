@@ -27,23 +27,37 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserInfo loadUserByUsername(String id) throws UsernameNotFoundException{
-        // 아이디 존재하지 않을시 예외
-        return userMapper.findByMemberId(id)
-                .orElseThrow(() -> new UsernameNotFoundException((id)));
+    public UserInfo loadUserByUsername(String id) {
+         return userMapper.findByMemberId(id);
     }
 
+    /* 회원 가입 */
     public String save(UserInfoDTO infoDTO) {
         try {
             // 암호화된 패스워드로 저장
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             infoDTO.setPassword(encoder.encode(infoDTO.getPassword()));
-
             userMapper.save(infoDTO);
             return "success";
         } catch(Exception e) {
             e.printStackTrace();
             return "fail";
         }
+    }
+
+    //* 로그인 실패 횟수 추가 *//*
+    public void countFailure(String username) {
+        userMapper.countFailure(username);
+    }
+
+
+    // 실패횟수 확인
+    public int checkFailureCount(String username) {
+        return userMapper.checkFailureCount(username);
+    }
+
+    // 사용불가 계정처리
+    public void disabledUsername(String username) {
+        userMapper.disabledUsername(username);
     }
 }

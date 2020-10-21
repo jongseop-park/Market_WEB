@@ -8,13 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 @Controller
 public class UserController {
@@ -35,8 +36,23 @@ public class UserController {
     /* 로그인 */
     @GetMapping("/login")
     public String login() {
-        logger.info("login");
         return "/user/login";
+    }
+
+    @PostMapping("/login")
+    public String postLogin(HttpServletRequest request,
+                            RedirectAttributes rttr) {
+        String errorMsg = String.valueOf(request.getAttribute("loginFailMsg"));
+
+        /* 에러 메시지 존재하지 않을 경우 null값, 존재할 경우 에러 메시지 저장 */
+        if(errorMsg.isEmpty()) {
+            rttr.addFlashAttribute("loginFailMsg", null);
+        } else {
+            rttr.addFlashAttribute("loginFailMsg", errorMsg);
+        }
+
+        /* 새로고침시 post 재요청 방지*/
+        return "redirect:/login";
     }
 
     /* 회원가입 */
