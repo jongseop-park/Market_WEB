@@ -35,7 +35,18 @@ public class UserController {
 
     /* 로그인 */
     @GetMapping("/login")
-    public String login() {
+    public String login(HttpServletRequest request)
+    {
+        // 현재 요청된 페이지의 링크 이전의 웹 페이지 주소를 저장
+        String uri = request.getHeader("Referer");
+
+        // 로그인 실패시 이전페이지가 로그인페이지가 되므로 조건문 설정
+        // 요청 페이지가 /login 미포함시에만
+        if(!uri.contains("/login")) {
+            request.getSession().setAttribute("prePage",
+                    request.getHeader("Referer")); // 이전 페이지 다시 저장?
+        }
+
         return "/user/login";
     }
 

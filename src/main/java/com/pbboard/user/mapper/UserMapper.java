@@ -23,4 +23,7 @@ public interface UserMapper {
 
     /* 계정 잠금 처리 */
     void disabledUsername(String id);
+
+    /* 로그인 실패횟수 초기화 */
+    void resetLoginFailureCount(String id);
 }

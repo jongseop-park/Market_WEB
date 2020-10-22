@@ -2,6 +2,7 @@ package com.pbboard.config;
 
 import com.pbboard.user.service.CustomAuthenticationProvider;
 import com.pbboard.user.service.UserLoginFailHandler;
+import com.pbboard.user.service.UserLoginSuccessHandler;
 import com.pbboard.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AuthenticationFailureHandler failureHandler;
+
+    @Autowired
+    private UserLoginSuccessHandler successHandler;
 
     @Autowired
     public SecurityConfig(UserService userService) {
@@ -63,7 +67,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     //.passwordParameter("password")
                     .loginPage("/login") // 로그인시 사용할 경로
                     //.loginProcessingUrl("/")
-                    .defaultSuccessUrl("/", true)
+                    .successHandler(successHandler)
+                    //.defaultSuccessUrl("/", true)
             .and()
                 .logout()
                     .logoutSuccessUrl("/") // 로그아웃 성공시 이동할 경로

@@ -60,4 +60,9 @@ public class UserService implements UserDetailsService {
     public void disabledUsername(String username) {
         userMapper.disabledUsername(username);
     }
+
+    // 로그인 실패횟수 초기화
+    public void resetLoginFailureCount(String username) {
+        userMapper.resetLoginFailureCount(username);
+    }
 }

@@ -47,4 +47,11 @@
         set account_Locked = 0
         where user_id = #{id}
     </update>
+
+    <!-- 로그인 실패횟수 초기화 -->
+    <update id="resetLoginFailureCount" parameterType="String">
+        update member_tbl2
+        set login_fail_cnt = 0
+        where id= #{id}
+    </update>
 </mapper>
