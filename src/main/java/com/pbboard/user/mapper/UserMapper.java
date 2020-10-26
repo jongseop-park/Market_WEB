@@ -26,4 +26,7 @@ public interface UserMapper {
 
     /* 로그인 실패횟수 초기화 */
     void resetLoginFailureCount(String id);
+
+    /* 아이디 중복 조회 */
+    UserInfo checkId(String id);
 }

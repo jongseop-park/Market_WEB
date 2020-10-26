@@ -1,9 +1,6 @@
 package com.pbboard.cart.controller;
 
-import com.pbboard.cart.domain.CartDTO;
-import com.pbboard.cart.domain.CartVO;
-import com.pbboard.cart.domain.OrderDetailVO;
-import com.pbboard.cart.domain.OrderVO;
+import com.pbboard.cart.domain.*;
 import com.pbboard.cart.service.CartService;
 import com.pbboard.user.domain.UserInfo;
 import org.slf4j.Logger;
@@ -37,12 +34,8 @@ public class CartController {
         String userId = userInfo.getUsername();
 
         model.addAttribute("id", userId);
-
-        List<CartVO> cartVOList = cartService.list(userId);
-        model.addAttribute("list", cartVOList);
-
-        String totalPrice = cartService.totalPrice(userId);
-        model.addAttribute("totalPrice", totalPrice);
+        model.addAttribute("list", cartService.list(userId));
+        model.addAttribute("totalPrice", cartService.totalPrice(userId));
 
         return "/cart/list";
     }
@@ -59,38 +52,42 @@ public class CartController {
     public String payment(Model model) {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        List<CartVO> cartVOList = cartService.checkout(id);
-        model.addAttribute("cartVOList", cartVOList);
-
-        String totalPrice = cartService.totalPrice(id);
-        model.addAttribute("totalPrice", totalPrice);
+        model.addAttribute("cartVOList", cartService.checkout(id));
+        model.addAttribute("totalPrice", cartService.totalPrice(id));
 
         return "cart/checkout";
     }
 
     @PostMapping("/cart/order")
     public String order(OrderVO orderVO, OrderDetailVO orderDetailVO
-                        ,Model model) {
+                        ,Model model) throws Exception {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
-        orderVO.setUserId(id);
 
         // 주문번호 생성
         final Long orderSeq = createOrderSeq();
 
-        // 콤마(,) 제거
-        orderVO.setTotalPrice(orderVO.getTotalPrice().replaceAll(",", ""));
-        orderVO.setSeq(orderSeq);
-
         // 주문 등록
+        orderVO.setSeq(orderSeq);
         cartService.orderInfo(orderVO);
 
-        orderDetailVO.setUserId(id);
-        orderDetailVO.setOrderSeq(orderSeq);
+        // 장바구니 목록
+        List<OrderDetailVO> cartDTOS = cartService.cartList(id);
 
-        // 주문 상세 등록
-        cartService.orderInfoDetails(orderDetailVO);
+        // 장바구니 목록 개수 만큼 for문 반복
+        for(OrderDetailVO cartDTO : cartDTOS) {
+            // 주문 가능할 경우
+             if(cartService.stockCheck(cartDTO)) {
+                 cartDTO.setOrderStatus("주문완료");
+                 cartService.quantityChange(cartDTO);
+             } else {
+                 cartDTO.setOrderStatus("주문실패");
+             }
+            // 주문 등록
+            cartDTO.setOrderSeq(orderSeq);
+            cartService.orderInfoDetails(cartDTO);
+        }
 
-        // 주문 후 장바구니 목록 삭제
+        //주문 후 장바구니 목록 삭제
         cartService.cartAllDelete(id);
 
         // 주문 결과

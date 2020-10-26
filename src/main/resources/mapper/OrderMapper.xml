@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper
+                PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pbboard.mypage.order.mapper.OrderMapper">
+    <!-- 주문 내역 조회 -->
+        <select id="orderList" parameterType="String"
+                            resultType="com.pbboard.mypage.order.domain.OrderVO">
+        select od.order_seq as orderSeq ,
+        mp.name as productName,
+         mp.image as productImage,
+          mp.brand as productBrand,
+           od.option_name as optionName
+        ,to_char(o.reg_dt, 'yyyy-MM-dd hh:mi:ss (DY)') as regDt
+        , od.quantity as quantity,
+        to_char(mp.price * od.quantity, '999,999,999,999') as orderPrice
+        , order_status as orderStatus
+        from order_details_tbl2 od, order_tbl2 o, men_product_tbl2 mp
+        where od.order_seq = o.seq
+        and od.product_seq = mp.seq
+        and o.user_id = #{userId}
+        order by regdt desc
+        </select>
+</mapper>

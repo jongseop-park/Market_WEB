@@ -65,4 +65,9 @@ public class UserService implements UserDetailsService {
     public void resetLoginFailureCount(String username) {
         userMapper.resetLoginFailureCount(username);
     }
+
+    // 아이디 중복 조회
+    public UserInfo checkId(String id) {
+        return userMapper.checkId(id);
+    }
 }

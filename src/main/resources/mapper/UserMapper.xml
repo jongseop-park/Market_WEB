@@ -54,4 +54,11 @@
         set login_fail_cnt = 0
         where id= #{id}
     </update>
+
+    <!-- 아이디 중복 조회 -->
+    <select id="checkId" parameterType="String" resultType="com.pbboard.user.domain.UserInfo">
+        select id
+        from member_tbl2
+        where id=#{id}
+    </select>
 </mapper>

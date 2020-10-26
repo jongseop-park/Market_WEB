@@ -74,7 +74,7 @@
 
 <!-- Shop Section Begin -->
 <section class="shop">
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-lg-3 col-md-3">
                 <div class="shop__sidebar">
@@ -109,43 +109,33 @@
                                 <th>상품정보</th>
                                 <th>주문일자</th>
                                 <th>주문금액</th>
-                                <th>수량</th>
+                                <th class="text-center">수량</th>
+                                <th class="text-center">주문 상태</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <th with="sum"></th>
-                            <!-- 장바구니 목록 시작 -->
-                            <tr>
-                                <td class="cart__total">20201019513708</td>
+                            <!-- 주문내역 목록 시작 -->
+                            <tr th:each="order : ${orderList}">
+                                <td th:text="${order.orderSeq}"></td>
                                 <td class="cart__product__item">
-                                    <img src="/static/img/shop-cart/cp-1.jpg" alt="">
+                                    <img th:attr="src=${order.productImage}" alt=""
+                                         width="90px" height="90px">
                                     <div class="cart__product__item__title">
-
-                                        <label class="active">브랜드</label>
-                                        <h6>상품명</h6>
-                                        옵션: <label class="active">블랙/S</label>
+                                        <label class="active"
+                                                th:text="${order.productBrand}"></label>
+                                        <h6 th:text="${order.productName}"></h6>
+                                        옵션: <label class="active"
+                                                th:text="${order.optionName}"></label>
                                     </div>
                                 </td>
-                                <td class="cart__total text-center">2020-10-01</td>
-                                <td class="cart__total text-center">3,333,333원</td>
-                                <td class="cart__total text-center">1</td>
+                                <td class="cart__product__item__title"
+                                    th:text="${order.regDt}"></td>
+                                <td class="cart__total "
+                                    th:text="${order.orderPrice + '원 '}"></td>
+                                <td class="text-center" th:text="${order.quantity} +'개'"></td>
+                                <td class="text-center" th:text="${order.orderStatus}"></td>
                             </tr>
-                            <tr>
-                                <td class="cart__total text-center">20201019512145</td>
-                                <td class="cart__product__item">
-                                    <img src="/static/img/shop-cart/cp-2.jpg" alt="">
-                                    <div class="cart__product__item__title">
-
-                                        <label class="active">브랜드</label>
-                                        <h6>상품명</h6>
-                                        옵션: <label class="active">블랙/S</label>
-                                    </div>
-                                </td>
-                                <td class="cart__total text-center">2020-10-01</td>
-                                <td class="cart__total text-center">3,333,333원</td>
-                                <td class="cart__total text-center">1</td>
-                            </tr>
-                            <!-- 장바구니 목록 끝 -->
+                            <!-- 주문내역 목록 끝 -->
                         </table>
                     </div>
                 </div>

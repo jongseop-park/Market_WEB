@@ -1,5 +1,6 @@
 package com.pbboard.user.controller;
 
+import com.pbboard.user.domain.UserInfo;
 import com.pbboard.user.domain.UserInfoDTO;
 import com.pbboard.user.service.UserService;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -41,10 +43,10 @@ public class UserController {
         String uri = request.getHeader("Referer");
 
         // 로그인 실패시 이전페이지가 로그인페이지가 되므로 조건문 설정
-        // 요청 페이지가 /login 미포함시에만
-        if(!uri.contains("/login")) {
+        // 요청 페이지가 로그인페이지 또는 회원가입페이지 미포함시에만 이전 페이지 저장
+        if(!uri.contains("/login") && !uri.contains("/signup")) {
             request.getSession().setAttribute("prePage",
-                    request.getHeader("Referer")); // 이전 페이지 다시 저장?
+                    request.getHeader("Referer"));
         }
 
         return "/user/login";
@@ -92,5 +94,17 @@ public class UserController {
     @ResponseBody
     public String signupA(@RequestBody UserInfoDTO userInfoDTO) {
         return userService.save(userInfoDTO);
+    }
+
+    /* 중복 조회 */
+    @PostMapping(value = "/checkUser", produces="text/plane")
+    @ResponseBody
+    public String idCheck(@RequestBody String id) {
+        UserInfo userInfo = userService.checkId(id);
+
+        if(userInfo == null)
+            return "true";
+        else
+            return "false";
     }
 }
