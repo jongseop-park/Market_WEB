@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pbboard.mypage.review.mapper.ReviewMapper">
+    <!-- 구매 후기 목록 -->
+    <select id="selectReview" parameterType="String"
+                            resultType="com.pbboard.mypage.review.domain.ReviewVO">
+            select od.seq as seq,
+            mp.name as productName,
+            mp.image as productImage,
+            mp.brand as productBrand,
+            od.option_name as optionName
+            ,to_char(o.reg_dt, 'yyyy-MM-dd') as regDt
+            from order_details_tbl2 od, order_tbl2 o, men_product_tbl2 mp
+            where od.order_seq = o.seq
+            and od.product_seq = mp.seq
+            and o.user_id = #{userId}
+            and od.order_status = '주문완료'
+            order by regdt desc
+    </select>
+
+    <delete id="deleteReview" parameterType="com.pbboard.mypage.review.domain.ReviewDTO">
+        delete from review_tbl2
+        where user_id = #{userId}
+        and order_details_seq = #{orderDetailsSeq}
+    </delete>
+
+    <!-- 구매후기 작성 여부  -->
+    <select id="checkReview" parameterType="int"
+                             resultType="int">
+        select count(*) from review_tbl2 where order_details_seq = #{seq}
+    </select>
+
+    <!-- 구매후기 작성 -->
+    <select id="selectReview" parameterType="int"
+            resultType="com.pbboard.mypage.review.domain.ReviewVO">
+        select od.seq as seq,
+        m.image as productImage
+        , m.name as productName
+        , m.brand as productBrand
+        , od.option_name as optionName
+        from order_details_tbl2 od, men_product_tbl2 m
+        where od.seq = #{seq}
+        and m.seq = od.product_seq
+    </select>
+
+    <!-- 구매후기 등록/수정 -->
+    <insert id="insertReview" parameterType="com.pbboard.mypage.review.domain.ReviewDTO">
+        merge into review_tbl2
+        using dual on
+        (user_id = #{userId} and order_details_seq = #{orderDetailsSeq})
+        when matched then
+        update set
+        content = #{content},  mod_dt = sysDate , score = #{score}
+        when not matched then
+        insert(seq, user_id, content, score, reg_dt, mod_dt, del_yn, order_details_seq)
+        values(review_sequence.nextval, #{userId}, #{content}
+        , #{score}, sysDate, null, 'n', #{orderDetailsSeq})
+    </insert>
+
+    <!-- 구매후기 수정 -->
+    <select id="updateReview" parameterType="com.pbboard.mypage.review.domain.ReviewDTO"
+                                resultType="com.pbboard.mypage.review.domain.ReviewVO">
+            select od.seq as seq
+            , m.image as productImage
+            , m.name as productName
+            , m.brand as productBrand
+            , od.option_name as optionName
+            , r.content as content
+            , r.score as score
+            from order_details_tbl2 od, men_product_tbl2 m, order_tbl2 o, review_Tbl2 r
+            where od.seq = #{orderDetailsSeq}
+            and o.user_id = #{userId}
+            and o.seq = od.order_seq
+            and m.seq = od.product_seq
+            and od.seq = r.order_details_seq
+    </select>
+
+
+</mapper>

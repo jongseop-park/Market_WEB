@@ -11,5 +11,5 @@ import java.util.List;
 @Mapper
 public interface OrderMapper {
     /* 주문 내역 조회 */
-    public List<OrderVO> orderList(String id);
+    public List<OrderVO> selectOrderList(String id);
 }

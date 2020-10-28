@@ -13,7 +13,7 @@ public interface UserMapper {
     UserInfo findByMemberId(String id);
 
     /* 회원가입 */
-    int save(UserInfoDTO InfoDTO);
+    int insertUser(UserInfoDTO InfoDTO);
 
     /* 로그인 실패 시 실패횟수 추가 */
     void countFailure(String id);
@@ -29,4 +29,7 @@ public interface UserMapper {
 
     /* 아이디 중복 조회 */
     UserInfo checkId(String id);
+
+    /* 권한 부여 */
+    void authorizationUser(String id);
 }

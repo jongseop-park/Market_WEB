@@ -44,6 +44,7 @@ public class UserController {
 
         // 로그인 실패시 이전페이지가 로그인페이지가 되므로 조건문 설정
         // 요청 페이지가 로그인페이지 또는 회원가입페이지 미포함시에만 이전 페이지 저장
+        if(uri != null)
         if(!uri.contains("/login") && !uri.contains("/signup")) {
             request.getSession().setAttribute("prePage",
                     request.getHeader("Referer"));
@@ -71,7 +72,7 @@ public class UserController {
     /* 회원가입 */
     @PostMapping("/user")
     public String signup(UserInfoDTO infoDTO) throws Exception {
-        userService.save(infoDTO);
+        userService.insertUser(infoDTO);
         return "redirect:/login";
     }
 
@@ -93,7 +94,7 @@ public class UserController {
     @PostMapping("/saveUser")
     @ResponseBody
     public String signupA(@RequestBody UserInfoDTO userInfoDTO) {
-        return userService.save(userInfoDTO);
+        return userService.insertUser(userInfoDTO);
     }
 
     /* 중복 조회 */

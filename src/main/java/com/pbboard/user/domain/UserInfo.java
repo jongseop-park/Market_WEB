@@ -9,6 +9,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class UserInfo implements UserDetails {
+    /** 시퀀스 */
+    private int seq;
+
     /** 아이디 */
     private String id;
 
@@ -66,10 +69,12 @@ public class UserInfo implements UserDetails {
         return accountLocked;
     }
 
+
     @Override
     public boolean isCredentialsNonExpired() {
         return creExpired;
     }
+
 
     @Override
     public boolean isEnabled() {
@@ -114,5 +119,13 @@ public class UserInfo implements UserDetails {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public int getSeq() {
+        return seq;
+    }
+
+    public void setSeq(int seq) {
+        this.seq = seq;
     }
 }

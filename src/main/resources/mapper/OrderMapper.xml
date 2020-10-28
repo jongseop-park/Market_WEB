@@ -4,7 +4,7 @@
                 "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.pbboard.mypage.order.mapper.OrderMapper">
     <!-- 주문 내역 조회 -->
-        <select id="orderList" parameterType="String"
+        <select id="selectOrderList" parameterType="String"
                             resultType="com.pbboard.mypage.order.domain.OrderVO">
         select od.order_seq as orderSeq ,
         mp.name as productName,

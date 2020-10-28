@@ -32,12 +32,13 @@ public class UserService implements UserDetailsService {
     }
 
     /* 회원 가입 */
-    public String save(UserInfoDTO infoDTO) {
+    public String insertUser(UserInfoDTO infoDTO) {
         try {
             // 암호화된 패스워드로 저장
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             infoDTO.setPassword(encoder.encode(infoDTO.getPassword()));
-            userMapper.save(infoDTO);
+            userMapper.insertUser(infoDTO);
+            /*userMapper.userAuthority(infoDTO.getId());*/
             return "success";
         } catch(Exception e) {
             e.printStackTrace();

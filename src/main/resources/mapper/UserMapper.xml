@@ -6,24 +6,33 @@
     <!-- 아이디 찾기 -->
     <select id="findByMemberId" parameterType="String"
             resultType="com.pbboard.user.domain.UserInfo">
-       select m.name, ua.id as id, m.password as password, a.authority as auth,
-        um.account_expired as accountExpired,
-        um.account_locked as accountLocked,
-        um.cre_expired as creExpired,
-        um.enabled as enabled
-        from user_authority_tbl2 ua, member_tbl2 m, authority2 a, user_mng_tbl2 um
-        where ua.id = m.id
-        and ua.authority_seq = a.seq
-        and um.user_id = m.id
-        and ua.id = #{id}
+       select name, id, password, 'ROLE_USER' as auth,
+       1 as accountExpired,
+       1 as accountLocked,
+       1 as creExpired,
+       1 as enabled
+       from member_tbl2 m
+       where id = #{id}
     </select>
 
+    <!-- 권한 사용할 때 쿼리 -->
+    <!-- select m.name, ua.id as id, m.password as password, a.authority as auth,
+       um.account_expired as accountExpired,
+       um.account_locked as accountLocked,
+       um.cre_expired as creExpired,
+       um.enabled as enabled
+       from user_authority_tbl2 ua, member_tbl2 m, authority2 a, user_mng_tbl2 um
+       where ua.id = m.id
+       and ua.authority_seq = a.seq
+       and um.user_id = m.id
+       and ua.id = #{id} -->
+
     <!-- 회원가입 -->
-    <insert id="save" parameterType="com.pbboard.user.domain.UserInfoDTO">
-       insert into member_tbl2(id, password, name, phone,
-                                email, reg_dt, mod_dt, del_yn, nickName, address)
-       values (#{id}, #{password}, #{name},
-                #{phone}, #{email}, sysDate, sysDate, 'n', #{nickName}, #{address})
+    <insert id="insertUser" parameterType="com.pbboard.user.domain.UserInfoDTO">
+    insert into member_tbl2(id, password, name, phone,
+    email, reg_dt, mod_dt, del_yn, nickName, address)
+    values (#{id}, #{password}, #{name},
+    #{phone}, #{email}, sysDate, sysDate, 'n', #{nickName}, #{address})
     </insert>
 
     <!-- 로그인 실패시 로그인실패 횟수 추가 -->
@@ -61,4 +70,11 @@
         from member_tbl2
         where id=#{id}
     </select>
+
+    <!-- 권한 부여 -->
+    <insert id="authorizationUser" parameterType="String">
+        insert into user_authority_tbl2
+        values(#{userId}, 2)
+    </insert>
+    <!---->
 </mapper>
