@@ -66,7 +66,7 @@
                     <a href="./index.html"><i class="fa fa-home"></i> Home</a>
                     <a href="#">Men’s </a>
                     <input type="hidden" id="productSeq" th:attr="value=${product.seq}">
-                    <span th:attr="value=${product.name}">Essential structured blazer</span>
+                    <span th:text="${product.name}">Essential structured blazer</span>
                 </div>
             </div>
         </div>
@@ -112,12 +112,10 @@
                 <div class="product__details__text">
                     <h3 th:text="${product.name}"><span>Brand: <td th:text="${product.brand}"></span></h3>
                     <div class="rating">
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-<!--                        <span th:text="'(' + ${review.size()} + ' reviews )'"></span>-->
+                       <i class="fa fa-star"
+                          th:if="${averageScore > 0}"
+                           th:each="num : ${#numbers.sequence(1, averageScore)}"></i>
+                       <span th:text="'(' + ${reviewList.size()} + ' reviews )'"></span>
                     </div>
                     <div class="product__details__price" th:text="${product.price}  + '원'"></div>
                     <p th:text="${product.summaryDesc}"></p>
@@ -129,10 +127,10 @@
                             </div>
                         </div>
                         <a href="#" class="cart-btn"><span class="icon_bag_alt"></span> 장바구니 담기</a>
-                        <ul>
+                       <!-- <ul>
                             <li><a href="#"><span class="icon_heart_alt"></span></a></li>
                             <li><a href="#"><span class="icon_adjust-horiz"></span></a></li>
-                        </ul>
+                        </ul>-->
                     </div>
                     <div class="product__details__widget">
                         <ul>
@@ -177,7 +175,10 @@
                             <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">사이즈 정보</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab">리뷰</a>
+                            <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab"
+                               th:text="'리뷰 ( ' + ${reviewList.size()} + ' )'">
+                                리뷰
+                           </a>
                         </li>
                     </ul>
                     <div class="tab-content">
@@ -199,14 +200,11 @@
                                 quis, sem.</p>
                         </div>
                         <div class="tab-pane" id="tabs-3" role="tabpanel">
-                            <div class="blog__details__comment">
-                                <!--<h6 th:text="'Reviews ( ' + ${review.size()} + ' )'">Reviews ( 2 )</h6>-->
-                                <a href="#" class="leave-btn">상품 후기 쓰기</a>
-                             <!--   <div class="blog__comment__item">
+                           <!-- <div class="blog__details__comment">
+                                <div class="blog__comment__item">
                                     <div class="blog__comment__item__text">
-                                        <h6>Brandon Kelley</h6>
-                                        <p>Duis voluptatum. Id vis consequat consetetur dissentiet, ceteros commune perpetua
-                                            mei et. Simul viderer facilisis egimus tractatos splendi.</p>
+                                        <h6>홍길동</h6>
+                                        <p>제품이 아주 좋습니다.</p>
                                         <div class="rating">
                                             <i class="fa fa-star"></i>
                                             <i class="fa fa-star"></i>
@@ -220,23 +218,20 @@
                                     </div>
                                 </div>-->
 
-                            <!--    <div class="blog__comment__item" th:each="review : ${review}">
+                                <div class="blog__comment__item" th:each="review : ${reviewList}">
                                     <div class="blog__comment__item__text">
                                         <h6 th:text="${review.nickName}"></h6>
                                         <p th:text="${review.content}"></p>
                                         <div class="rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <td th:text="${review.score}"></td>
+                                            <i class="fa fa-star" th:if="${review.score > 0}"
+                                                th:each="num : ${#numbers.sequence(1, review.score)}">
+                                            </i>
                                         </div>
                                         <ul>
                                             <li th:text="${review.regDt}"><i class="fa fa-clock-o"></i></li>
                                         </ul>
                                     </div>
-                                </div>-->
+                                </div>
                             </div>
                         </div>
                     </div>

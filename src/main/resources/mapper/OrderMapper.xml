@@ -11,7 +11,7 @@
          mp.image as productImage,
           mp.brand as productBrand,
            od.option_name as optionName
-        ,to_char(o.reg_dt, 'yyyy-MM-dd hh:mi:ss (DY)') as regDt
+        ,to_char(o.reg_dt, 'yyyy-MM-dd hh24:mi:ss (DY)') as regDt
         , od.quantity as quantity,
         to_char(mp.price * od.quantity, '999,999,999,999') as orderPrice
         , order_status as orderStatus

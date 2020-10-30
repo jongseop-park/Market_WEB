@@ -83,17 +83,17 @@
                         <br><br>
                         <h5>배송지 정보</h5>
                         <table class="table table-bordered">
-                            <tr><th>이름</th><td th:text="${vo.name}"></td></tr>
-                            <tr><th>연락처</th><td th:text="${vo.phone}"></td></tr>
-                            <tr><th>배송지 주소</th><td th:text="${vo.address}">1</td></tr>
-                            <tr><th>배송 메시지</th><td th:text="${vo.note}">1</td></tr>
+                            <tr><th>이름</th><td th:text="${orderResult.name}"></td></tr>
+                            <tr><th>연락처</th><td th:text="${orderResult.phone}"></td></tr>
+                            <tr><th>배송지 주소</th><td th:text="${orderResult.address}">1</td></tr>
+                            <tr><th>배송 메시지</th><td th:text="${orderResult.note}">1</td></tr>
                         </table>
                         <br><br>
-                        <h5>최종 결제 정보</h5>
+                        <h5>최종 주문 정보</h5>
                         <table class="table table-bordered">
-                            <tr><th>주문번호</th><td th:text="${vo.seq}"></td></tr>
-                            <tr><th>주문일</th><td th:text="${vo.regDt}"></td></tr>
-                            <tr><th>최종 결제 금액</th><td th:text="${vo.totalPrice} + '원'"></td></tr>
+                            <tr><th>주문번호</th><td th:text="${orderResult.seq}"></td></tr>
+                            <tr><th>주문일</th><td th:text="${orderResult.regDt}"></td></tr>
+                            <tr><th>최종 주문 금액</th><td th:text="${orderResult.totalPrice} + '원'"></td></tr>
                         </table>
                     </div>
                 </div>

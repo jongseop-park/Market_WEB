@@ -4,6 +4,8 @@ import com.pbboard.mypage.review.domain.ReviewDTO;
 import com.pbboard.mypage.review.domain.ReviewVO;
 import com.pbboard.mypage.review.mapper.ReviewMapper;
 import com.pbboard.mypage.review.service.ReviewService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,7 @@ import java.util.List;
 @Service
 public class ReviewServiceImpl implements ReviewService {
     ReviewMapper reviewMapper;
+    Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     public ReviewServiceImpl(ReviewMapper reviewMapper) {

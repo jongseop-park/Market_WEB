@@ -74,7 +74,7 @@
 
 <!-- Shop Section Begin -->
 <section class="shop">
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-lg-3 col-md-3">
                 <div class="shop__sidebar">
@@ -117,35 +117,40 @@
                             <tbody>
                             <th with="sum"></th>
                             <!-- 장바구니 목록 시작 -->
-                            <tr>
+                            <tr th:each="review : ${reviewList}">
                                 <td class="cart__product__item">
-                                    <img src="/static/img/shop-cart/cp-1.jpg" alt="">
+                                    <img th:attr="src=${review.productImage}" alt="" width="90px" height="90px">
                                     <div class="cart__product__item__title">
-
-                                        <label class="active">브랜드</label>
-                                        <h6>상품명</h6>
-                                        옵션: <label class="active">블랙/S</label>
+                                        <label class="active"
+                                        th:text="${review.productBrand}"></label>
+                                        <h6 th:text="${review.productName}"></h6>
+                                        옵션: <label class="active"
+                                                th:text="${review.optionName}"></label>
                                     </div>
                                 </td>
-                                <td class="cart__total">2020-10-01</td>
-                                <td><input type="button" class="btn-secondary" value="작성하기"></td>
-                            </tr>
-                            <tr>
-                                <td class="cart__product__item">
-                                    <img src="/static/img/shop-cart/cp-2.jpg" alt="">
-                                    <div class="cart__product__item__title">
-
-                                        <label class="active">브랜드</label>
-                                        <h6>상품명</h6>
-                                        옵션: <label class="active">블랙/S</label>
-                                    </div>
+                                <td class="cart__total"
+                                    th:text="${review.regDt}"></td>
+                                <td th:if="${review.review == false}">
+                                    <button type="button" class="btn-secondary">
+                                        <a th:href="@{/mypage/write_review(seq=${review.seq})}" class="text-white">
+                                            작성하기
+                                        </a>
+                                    </button>
                                 </td>
-                                <td class="cart__total">2020-10-01</td>
-                                <td>
-                                    <input type="button" class="btn-secondary" value="수정">
-                                    <input type="button" class="btn-secondary" value="삭제">
+                                <td th:if="${review.review == true}">
+                                    <button type="button" class="btn-secondary">
+                                        <a th:href="@{/mypage/modify_review(seq=${review.seq})}" class="text-white">
+                                            <span class="btn-secondary"></span>
+                                            수정
+                                        </a>
+                                    </button>
+                                    <button type="button" class="btn-secondary">
+                                        <a th:href="@{/mypage/delete_review(seq=${review.seq})}" class="text-white"
+                                           onclick="return confirm('구매 후기를 삭제하시겠습니까?');">
+                                            삭제
+                                        </a>
+                                    </button>
                                 </td>
-
                             </tr>
                             <!-- 장바구니 목록 끝 -->
                         </table>

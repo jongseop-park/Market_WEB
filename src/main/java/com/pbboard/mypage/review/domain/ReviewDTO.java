@@ -8,7 +8,7 @@ public class ReviewDTO {
     private String content;
 
     /** 평점 */
-    private int score;
+    private Integer score;
 
     /** 주문 상세 번호 */
     private int orderDetailsSeq;
@@ -29,11 +29,11 @@ public class ReviewDTO {
         this.content = content;
     }
 
-    public int getScore() {
+    public Integer getScore() {
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(Integer score) {
         this.score = score;
     }
 

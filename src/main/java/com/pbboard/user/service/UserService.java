@@ -38,6 +38,7 @@ public class UserService implements UserDetailsService {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             infoDTO.setPassword(encoder.encode(infoDTO.getPassword()));
             userMapper.insertUser(infoDTO);
+            userMapper.insertIdAuthentication(infoDTO);
             /*userMapper.userAuthority(infoDTO.getId());*/
             return "success";
         } catch(Exception e) {

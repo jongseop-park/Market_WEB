@@ -5,6 +5,7 @@ import com.pbboard.mypage.review.service.ReviewService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -54,6 +55,8 @@ public class ReviewController {
     /* 구매후기 작성 */
     @PostMapping("/mypage/modify_review")
     public String reviewModify(ReviewDTO reviewDTO) {
+        log.info("post review Modify");
+
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         reviewDTO.setUserId(id);
 
@@ -64,17 +67,24 @@ public class ReviewController {
 
     /* 후기 수정 폼*/
     @GetMapping("/mypage/modify_review")
-    public String reviewModify(@RequestParam("seq") int orderDetailsSeq, Model model) {
+    public String reviewModify(@RequestParam(value = "seq" , required = false) int orderDetailsSeq
+            , Model model) {
+        log.info("get review Modify" + orderDetailsSeq);
+
        String id = SecurityContextHolder.getContext().getAuthentication().getName();
 
-       ReviewDTO reviewDTO = new ReviewDTO();
-       reviewDTO.setUserId(id);
-       reviewDTO.setOrderDetailsSeq(orderDetailsSeq);
+       if(orderDetailsSeq > 0) {
+           ReviewDTO reviewDTO = new ReviewDTO();
+           reviewDTO.setUserId(id);
+           reviewDTO.setOrderDetailsSeq(orderDetailsSeq);
 
-       ReviewVO reviewVO = reviewService.updateReview(reviewDTO);
-       model.addAttribute("reviewInfo", reviewVO);
+           ReviewVO reviewVO = reviewService.updateReview(reviewDTO);
+           model.addAttribute("reviewInfo", reviewVO);
 
-       return "/mypage/review/form";
+           return "/mypage/review/form";
+       } else {
+           return "redirect:/mypage/review";
+       }
     }
 
     /* 구매후기 삭제 */

@@ -126,7 +126,7 @@
                                             <span class="top__text">상품정보</span>
                                             <span class="top__text__right">합계</span>
                                         </li>
-                                        <li th:each="cartVOList : ${cartVOList}">
+                                        <li th:each="cartVOList : ${orderList}">
                                             <td th:text="${cartVOList.productName}"></td>
                                             <td th:text="${cartVOList.optionName}"></td>
                                             <span th:text="${cartVOList.totalPrice}"></span>
@@ -135,11 +135,11 @@
                                 </div>
                                 <div class="checkout__order__total">
                                     <ul>
-                                        <li>소계 <span th:text="${totalPrice == null ? '0' : totalPrice} + '원'"></span></li>
-                                        <li>합계 <span th:text="${totalPrice == null ? '0' : totalPrice} + '원'"></span></li>
+                                        <li>소계 <span th:text="${cartTotalPrice == null ? '0' : cartTotalPrice} + '원'"></span></li>
+                                        <li>합계 <span th:text="${cartTotalPrice == null ? '0' : cartTotalPrice} + '원'"></span></li>
                                     </ul>
                                 </div>
-                                <input type="hidden" name="totalPrice" id="totalPrice" th:attr="value=${totalPrice}">
+                                <input type="hidden" name="totalPrice" id="totalPrice" th:attr="value=${cartTotalPrice}">
                                 <button type="submit" class="site-btn">주문하기</button>
                             </div>
                         </div>

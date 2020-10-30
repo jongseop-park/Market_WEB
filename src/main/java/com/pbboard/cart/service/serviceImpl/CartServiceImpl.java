@@ -25,19 +25,14 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void save(CartDTO cartDTO) {
-        cartMapper.save(cartDTO);
+    public List<CartVO> selectCartList(String id) {
+        return cartMapper.selectCartList(id);
     }
 
     @Override
-    public List<CartVO> list(String id) {
-        return cartMapper.list(id);
-    }
-
-    @Override
-    public String delete(CartDTO cartDTO) {
+    public String deleteCart(CartDTO cartDTO) {
         try {
-            cartMapper.delete(cartDTO);
+            cartMapper.deleteCart(cartDTO);
             return "성공";
         } catch (Exception e) {
             return "실패";
@@ -45,19 +40,19 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public String totalPrice(String id) {
-        return cartMapper.totalPrice(id);
+    public String countCartTotalPrice(String id) {
+        return cartMapper.countCartTotalPrice(id);
     }
 
     @Override
-    public List<CartVO> checkout(String id) {
-        return cartMapper.checkout(id);
+    public List<CartVO> checkOrderList(String id) {
+        return cartMapper.checkOrderList(id);
     }
 
  //////
 
     @Override
-    public void orderInfo(OrderVO orderVO) {
+    public void insertOrder(OrderVO orderVO) {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
 
         if(orderVO.getTotalPrice() == null || orderVO.getTotalPrice() == "")
@@ -66,42 +61,42 @@ public class CartServiceImpl implements CartService {
         orderVO.setTotalPrice(orderVO.getTotalPrice().replaceAll(",", ""));
         orderVO.setUserId(id);
 
-        cartMapper.orderInfo(orderVO);
+        cartMapper.insertOrder(orderVO);
     }
 
     @Override
-    public void cartAllDelete(String id) {
-        cartMapper.cartAllDelete(id);
+    public void deleteCartList(String id) {
+        cartMapper.deleteCartList(id);
     }
 
     @Override
-    public OrderVO orderConfirm(OrderVO orderVO) {
-        return cartMapper.orderConfirm(orderVO);
+    public OrderVO selectOrderResult(OrderVO orderVO) {
+        return cartMapper.selectOrderResult(orderVO);
     }
 
     @Override
-    public void quantityChange(OrderDetailVO orderDetailVO) {
-        cartMapper.quantityChange(orderDetailVO);
+    public void changeQuantity(OrderDetailVO orderDetailVO) {
+        cartMapper.changeQuantity(orderDetailVO);
     }
 
     @Override
-    public Boolean stockCheck(OrderDetailVO orderDetailVO) {
+    public Boolean selectStock(OrderDetailVO orderDetailVO) {
         Integer stockQuantity;
-        stockQuantity = cartMapper.stockCheck(orderDetailVO);
+        stockQuantity = cartMapper.selectStock(orderDetailVO);
 
         int orderQuantity = orderDetailVO.getQuantity();
 
-        logger.info("주문 수량 : " + orderDetailVO.getQuantity());
-        logger.info("재고 수량 : " + stockQuantity);
+       /* logger.info("주문 수량 : " + orderDetailVO.getQuantity());
+        logger.info("재고 수량 : " + stockQuantity);*/
 
         // 재고가 없거나 주문수량보다 재고가 적을 경우
         if(stockQuantity == null || (orderQuantity > stockQuantity)) {
-            logger.info("false");
-            return false;
+         /*   logger.info("false");
+         */   return false;
         }
 
-        logger.info("true");
-        return true;
+        /*logger.info("true");
+        */return true;
     }
 
     @Override
@@ -110,7 +105,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void orderInfoDetails(OrderDetailVO orderDetailVO) {
-        cartMapper.orderInfoDetails(orderDetailVO);
+    public void insertOrderDetails(OrderDetailVO orderDetailVO) {
+        cartMapper.insertOrderDetails(orderDetailVO);
     }
 }

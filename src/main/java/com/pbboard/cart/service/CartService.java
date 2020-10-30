@@ -7,40 +7,37 @@ import java.util.List;
 
 public interface CartService {
 
-    /* 장바구니 추가 */
-    public void save(CartDTO cartDTO);
-
     /* 장바구니 목록 */
-    public List<CartVO> list(String id);
+    public List<CartVO> selectCartList(String id);
 
     /* 장바구니 삭제 */
-    public String delete(CartDTO cartDTO);
+    public String deleteCart(CartDTO cartDTO);
 
     /* 장바구니 총 합계 금액 */
-    public String totalPrice(String id);
+    public String countCartTotalPrice(String id);
 
     /* 결제 창 이동 */
-    public List<CartVO> checkout(String id);
+    public List<CartVO> checkOrderList(String id);
 
     /* 주문 정보 */
-    public void orderInfo(OrderVO orderVO);
+    public void insertOrder(OrderVO orderVO);
 
     /* 장바구니 비우기 */
-    public void cartAllDelete(String id);
+    public void deleteCartList(String id);
 
     /* 주문 결과 */
-    public OrderVO orderConfirm(OrderVO orderVO);
+    public OrderVO selectOrderResult(OrderVO orderVO);
 
     /* 재고 검사 */
-    public Boolean stockCheck(OrderDetailVO orderDetailVO);
+    public Boolean selectStock(OrderDetailVO orderDetailVO);
 
     /* 장바구니 목록 */
     public List<OrderDetailVO> cartList(String id);
 
     /* 수량 변경 */
-    public void quantityChange(OrderDetailVO orderDetailVO);
+    public void changeQuantity(OrderDetailVO orderDetailVO);
 
     /* 주문 상세 */
-    public void orderInfoDetails(OrderDetailVO orderDetailVO);
+    public void insertOrderDetails(OrderDetailVO orderDetailVO);
 }
 

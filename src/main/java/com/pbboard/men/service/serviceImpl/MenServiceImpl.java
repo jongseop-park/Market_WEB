@@ -18,37 +18,32 @@ public class MenServiceImpl implements MenService {
     }
 
     @Override
-    public ProductVO detail(int seq) {
-        return menMapper.detail(seq);
+    public ProductVO selectProduct(int seq) {
+        return menMapper.selectProduct(seq);
     }
 
     @Override
-    public List<ProductVO> menListSearch(SearchCriteria searchCriteria) {
-        return menMapper.menListSearch(searchCriteria);
+    public List<ProductVO> selectProductList(SearchCriteria searchCriteria) {
+        return menMapper.selectProductList(searchCriteria);
     }
 
     @Override
-    public int menSearchCount(SearchCriteria searchCriteria) {
-        return menMapper.menSearchCount(searchCriteria);
+    public int countProduct(SearchCriteria searchCriteria) {
+        return menMapper.countProduct(searchCriteria);
     }
 
     @Override
-    public List<OptionVO> option(int seq) {
-        return menMapper.option(seq);
+    public List<OptionVO> selectOption(int seq) {
+        return menMapper.selectOption(seq);
     }
 
     @Override
-    public void registReview(ReviewVO reviewVO) {
-        menMapper.registReview(reviewVO);
+    public void insertCart(CartDTO cartDTO) {
+        menMapper.insertCart(cartDTO);
     }
 
     @Override
-    public List<ReviewVO> reviewList(int seq) {
-        return menMapper.reviewList(seq);
-    }
-
-    @Override
-    public void addCart(CartDTO cartDTO) {
-        menMapper.addCart(cartDTO);
+    public List<ReviewVO> selectReviewList(int productSeq) {
+        return menMapper.selectReviewList(productSeq);
     }
 }

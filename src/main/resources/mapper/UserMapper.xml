@@ -6,13 +6,14 @@
     <!-- 아이디 찾기 -->
     <select id="findByMemberId" parameterType="String"
             resultType="com.pbboard.user.domain.UserInfo">
-       select name, id, password, 'ROLE_USER' as auth,
-       1 as accountExpired,
-       1 as accountLocked,
-       1 as creExpired,
-       1 as enabled
-       from member_tbl2 m
+        select name, id, password, 'ROLE_USER' as auth,
+       u.account_Expired as accountExpired,
+       u.account_locked as accountLocked,
+       u.cre_expired as creExpired,
+       u.enabled as enabled
+       from member_tbl2 m, user_mng_tbl2 u
        where id = #{id}
+       and u.user_id = m.id
     </select>
 
     <!-- 권한 사용할 때 쿼리 -->
@@ -77,4 +78,9 @@
         values(#{userId}, 2)
     </insert>
     <!---->
+
+    <insert id="insertIdAuthentication" parameterType="com.pbboard.user.domain.UserInfoDTO">
+        insert into user_mng_tbl2(user_id, account_expired, account_locked, cre_expired, enabled)
+        values(#{id}, 1,1,1,1)
+    </insert>
 </mapper>

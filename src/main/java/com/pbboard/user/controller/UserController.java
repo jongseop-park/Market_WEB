@@ -16,6 +16,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,6 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-
 
     @GetMapping("/")
     public String main() {
@@ -93,7 +93,7 @@ public class UserController {
     /* 회원가입 */
     @PostMapping("/saveUser")
     @ResponseBody
-    public String signupA(@RequestBody UserInfoDTO userInfoDTO) {
+    public String saveUser(@RequestBody UserInfoDTO userInfoDTO) {
         return userService.insertUser(userInfoDTO);
     }
 

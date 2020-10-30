@@ -34,17 +34,10 @@ public class CartController {
         String userId = userInfo.getUsername();
 
         model.addAttribute("id", userId);
-        model.addAttribute("list", cartService.list(userId));
-        model.addAttribute("totalPrice", cartService.totalPrice(userId));
+        model.addAttribute("cartList", cartService.selectCartList(userId));
+        model.addAttribute("cartTotalPrice", cartService.countCartTotalPrice(userId));
 
         return "/cart/list";
-    }
-
-    /* 장바구니 삭제 */
-    @ResponseBody
-    @PostMapping("/cart/delete")
-    public String delete(@RequestBody CartDTO cartDTO) throws Exception {
-        return cartService.delete(cartDTO);
     }
 
     /* 주문 확인 */
@@ -52,8 +45,8 @@ public class CartController {
     public String payment(Model model) {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        model.addAttribute("cartVOList", cartService.checkout(id));
-        model.addAttribute("totalPrice", cartService.totalPrice(id));
+        model.addAttribute("orderList", cartService.checkOrderList(id));
+        model.addAttribute("cartTotalPrice", cartService.countCartTotalPrice(id));
 
         return "cart/checkout";
     }
@@ -68,7 +61,7 @@ public class CartController {
 
         // 주문 등록
         orderVO.setSeq(orderSeq);
-        cartService.orderInfo(orderVO);
+        cartService.insertOrder(orderVO);
 
         // 장바구니 목록
         List<OrderDetailVO> cartDTOS = cartService.cartList(id);
@@ -76,25 +69,37 @@ public class CartController {
         // 장바구니 목록 개수 만큼 for문 반복
         for(OrderDetailVO cartDTO : cartDTOS) {
             // 주문 가능할 경우
-             if(cartService.stockCheck(cartDTO)) {
+             if(cartService.selectStock(cartDTO)) {
                  cartDTO.setOrderStatus("주문완료");
-                 cartService.quantityChange(cartDTO);
+                 cartService.changeQuantity(cartDTO);
              } else {
-                 cartDTO.setOrderStatus("주문실패");
+                 cartDTO.setOrderStatus("주문실패(재고 부족)");
              }
             // 주문 등록
             cartDTO.setOrderSeq(orderSeq);
-            cartService.orderInfoDetails(cartDTO);
+            cartService.insertOrderDetails(cartDTO);
         }
 
         //주문 후 장바구니 목록 삭제
-        cartService.cartAllDelete(id);
+        cartService.deleteCartList(id);
 
         // 주문 결과
-        OrderVO vo = cartService.orderConfirm(orderVO);
-        model.addAttribute("vo", vo);
+        OrderVO orderResult = cartService.selectOrderResult(orderVO);
+        model.addAttribute("orderResult", orderResult);
 
         return "/cart/order";
+    }
+
+    @GetMapping("/cart/order")
+    public String getCartOrder() {
+        return "redirect:/login";
+    }
+
+    /* 장바구니 삭제 */
+    @ResponseBody
+    @PostMapping("/cart/delete")
+    public String delete(@RequestBody CartDTO cartDTO) throws Exception {
+        return cartService.deleteCart(cartDTO);
     }
 
     // 년+월+일+랜덤6자리 주문번호 생성
