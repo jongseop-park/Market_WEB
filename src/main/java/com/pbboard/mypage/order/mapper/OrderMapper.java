@@ -12,4 +12,5 @@ import java.util.List;
 public interface OrderMapper {
     /* 주문 내역 조회 */
     public List<OrderVO> selectOrderList(String id);
+    public List<OrderVO> selectOrderList2(int userSeq);
 }

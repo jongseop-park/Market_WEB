@@ -35,7 +35,7 @@ public class UserLoginFailHandler implements AuthenticationFailureHandler{
             loginFailureCount(username);
 
             httpServletRequest.setAttribute("loginFailMsg"
-                    , "아이디 또는 비밀번호가 틀립니다.");
+                    , "아이디 또는 비밀번호가 틀립니다. 3회 이상 틀릴 경우 계정이 잠깁니다.");
         } else if(e instanceof LockedException) {
             httpServletRequest.setAttribute("loginFailMsg"
                     , "잠긴 계정입니다.");
@@ -62,6 +62,8 @@ public class UserLoginFailHandler implements AuthenticationFailureHandler{
     public void loginFailureCount(String username) {
         userService.countFailure(username);
         int cnt = userService.checkFailureCount(username);
+
+        logger.info("login fail count : " + cnt);
 
 
         /* 실패횟수 3회 이상일 경우 */

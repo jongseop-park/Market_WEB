@@ -32,10 +32,21 @@ public class CartController {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserInfo userInfo = (UserInfo)principal;
         String userId = userInfo.getUsername();
+        int userSeq=  userInfo.getSeq();
+
+        logger.info("userId : " + userId);
+        logger.info("userSeq : " + userInfo.getSeq());
 
         model.addAttribute("id", userId);
-        model.addAttribute("cartList", cartService.selectCartList(userId));
-        model.addAttribute("cartTotalPrice", cartService.countCartTotalPrice(userId));
+        model.addAttribute("userSeq", userSeq);
+        /*model.addAttribute("cartList", cartService.selectCartList(userId));*/
+        /*model.addAttribute("cartTotalPrice", cartService.countCartTotalPrice(userId));
+           */
+        ///
+
+        model.addAttribute("cartList", cartService.selectCartList2(userSeq));
+        model.addAttribute("cartTotalPrice", cartService.countCartTotalPrice2(userSeq));
+
 
         return "/cart/list";
     }
@@ -44,9 +55,12 @@ public class CartController {
     @GetMapping("/cart/checkout")
     public String payment(Model model) {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
+        int userSeq = ((UserInfo)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getSeq();
 
-        model.addAttribute("orderList", cartService.checkOrderList(id));
-        model.addAttribute("cartTotalPrice", cartService.countCartTotalPrice(id));
+
+        /*model.addAttribute("orderList", cartService.checkOrderList(id));
+        */model.addAttribute("orderList", cartService.checkOrderList2(userSeq));
+        model.addAttribute("cartTotalPrice", cartService.countCartTotalPrice2(userSeq));
 
         return "cart/checkout";
     }
@@ -54,7 +68,45 @@ public class CartController {
     @PostMapping("/cart/order")
     public String order(OrderVO orderVO, OrderDetailVO orderDetailVO
                         ,Model model) throws Exception {
-        String id = SecurityContextHolder.getContext().getAuthentication().getName();
+        int userSeq = ((UserInfo)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getSeq();
+
+        // 주문번호 생성
+        final Long orderSeq = createOrderSeq();
+
+        // 주문번호 등록
+        orderVO.setSeq(orderSeq);
+        cartService.insertOrder2(orderVO);
+
+        // 장바구니 목록
+        List<OrderDetailVO> cartDTOS = cartService.cartList2(userSeq);
+
+        logger.info(String.valueOf(cartDTOS.size()));
+
+        // 장바구니 목록 개수 만큼 for문 반복
+        for(OrderDetailVO cartDTO : cartDTOS) {
+            // 주문 가능할 경우
+             if(cartService.selectStock2(cartDTO)) {
+                 cartDTO.setOrderStatus("주문완료");
+                 cartService.changeQuantity2(cartDTO);
+             } else {
+                 cartDTO.setOrderStatus("주문실패(재고 부족)");
+             }
+            // 주문 등록
+            cartDTO.setOrderSeq(orderSeq);
+            cartService.insertOrderDetails2(cartDTO);
+        }
+
+        //주문 후 장바구니 목록 삭제
+        cartService.deleteCartList2(userSeq);
+
+        // 주문 결과
+        OrderVO orderResult = cartService.selectOrderResult2(orderVO);
+        model.addAttribute("orderResult", orderResult);
+
+
+/////
+ /*
+ String id = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // 주문번호 생성
         final Long orderSeq = createOrderSeq();
@@ -86,6 +138,7 @@ public class CartController {
         // 주문 결과
         OrderVO orderResult = cartService.selectOrderResult(orderVO);
         model.addAttribute("orderResult", orderResult);
+*/
 
         return "/cart/order";
     }
@@ -99,7 +152,10 @@ public class CartController {
     @ResponseBody
     @PostMapping("/cart/delete")
     public String delete(@RequestBody CartDTO cartDTO) throws Exception {
-        return cartService.deleteCart(cartDTO);
+        logger.info(String.valueOf(cartDTO.getSeq()));
+        logger.info(String.valueOf(cartDTO.getUserSeq()));
+
+        return cartService.deleteCart2(cartDTO);
     }
 
     // 년+월+일+랜덤6자리 주문번호 생성

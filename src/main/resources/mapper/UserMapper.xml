@@ -6,6 +6,20 @@
     <!-- 아이디 찾기 -->
     <select id="findByMemberId" parameterType="String"
             resultType="com.pbboard.user.domain.UserInfo">
+       select name, id, password, 'ROLE_USER' as auth,
+       um.account_Expired as accountExpired,
+       um.account_locked as accountLocked,
+       um.cre_expired as creExpired,
+       um.enabled as enabled,
+       u.seq as seq
+       from user_tbl3 u , user_mng_tbl3 um
+       where u.id = #{id}
+       and u.seq = um.user_seq
+    </select>
+
+    <!--
+    <select id="findByMemberId" parameterType="String"
+            resultType="com.pbboard.user.domain.UserInfo">
         select name, id, password, 'ROLE_USER' as auth,
        u.account_Expired as accountExpired,
        u.account_locked as accountLocked,
@@ -14,7 +28,7 @@
        from member_tbl2 m, user_mng_tbl2 u
        where id = #{id}
        and u.user_id = m.id
-    </select>
+    </select>-->
 
     <!-- 권한 사용할 때 쿼리 -->
     <!-- select m.name, ua.id as id, m.password as password, a.authority as auth,
@@ -30,15 +44,15 @@
 
     <!-- 회원가입 -->
     <insert id="insertUser" parameterType="com.pbboard.user.domain.UserInfoDTO">
-    insert into member_tbl2(id, password, name, phone,
+    insert into user_tbl3(seq ,id, password, name, phone,
     email, reg_dt, mod_dt, del_yn, nickName, address)
-    values (#{id}, #{password}, #{name},
+    values (user_sequence.nextval , #{id}, #{password}, #{name},
     #{phone}, #{email}, sysDate, sysDate, 'n', #{nickName}, #{address})
     </insert>
 
     <!-- 로그인 실패시 로그인실패 횟수 추가 -->
     <update id="countFailure" parameterType="String">
-        update member_tbl2
+        update user_tbl3
         set login_fail_cnt = login_fail_cnt + 1
         where id = #{id}
     </update>
@@ -47,20 +61,22 @@
     <select id="checkFailureCount" resultType="int"
                                     parameterType="String">
         select login_fail_cnt
-        from member_Tbl2
+        from user_tbl3
         where id=#{id}
     </select>
 
     <!-- 계정 잠금 처리 -->
     <update id="disabledUsername" parameterType="String">
-        update user_mng_tbl2
-        set account_Locked = 0
-        where user_id = #{id}
+       update user_mng_tbl3
+       set account_locked = 0
+       where user_seq = (select seq from user_tbl3 where id= #{id})
     </update>
-
+    <!--update user_mng_tbl3
+    set account_Locked = 0
+    where user_id = #{id}-->
     <!-- 로그인 실패횟수 초기화 -->
     <update id="resetLoginFailureCount" parameterType="String">
-        update member_tbl2
+        update user_tbl3
         set login_fail_cnt = 0
         where id= #{id}
     </update>
@@ -68,19 +84,30 @@
     <!-- 아이디 중복 조회 -->
     <select id="checkId" parameterType="String" resultType="com.pbboard.user.domain.UserInfo">
         select id
-        from member_tbl2
+        from user_tbl3
         where id=#{id}
     </select>
 
-    <!-- 권한 부여 -->
+    <!-- 계정 관리 정보 -->
+    <insert id="insertIdAuthentication" parameterType="com.pbboard.user.domain.UserInfoDTO">
+        insert into user_mng_tbl3
+        (select
+        seq, 1 as account_expired,
+         1 as account_locked,
+         1 as cre_expired,
+         1 as enabled
+         from user_tbl3 where id = #{id})
+    </insert>
+
+<!--    <insert id="insertIdAuthentication2" parameterType="com.pbboard.user.domain.UserInfoDTO">
+        insert into user_mng_tbl3(user_seq, account_expired, account_locked, cre_expired, enabled)
+        values(#{userSeq}, 1,1,1,1)
+    </insert>-->
+
+    <!-- 권한 부여 (사용x)-->
     <insert id="authorizationUser" parameterType="String">
         insert into user_authority_tbl2
         values(#{userId}, 2)
     </insert>
     <!---->
-
-    <insert id="insertIdAuthentication" parameterType="com.pbboard.user.domain.UserInfoDTO">
-        insert into user_mng_tbl2(user_id, account_expired, account_locked, cre_expired, enabled)
-        values(#{id}, 1,1,1,1)
-    </insert>
 </mapper>

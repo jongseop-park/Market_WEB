@@ -47,6 +47,8 @@ public class MenController {
         if(principal != "anonymousUser") {
             String userId = ((UserInfo) principal).getUsername();
              model.addAttribute("id", userId);
+             int userSeq = ((UserInfo)principal).getSeq();
+             model.addAttribute("userSeq", userSeq);
         }
 
         ProductVO productVO = menService.selectProduct(seq);
@@ -55,7 +57,7 @@ public class MenController {
         List<OptionVO> options = menService.selectOption(seq);
         model.addAttribute("option", options);
 
-        List<ReviewVO> reviews = menService.selectReviewList(seq);
+        List<ReviewVO> reviews = menService.selectReviewList2(seq);
 
         int sum = 0;
         int averageScore = 0;
@@ -76,7 +78,8 @@ public class MenController {
     @ResponseBody
     @PostMapping("/men/cart")
     public String cart(@RequestBody CartDTO cartDTO) {
-        menService.insertCart(cartDTO);
+        logger.info(String.valueOf(cartDTO.getUserSeq()));
+        menService.insertCart2(cartDTO);
 
         return "성공";
     }

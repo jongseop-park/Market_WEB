@@ -3,7 +3,46 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.pbboard.cart.mapper.CartMapper">
+    <!-- 장바구니 목록 -->
+    <select id="selectCartList2" resultType="com.pbboard.cart.domain.CartVO" parameterType="int">
+            select c.seq,
+            m.name as productName,
+            m.image,
+            to_char(m.price, '999,999,999') as price,
+            c.quantity,
+            c.option_name,
+            to_char(m.price * c.quantity, '999,999,999') as totalPrice,
+            u.id as user_id
+            from cart_tbl3 c, men_product_tbl2 m, user_tbl3 u
+            where c.product_seq = m.seq
+            and u.seq = c.user_seq
+            and u.seq  = #{userSeq}
+    </select>
+
+    <!-- <select id="selectCartList" resultType="com.pbboard.cart.domain.CartVO" parameterType="String">
+       select c.seq, p.name as productName, p.image,
+       to_char(p.price,'999,999,999') as price,
+       c.quantity, c.option_name,
+       to_char(price*quantity, '999,999,999') as totalPrice,
+       c.member_id as member_id
+       from
+       cart_tbl2 c, men_product_tbl2 p
+       where
+       c.product_seq = p.seq
+       and c.member_id= #{id}
+   </select>
+-->
+
     <!-- 장바구니 총 합계 금액 -->
+    <select id="countCartTotalPrice2" resultType="String" parameterType="int">
+        select to_char(sum(price * quantity), '999,999,999') as totalPrice
+        from cart_tbl3 c, men_product_tbl2 p
+        where
+        p.seq = c.product_Seq
+        and c.user_seq = #{userSeq}
+    </select>
+
+    <!--
     <select id="countCartTotalPrice" resultType="String" parameterType="String">
         select to_char(sum(price*quantity), '999,999,999') as totalPrice
         from
@@ -11,22 +50,44 @@
         where
         c.product_seq = p.seq
         and c.member_id = #{id}
-    </select>
+    </select>-->
 
     <!-- 장바구니 삭제 -->
+    <delete id="deleteCart2" parameterType="com.pbboard.men.domain.CartDTO">
+        delete from cart_tbl3
+        where seq = #{seq}
+        and user_seq = #{userSeq}
+    </delete>
+    <!--
     <delete id="deleteCart" parameterType="com.pbboard.men.domain.CartDTO">
         delete from cart_tbl2
         where seq=${seq}
         and member_id = #{userId}
     </delete>
+    -->
 
     <!-- 장바구니 비우기 -->
-    <delete id="deleteCartList">
-        delete from cart_tbl2 where member_id = #{userId}
+    <delete id="deleteCartList2" parameterType="int">
+        delete from cart_tbl3 where user_seq = #{userSeq}
     </delete>
+<!--   <delete id="deleteCartList">
+        delete from cart_tbl2 where member_id = #{userId}
+    </delete>-->
 
     <!-- 주문 확인 -->
-    <select id="checkOrderList" parameterType="String"
+    <select id="checkOrderList2" parameterType="int"
+            resultType="com.pbboard.cart.domain.CartVO">
+        select c.seq, p.name as productName,
+        c.option_name,
+        to_char(price*quantity, '999,999,999') as
+        totalPrice
+        from
+        cart_tbl3 c, men_product_tbl2 p
+        where
+        c.product_seq = p.seq
+        and c.user_seq = #{userSeq}
+    </select>
+ <!--   <select id="checkOrderList" parameterType="String"
             resultType="com.pbboard.cart.domain.CartVO">
          select c.seq, p.name as productName,
          c.option_name,
@@ -37,30 +98,59 @@
         c.product_seq = p.seq
         and c.member_id= #{id}
     </select>
+-->
 
     <!-- 주문 정보 -->
-    <insert id="insertOrder" parameterType="com.pbboard.cart.domain.OrderVO">
+    <insert id="insertOrder2" parameterType="com.pbboard.cart.domain.OrderVO">
+        insert into order_tbl3(seq, user_seq, name, address, phone, reg_dt, note, total_price)
+        values(#{seq}, #{userSeq}, #{name}, #{address}, #{phone}, sysDate, #{note}, #{totalPrice})
+    </insert>
+
+<!--
+   <insert id="insertOrder" parameterType="com.pbboard.cart.domain.OrderVO">
         insert into order_tbl2(seq, user_id, name, address, phone, reg_dt, note, total_price)
         values(#{seq}, #{userId}, #{name}, #{address}
         , #{phone}, sysDate, #{note}, #{totalPrice})
     </insert>
+-->
 
     <!-- 주문 결과 -->
-    <select id="selectOrderResult" parameterType="com.pbboard.cart.domain.OrderVO"
+    <select id="selectOrderResult2" parameterType="com.pbboard.cart.domain.OrderVO"
+                                resultType="com.pbboard.cart.domain.OrderVO">
+        select name,
+        phone,
+        address,
+        note,
+        seq,
+        reg_dt as regDt,
+        to_char(total_price, '999,999,999') as totalPrice
+        from order_tbl3
+        where user_seq = #{userSeq}
+        and seq = #{seq}
+    </select>
+<!--
+   <select id="selectOrderResult" parameterType="com.pbboard.cart.domain.OrderVO"
                                 resultType="com.pbboard.cart.domain.OrderVO">
         select name, phone, address, note, seq, reg_dt as regDt
         , to_char(total_Price, '999,999,999') as totalPrice from order_tbl2
         where user_id = #{userId}
         and seq = #{seq}
     </select>
+-->
 
     <!-- 수량 변경 -->
-    <update id="changeQuantity" parameterType="com.pbboard.cart.domain.OrderDetailVO">
-        update stock_tbl2
+    <update id="changeQuantity2" parameterType="com.pbboard.cart.domain.OrderDetailVO">
+        update stock_tbl3
         set quantity= quantity - #{quantity}
         where product_seq = #{productSeq}
         <include refid="optionName"></include>
     </update>
+  <!--<update id="changeQuantity" parameterType="com.pbboard.cart.domain.OrderDetailVO">
+        update stock_tbl2
+        set quantity= quantity - #{quantity}
+        where product_seq = #{productSeq}
+        <include refid="optionName"></include>
+    </update>-->
 
     <sql id="optionName">
         <if test='optionName == ""'>
@@ -72,16 +162,35 @@
     </sql>
 
     <!-- 재고 목록 -->
+    <select id="selectStock2" parameterType="com.pbboard.cart.domain.OrderDetailVO"
+                            resultType="Integer" >
+        select quantity
+        from stock_tbl3
+        where product_Seq = #{productSeq}
+        <include refid="optionName"></include>
+    </select>
+
+    <!--
     <select id="selectStock" parameterType="com.pbboard.cart.domain.OrderDetailVO"
                             resultType="Integer" >
         select quantity
         from stock_tbl2
         where product_seq= #{productSeq}
         <include refid="optionName"></include>
-    </select>
+    </select>-->
 
     <!-- 장바구니에 주문 목록 -->
-    <select id="cartList" parameterType="String"
+    <select id="cartList2" parameterType="int"
+            resultType="com.pbboard.cart.domain.OrderDetailVO">
+        select c.product_seq as productSeq,
+        c.option_name as optionName,
+        c.quantity,
+        u.id as member_id
+        from cart_tbl3 c, user_tbl3 u
+        where c.user_seq = u.seq
+        and user_seq = #{userSeq}
+    </select>
+ <!--  <select id="cartList" parameterType="String"
             resultType="com.pbboard.cart.domain.OrderDetailVO">
         select product_seq as productSeq,
          option_name as optionName,
@@ -90,23 +199,22 @@
         from cart_tbl2
         where member_id = #{userId}
     </select>
-
-    <!-- 장바구니 목록 -->
-    <select id="selectCartList" resultType="com.pbboard.cart.domain.CartVO" parameterType="String">
-        select c.seq, p.name as productName, p.image,
-        to_char(p.price,'999,999,999') as price,
-        c.quantity, c.option_name,
-        to_char(price*quantity, '999,999,999') as totalPrice,
-        c.member_id as member_id
-        from
-        cart_tbl2 c, men_product_tbl2 p
-        where
-        c.product_seq = p.seq
-        and c.member_id= #{id}
-    </select>
+-->
 
     <!-- 주문 상세 -->
-    <insert id="insertOrderDetails" parameterType="com.pbboard.cart.domain.OrderDetailVO">
+    <insert id="insertOrderDetails2" parameterType="com.pbboard.cart.domain.OrderDetailVO">
+       insert into order_details_tbl3(seq, order_seq,
+       product_seq, option_name,
+       quantity, order_status)
+       values(tbl_order_details_seq.nextval,
+        #{orderSeq},
+        #{productSeq},
+        #{optionName, jdbcType=VARCHAR},
+        #{quantity},
+        #{orderStatus})
+    </insert>
+
+    <!--<insert id="insertOrderDetails" parameterType="com.pbboard.cart.domain.OrderDetailVO">
        insert into order_details_tbl2(seq, order_seq
        , product_seq, option_name, quantity, order_status)
     values(tbl_order_details_seq.nextval,
@@ -115,5 +223,5 @@
     #{optionName, jdbcType=VARCHAR},
     #{quantity},
     #{orderStatus})
-    </insert>
+    </insert>-->
 </mapper>

@@ -300,11 +300,23 @@
                         <div class="product__item">
                           <div class="product__item__pic set-bg"
                              th:attr="data-setbg=${product.image}">
+                              <div class="label new"
+                                    th:if="${product.newProduct}">New</div>
                           </div>
                           <div class="product__item__text">
                                <h6><a th:href="@{/men/detail(seq=${product.seq})}"
                                       th:text="${product.name}"></a></h6>
                             <div class="product__price" th:text="${product.price} + '원'"></div>
+                          <div class="product__details__text">
+                                  <div class="rating">
+                                      <i class="fa fa-star" th:if="${product.score != null}"
+                                        th:each="num :
+                                        ${#numbers.sequence(1, (product.score == null ? '1' : product.score))}">
+                                      </i>
+                                      <span th:if="${product.review > 0}"
+                                            th:text="'(' + ${product.review} + ' reviews )'"></span>
+                                  </div>
+                          </div>
                         </div>
                         </div>
                      </div>
@@ -426,7 +438,6 @@
     </div>
 </div>
 <!-- Search End -->
-
 <!-- Js Plugins -->
 <script src="../static/js/jquery-3.3.1.min.js"></script>
 <script src="../static/js/bootstrap.min.js"></script>

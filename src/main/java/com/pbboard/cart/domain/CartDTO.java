@@ -16,6 +16,9 @@ public class CartDTO {
     /** 회원아이디 */
     private String userId;
 
+    /** 회원 시퀀스 */
+    private int userSeq;
+
     public int getSeq() {
         return seq;
     }
@@ -54,5 +57,13 @@ public class CartDTO {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public int getUserSeq() {
+        return userSeq;
+    }
+
+    public void setUserSeq(int userSeq) {
+        this.userSeq = userSeq;
     }
 }

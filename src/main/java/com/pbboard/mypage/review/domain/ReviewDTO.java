@@ -13,6 +13,9 @@ public class ReviewDTO {
     /** 주문 상세 번호 */
     private int orderDetailsSeq;
 
+    /** 회원 시퀀스 */
+    private int userSeq;
+
     public String getUserId() {
         return userId;
     }
@@ -43,5 +46,13 @@ public class ReviewDTO {
 
     public void setOrderDetailsSeq(int orderDetailsSeq) {
         this.orderDetailsSeq = orderDetailsSeq;
+    }
+
+    public int getUserSeq() {
+        return userSeq;
+    }
+
+    public void setUserSeq(int userSeq) {
+        this.userSeq = userSeq;
     }
 }

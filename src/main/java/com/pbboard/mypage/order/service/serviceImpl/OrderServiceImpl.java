@@ -21,4 +21,9 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderVO> selectOrderList(String id) {
         return orderMapper.selectOrderList(id);
     }
+
+    @Override
+    public List<OrderVO> selectOrderList2(int userSeq) {
+        return orderMapper.selectOrderList2(userSeq);
+    }
 }

@@ -16,6 +16,9 @@ public class CartDTO {
     /** 옵션명 */
     private String optionName;
 
+    /** 회원 시퀀스 */
+    private int userSeq;
+
     public int getProductSeq() {
         return productSeq;
     }
@@ -46,5 +49,21 @@ public class CartDTO {
 
     public void setOptionName(String optionName) {
         this.optionName = optionName;
+    }
+
+    public int getSeq() {
+        return seq;
+    }
+
+    public void setSeq(int seq) {
+        this.seq = seq;
+    }
+
+    public int getUserSeq() {
+        return userSeq;
+    }
+
+    public void setUserSeq(int userSeq) {
+        this.userSeq = userSeq;
     }
 }

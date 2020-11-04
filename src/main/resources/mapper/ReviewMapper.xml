@@ -4,7 +4,22 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.pbboard.mypage.review.mapper.ReviewMapper">
     <!-- 구매 후기 목록 -->
-    <select id="selectReviewList" parameterType="String"
+    <select id="selectReviewList2" parameterType="int"
+                            resultType="com.pbboard.mypage.review.domain.ReviewVO">
+    select od.seq as seq,
+      mp.name as productName,
+      mp.image as productImage,
+      mp.brand as productBrand,
+      od.option_name as optionName
+      ,to_char(o.reg_dt, 'yyyy-MM-dd') as regDt
+      from order_details_tbl3 od, order_tbl3 o, men_product_tbl2 mp
+      where od.order_seq = o.seq
+      and od.product_seq = mp.seq
+      and o.user_seq = #{userSeq}
+      and od.order_status = '주문완료'
+      order by regdt desc
+    </select>
+ <!--<select id="selectReviewList" parameterType="String"
                             resultType="com.pbboard.mypage.review.domain.ReviewVO">
       select od.seq as seq,
       mp.name as productName,
@@ -18,21 +33,30 @@
       and o.user_id = #{userId}
       and od.order_status = '주문완료'
       order by regdt desc
-    </select>
+    </select>-->
 
-    <delete id="deleteReview" parameterType="com.pbboard.mypage.review.domain.ReviewDTO">
+    <!--후기 삭제 -->
+    <delete id="deleteReview2" parameterType="com.pbboard.mypage.review.domain.ReviewDTO">
+      delete from review_tbl3
+      where user_seq = #{userSeq}
+      and order_details_seq = #{orderDetailsSeq}
+    </delete>
+
+    <!--
+ <delete id="deleteReview" parameterType="com.pbboard.mypage.review.domain.ReviewDTO">
       delete from review_tbl2
       where user_id = #{userId}
       and order_details_seq = #{orderDetailsSeq}
-    </delete>
+    </delete>-->
 
     <!-- 구매후기 작성 여부  -->
     <select id="checkReview" parameterType="int"
                              resultType="int">
       select count(*)
-      from review_tbl2
+      from review_tbl3
       where order_details_seq = #{seq}
     </select>
+    <!-- review_tbl2 -> review_tbl3 -->
 
     <!-- 구매후기 작성 -->
     <select id="selectReview" parameterType="int"
@@ -42,13 +66,26 @@
       , m.name as productName
       , m.brand as productBrand
       , od.option_name as optionName
-      from order_details_tbl2 od, men_product_tbl2 m
+      from order_details_tbl3 od, men_product_tbl2 m
       where od.seq = #{seq}
       and m.seq = od.product_seq
     </select>
+    <!-- order_details_tbl2 -> order_details_tbl3  -->
 
     <!-- 구매후기 등록/수정 -->
-    <insert id="insertReview" parameterType="com.pbboard.mypage.review.domain.ReviewDTO">
+    <insert id="insertReview2" parameterType="com.pbboard.mypage.review.domain.ReviewDTO">
+      merge into review_tbl3
+      using dual on
+      (user_seq = #{userSeq} and order_details_seq = #{orderDetailsSeq})
+      when matched then
+      update set
+      content = #{content, jdbcType=VARCHAR},  mod_dt = sysDate , score = #{score, jdbcType=INTEGER}
+      when not matched then
+      insert(seq, user_seq, content, score, reg_dt, mod_dt, del_yn, order_details_seq)
+      values(review_sequence.nextval, #{userSeq}, #{content, jdbcType=VARCHAR}
+      , #{score, jdbcType=INTEGER}, sysDate, null, 'n', #{orderDetailsSeq})
+    </insert>
+ <!--<insert id="insertReview" parameterType="com.pbboard.mypage.review.domain.ReviewDTO">
       merge into review_tbl2
       using dual on
       (user_id = #{userId} and order_details_seq = #{orderDetailsSeq})
@@ -59,10 +96,27 @@
       insert(seq, user_id, content, score, reg_dt, mod_dt, del_yn, order_details_seq)
       values(review_sequence.nextval, #{userId}, #{content, jdbcType=VARCHAR}
       , #{score, jdbcType=INTEGER}, sysDate, null, 'n', #{orderDetailsSeq})
-    </insert>
+    </insert>-->
 
     <!-- 구매후기 수정 -->
-    <select id="updateReview" parameterType="com.pbboard.mypage.review.domain.ReviewDTO"
+    <select id="updateReview2" parameterType="com.pbboard.mypage.review.domain.ReviewDTO"
+                                resultType="com.pbboard.mypage.review.domain.ReviewVO">
+       select od.seq as seq
+       , m.image as productImage
+       , m.name as productName
+       , m.brand as productBrand
+       , od.option_name as optionName
+       , r.content as content
+       , r.score as score
+       from order_details_tbl3 od, men_product_tbl2 m, order_tbl3 o, review_Tbl3 r
+       where o.user_seq = #{userSeq}
+       and od.seq = #{orderDetailsSeq}
+       and o.seq = od.order_seq
+       and m.seq = od.product_seq
+       and od.seq = r.order_details_seq
+    </select>
+<!--
+ <select id="updateReview" parameterType="com.pbboard.mypage.review.domain.ReviewDTO"
                                 resultType="com.pbboard.mypage.review.domain.ReviewVO">
        select od.seq as seq
        , m.image as productImage
@@ -78,6 +132,5 @@
        and m.seq = od.product_seq
        and od.seq = r.order_details_seq
     </select>
-
-
+-->
 </mapper>

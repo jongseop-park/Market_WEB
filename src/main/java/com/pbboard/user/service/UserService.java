@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -37,6 +38,7 @@ public class UserService implements UserDetailsService {
             // 암호화된 패스워드로 저장
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             infoDTO.setPassword(encoder.encode(infoDTO.getPassword()));
+
             userMapper.insertUser(infoDTO);
             userMapper.insertIdAuthentication(infoDTO);
             /*userMapper.userAuthority(infoDTO.getId());*/

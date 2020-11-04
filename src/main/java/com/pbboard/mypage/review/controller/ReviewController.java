@@ -2,6 +2,7 @@ package com.pbboard.mypage.review.controller;
 import com.pbboard.mypage.review.domain.ReviewDTO;
 import com.pbboard.mypage.review.domain.ReviewVO;
 import com.pbboard.mypage.review.service.ReviewService;
+import com.pbboard.user.domain.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,8 @@ public class ReviewController {
     @GetMapping("/mypage/review")
     public String review(Model model) {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<ReviewVO> reviewVOS = reviewService.selectReviewList(id);
+        int userSeq = ((UserInfo)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getSeq();
+        List<ReviewVO> reviewVOS = reviewService.selectReviewList2(userSeq);
 
         /* 리뷰 목록을 가져온 후 */
         /* 리뷰 작성 여부에 따라 true, false 부여 */
@@ -38,7 +40,20 @@ public class ReviewController {
                 reviewVO.setReview(false);
         }
 
-        model.addAttribute("reviewList", reviewVOS);
+        model.addAttribute("reviewList", reviewVOS); /*
+        String id = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<ReviewVO> reviewVOS = reviewService.selectReviewList(id);
+
+        *//* 리뷰 목록을 가져온 후 *//*
+        *//* 리뷰 작성 여부에 따라 true, false 부여 *//*
+        for(ReviewVO reviewVO : reviewVOS) {
+            if(reviewService.checkReview(reviewVO.getSeq()) > 0)
+                reviewVO.setReview(true);
+            else
+                reviewVO.setReview(false);
+        }
+
+        model.addAttribute("reviewList", reviewVOS);*/
         return "/mypage/review/list";
     }
 
@@ -57,10 +72,16 @@ public class ReviewController {
     public String reviewModify(ReviewDTO reviewDTO) {
         log.info("post review Modify");
 
-        String id = SecurityContextHolder.getContext().getAuthentication().getName();
+      /*  String id = SecurityContextHolder.getContext().getAuthentication().getName();
         reviewDTO.setUserId(id);
 
         reviewService.insertReview(reviewDTO);
+*/
+        int userSeq = ((UserInfo)SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal()).getSeq();
+        reviewDTO.setUserSeq(userSeq);
+
+        reviewService.insertReview2(reviewDTO);
 
         return "redirect:/mypage/review";
     }
@@ -71,14 +92,16 @@ public class ReviewController {
             , Model model) {
         log.info("get review Modify" + orderDetailsSeq);
 
+       int userSeq = ((UserInfo)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getSeq();
        String id = SecurityContextHolder.getContext().getAuthentication().getName();
 
        if(orderDetailsSeq > 0) {
            ReviewDTO reviewDTO = new ReviewDTO();
            reviewDTO.setUserId(id);
+           reviewDTO.setUserSeq(userSeq);
            reviewDTO.setOrderDetailsSeq(orderDetailsSeq);
 
-           ReviewVO reviewVO = reviewService.updateReview(reviewDTO);
+           ReviewVO reviewVO = reviewService.updateReview2(reviewDTO);
            model.addAttribute("reviewInfo", reviewVO);
 
            return "/mypage/review/form";
@@ -91,12 +114,15 @@ public class ReviewController {
     @GetMapping("/mypage/delete_review")
     public String reviewDelete(@RequestParam("seq") int orderDetailsSeq, Model model) {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
+        int userSeq = ((UserInfo)SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal()).getSeq();
 
         ReviewDTO reviewDTO = new ReviewDTO();
         reviewDTO.setUserId(id);
+        reviewDTO.setUserSeq(userSeq);
         reviewDTO.setOrderDetailsSeq(orderDetailsSeq);
 
-        reviewService.deleteReview(reviewDTO);
+        reviewService.deleteReview2(reviewDTO);
 
         return "redirect:/mypage/review";
     }

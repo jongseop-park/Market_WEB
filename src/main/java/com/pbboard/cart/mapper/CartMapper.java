@@ -42,4 +42,18 @@ public interface CartMapper {
 
     /* 주문 상세 정보 */
     public void insertOrderDetails(OrderDetailVO orderDetailVO);
+
+
+
+    public List<CartVO> selectCartList2(int userSeq);
+    public String countCartTotalPrice2(int userSeq);
+    public void deleteCart2(CartDTO cartDTO);
+    public List<CartVO> checkOrderList2(int userSeq);
+    public void insertOrder2(OrderVO orderVO);
+    public List<OrderDetailVO> cartList2(int userSeq);
+    public Integer selectStock2(OrderDetailVO orderDetailVO);
+    public void changeQuantity2(OrderDetailVO orderDetailVO);
+    public void insertOrderDetails2(OrderDetailVO orderDetailVO);
+    public void deleteCartList2(int userSeq);
+    public OrderVO selectOrderResult2(OrderVO orderVO);
 }

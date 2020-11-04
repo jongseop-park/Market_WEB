@@ -172,9 +172,10 @@
 </div>
 <!-- Search End -->
 
-<!-- user id -->
+<!-- user info -->
 <input type="hidden" id="id" th:attr="value=${id}">
-
+<input type="hidden" id="userSeq" th:attr="value=${userSeq}">
+<!-- -->
 
 <!-- Js Plugins -->
 <script src="../static/js/jquery-3.3.1.min.js"></script>
@@ -204,7 +205,8 @@
     function cartDelete(data) {
         var seq = {
             seq: data,
-            userId: $('#id').val()
+            userId: $('#id').val(),
+            userSeq: $('#userSeq').val()
         }
 
         $.ajax({
@@ -220,6 +222,7 @@
                 alert("작업실패");
             }
         });
+
     }
 
 

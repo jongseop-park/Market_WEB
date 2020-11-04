@@ -18,16 +18,37 @@
     <!-- 제품 목록 조회 -->
     <select id="selectProductList" parameterType="com.pbboard.men.domain.SearchCriteria"
                             resultType="com.pbboard.men.domain.ProductVO">
-        select seq, name, to_char(price, '999,999,999,999') as price , image
+        select seq, name, to_char(price, '999,999,999,999') as price , image, review, score, regDt
         from
-        (select seq, name, price, image,  row_number()
+        (select seq, name, price, image,
+            (select count(r.seq) as review from review_tbl3 r, order_details_tbl3 od
+                where od.product_seq = men_product_tbl2.seq
+                and r.order_details_seq = od.seq
+                group by men_product_tbl2.seq)
+            as review,
+            (select round(sum(r.score) / count(r.seq)) as score from review_tbl3 r, order_details_tbl3 od
+            where od.product_seq = men_product_tbl2.seq
+            and r.order_details_seq = od.seq
+            group by men_product_tbl2.seq)
+            as score,
+            reg_dt as regDt
+        ,row_number()
         over(order by seq desc) as rNum
         from men_product_tbl2
-        <include refid="search"></include>
         ) where rNum between #{rowStart} and #{rowEnd}
         order by seq desc
-
     </select>
+<!--    select seq, name, to_char(price, '999,999,999,999') as price , image
+    from
+    (select seq, name, price, image,  row_number()
+    over(order by seq desc) as rNum
+    from men_product_tbl2
+    <include refid="search"></include>
+    ) where rNum between #{rowStart} and #{rowEnd}
+    order by seq desc
+    select * from men_product_tbl2;-->
+
+    <!---->
 
     <!-- 목록 개수 -->
     <select id="countProduct" parameterType="com.pbboard.men.domain.SearchCriteria"
@@ -53,14 +74,27 @@
 
     <!-- 옵션 조회 -->
     <select id="selectOption" parameterType="int" resultType="com.pbboard.men.domain.OptionVO">
-        select product_seq ,name as optionName, wm_concat(value) as optionValue
+        select product_seq as productSeq ,name as optionName, wm_concat(value) as optionValue
         from option_tbl2
         where product_seq = #{seq}
         group by name, product_seq
     </select>
 
     <!-- 리뷰 목록 조회 -->
-    <select id="selectReviewList" parameterType="int"
+    <select id="selectReviewList2" parameterType="int"
+                        resultType="com.pbboard.men.domain.ReviewVO">
+       select u.nickname as nickName
+        , r.content as content
+        , r.score as score
+        , to_char(r.reg_dt, 'yyyy-MM-dd hh:mi') as regDt
+        from review_tbl3 r, order_details_tbl3 od, user_tbl3 u
+        where u.seq = r.user_seq
+        and od.seq = r.order_details_seq
+        and od.product_seq = #{productSeq}
+        order by r.reg_dt desc
+    </select>
+<!--
+<select id="selectReviewList" parameterType="int"
                         resultType="com.pbboard.men.domain.ReviewVO">
         select m.nickname as nickName
         , r.content as content
@@ -72,6 +106,7 @@
         and od.product_seq = #{productSeq}
         order by r.reg_dt desc
     </select>
+-->
 
 <!--    <insert id="addCart" parameterType="java.util.List">
      INSERT into cart_tbl2(seq, product_seq, option_name, quantity, member_id)
@@ -95,6 +130,19 @@
     </insert> -->
 
     <!-- 장바구니 담기 / 중복 불가 -->
+    <insert id="insertCart2" parameterType="com.pbboard.men.domain.CartDTO">
+        merge into cart_tbl3
+        using dual on
+        (product_seq = ${productSeq} and user_seq = #{userSeq}
+        <include refid="optionName"></include>)
+        when matched then
+        update set
+        quantity = ${quantity}
+        when not matched then
+        insert(seq, product_seq, option_name, quantity, user_seq)
+        values(cart_sequence.nextVal, ${productSeq}, #{optionName, jdbcType=VARCHAR}, ${quantity}, #{userSeq})
+    </insert>
+    <!--
     <insert id="insertCart" parameterType="com.pbboard.men.domain.CartDTO">
        merge into cart_tbl2
        using dual on
@@ -106,7 +154,7 @@
        when not matched then
        insert(seq, product_seq, option_name, quantity, member_id)
        values(cart_sequence.nextVal, ${productSeq}, #{optionName, jdbcType=VARCHAR}, ${quantity}, #{memberId})
-    </insert>
+    </insert>-->
 
     <sql id="optionName">
         <if test='optionName != ""'>

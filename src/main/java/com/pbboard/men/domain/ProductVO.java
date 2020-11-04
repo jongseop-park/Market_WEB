@@ -34,6 +34,15 @@ public class ProductVO {
     /** 상세 이미지 4 */
     private String subImage4;
 
+    /** 후기 개수 */
+    private Integer review;
+    /** 평점 */
+    private Integer score;
+
+    private Boolean newProduct;
+    private Boolean stock;
+
+    private String regDt;
 
     public int getSeq() {
         return seq;
@@ -129,5 +138,37 @@ public class ProductVO {
 
     public void setSubImage4(String subImage4) {
         this.subImage4 = subImage4;
+    }
+
+    public Integer getReview() {
+        return review;
+    }
+
+    public void setReview(Integer review) {
+        this.review = review;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
+    public Boolean getNewProduct() {
+        return newProduct;
+    }
+
+    public void setNewProduct(Boolean newProduct) {
+        this.newProduct = newProduct;
+    }
+
+    public String getRegDt() {
+        return regDt;
+    }
+
+    public void setRegDt(String regDt) {
+        this.regDt = regDt;
     }
 }

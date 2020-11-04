@@ -25,6 +25,9 @@ public class OrderVO {
     /** 총 가격 */
     private String totalPrice;
 
+    /** 회원 시퀀스 */
+    private int userSeq;
+
     public Long getSeq() {
         return seq;
     }
@@ -87,5 +90,13 @@ public class OrderVO {
 
     public void setTotalPrice(String totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public int getUserSeq() {
+        return userSeq;
+    }
+
+    public void setUserSeq(int userSeq) {
+        this.userSeq = userSeq;
     }
 }

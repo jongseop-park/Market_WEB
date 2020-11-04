@@ -94,12 +94,14 @@
                         <form action="/mypage/modify_review" method="post">
                             <input type="hidden" name="orderDetailsSeq"
                                    th:attr="value=${reviewInfo.seq}">
-                            <input type="number" placeholder="평점" name="score"
+                            평점 <input type="number" placeholder="평점" name="score"
                                    min="1" max="5"
                                   th:attr="value=${reviewInfo.score != 0 ? reviewInfo.score : ''}">
                             <span class="star-rating">
                                 <span></span>
                             </span>
+
+                            후기
                             <textarea placeholder="내용" name="content"
                                       th:text="${reviewInfo.content}">
                             </textarea>

@@ -50,4 +50,24 @@ public class ReviewServiceImpl implements ReviewService {
     public void deleteReview(ReviewDTO reviewDTO) {
         reviewMapper.deleteReview(reviewDTO);
     }
+
+    @Override
+    public List<ReviewVO> selectReviewList2(int userSeq) {
+        return reviewMapper.selectReviewList2(userSeq);
+    }
+
+    @Override
+    public void insertReview2(ReviewDTO reviewDTO) {
+        reviewMapper.insertReview2(reviewDTO);
+    }
+
+    @Override
+    public ReviewVO updateReview2(ReviewDTO reviewDTO) {
+        return reviewMapper.updateReview2(reviewDTO);
+    }
+
+    @Override
+    public void deleteReview2(ReviewDTO reviewDTO) {
+        reviewMapper.deleteReview2(reviewDTO);
+    }
 }
