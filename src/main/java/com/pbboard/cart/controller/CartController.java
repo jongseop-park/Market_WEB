@@ -57,9 +57,9 @@ public class CartController {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         int userSeq = ((UserInfo)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getSeq();
 
-
         /*model.addAttribute("orderList", cartService.checkOrderList(id));
-        */model.addAttribute("orderList", cartService.checkOrderList2(userSeq));
+        */
+        model.addAttribute("orderList", cartService.checkOrderList2(userSeq));
         model.addAttribute("cartTotalPrice", cartService.countCartTotalPrice2(userSeq));
 
         return "cart/checkout";
@@ -80,7 +80,7 @@ public class CartController {
         // 장바구니 목록
         List<OrderDetailVO> cartDTOS = cartService.cartList2(userSeq);
 
-        logger.info(String.valueOf(cartDTOS.size()));
+/*        logger.info(String.valueOf(cartDTOS.size()));*/
 
         // 장바구니 목록 개수 만큼 for문 반복
         for(OrderDetailVO cartDTO : cartDTOS) {
@@ -102,7 +102,6 @@ public class CartController {
         // 주문 결과
         OrderVO orderResult = cartService.selectOrderResult2(orderVO);
         model.addAttribute("orderResult", orderResult);
-
 
 /////
  /*

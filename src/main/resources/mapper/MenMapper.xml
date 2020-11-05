@@ -161,4 +161,20 @@
             and option_name=#{optionName}
         </if>
     </sql>
+
+    <select id="checkStockQuantity" parameterType="com.pbboard.men.domain.OptionVO"
+                                    resultType="int">
+        select quantity from stock_tbl3
+        where product_seq = #{productSeq}
+        and <include refid="checkOptionName"></include>
+    </select>
+
+    <sql id="checkOptionName">
+        <if test='optionName == ""'>
+            name is null
+        </if>
+        <if test='optionName != ""'>
+            name = #{optionName}
+        </if>
+    </sql>
 </mapper>

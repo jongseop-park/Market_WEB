@@ -119,11 +119,11 @@
                     </div>
                     <div class="product__details__price" th:text="${product.price}  + '원'"></div>
                     <p th:text="${product.summaryDesc}"></p>
-                    <div class="product__details__button">
+                    <div class="product__details__button" th:if="${options != null}">
                         <div class="quantity">
                             <span>수량:</span>
                             <div class="pro-qty">
-                                <input type="text" class="quantityValue" value="1">
+                                <input type="text" class="quantityValue" value="1" readonly="readonly">
                             </div>
                         </div>
                         <a href="#" class="cart-btn"><span class="icon_bag_alt"></span> 장바구니 담기</a>
@@ -134,7 +134,7 @@
                     </div>
                     <div class="product__details__widget">
                         <ul>
-                            <li th:each="options : ${option}">
+                           <!-- <li th:each="options : ${option}">
                                 <span class="optionName" th:text="${options.optionName}"></span>
                                 <select class="optionMenu" name="optionMenu">
                                     <option>옵션 선택</option>
@@ -143,6 +143,31 @@
                                         <td th:text="${optionValues}"></td>
                                     </option>
                                 </select>
+                            </li>-->
+                            <!--<li th:if="${options != null}">
+                                <span class="testOptionName">옵션</span>
+                                <select
+                                        class="optionMenu" name="optionMenu">
+                                    <option>옵션 선택</option>
+                                    <option th:each="option : ${options}">
+                                        <td th:text="${option}"></td>
+                                    </option>
+                                </select>
+                            </li>-->
+                            <li th:if="${options == null}">
+                                <span>품절 또는 판매가 중지된 상품입니다.</span>
+                            </li>
+                            <li th:if="${options != null}">
+                                <span class="testOptionName">옵션</span>
+                                <select class="optionMenu" name="optionMenu">
+                                    <option>옵션 선택</option>
+                                    <option th:each="option : ${options}"
+                                            th:attr="value=${option.quantity == null ? 0 : option.quantity}">
+                                        <td th:text="${option.optionValue}"></td>
+                                    </option>
+                                </select><!--
+                                <td th:text="${option.quantity == null ? 0 : option.quantity}"></td>
+                                <td th:text="${option.optionValue}"></td>-->
                             </li>
                         </ul>
                     </div>
@@ -217,7 +242,6 @@
                                         </ul>
                                     </div>
                                 </div>-->
-
                                 <div class="blog__comment__item" th:each="review : ${reviewList}">
                                     <div class="blog__comment__item__text">
                                         <h6 th:text="${review.nickName}"></h6>
@@ -325,7 +349,9 @@
 </div>
 <!-- Search End -->
 
+<!-- user Info-->
 <input type="hidden" id="id" th:attr="value=${id}">
+<input type="hidden" id="userSeq" th:attr="value=${userSeq}">
 
 <!-- Js Plugins -->
 <script src="../static/js/jquery-3.3.1.min.js"></script>
@@ -346,31 +372,43 @@
     $('.cart-btn').on('click', function() {
         var option = '';
 
-        // 선택해야할 옵션 개수만큼 for문 반복
-        $('select[name=optionMenu] option:selected').each(function(index) {
-            option += $(this).attr('etc') + '/';
-        });
-        // 블랙/S, 화이트/M, 블랙/L
+        // 옵션 있을 경우
+        if($('.optionMenu').length) {
+            option = $('select[name=optionMenu] option:selected').text();
 
-        option = option.substring(0, option.length - 1);
-        // 마지막 글자 제거
+            if(option == "옵션 선택" || option.indexOf(undefined) == 1) { // 선택하지 않은 옵션 있을 경우
+                alert("옵션을 선택해주세요.");
+            } else if($('#id').val() == "") { // 로그인하지 않았을 경우
+                alert("로그인 후에 사용할 수 있습니다.")
+            } else if(option.indexOf("품절") > -1) {
+                alert("해당 옵션은 품절 상태입니다.");
+            } else {
+                var data = {
+                    memberId: $('#id').val(), // 회원아이디
+                    productSeq: getParameter("seq"), // 제품시퀀스
+                    quantity: $('.quantityValue').val(), // 수량
+                    optionName: option.trim(), // 옵션명
+                    userSeq: $('#userSeq').val() // 유저시퀀스
+                };
+                Save(data);
+            }
 
-        // 선택하지 않은 옵션 있을 경우
-        if(option.indexOf(undefined) == -1 && $('#id').val() != "") {
+        } else { // 옵션 없을 경우
+            if($('#id').val() == "") { // 로그인하지 않았을 경우
+                alert("로그인 후에 사용할 수 있습니다.")
+                return;
+            }
+
             var data = {
-                memberId: $('#id').val(),
-                productSeq: getParameter("seq"),
-                quantity: $('.quantityValue').val(),
-                optionName: option
+                memberId: $('#id').val(), // 회원아이디
+                productSeq: getParameter("seq"), // 제품시퀀스
+                quantity: $('.quantityValue').val(), // 수량
+                optionName: option, // 옵션명
+                userSeq: $('#userSeq').val() // 유저시퀀스
             };
+
             Save(data);
-
-        } else if(option.indexOf(undefined) != -1) {
-            alert("옵션을 선택해주세요.");
-        } else if($('#id').val() == "") {
-            alert("로그인 후에 사용할 수 있습니다.")
         }
-
     });
 
     function getParameter(name) {
@@ -396,4 +434,44 @@
             }
         });
     }
+
+    // 선택 수량 제한
+    var proQty = $('.pro-qty');
+    proQty.prepend('<span class="dec qtybtn">-</span>');
+    proQty.append('<span class="inc qtybtn">+</span>');
+
+    // 옵션 변경될 때 1로 초기화
+    $('.optionMenu').on('change', function() {
+        $('.quantityValue').val('1');
+    })
+
+    // 수량 조절 버튼 이벤트
+    proQty.on('click', '.qtybtn', function () {
+        var quantity = $('select[name=optionMenu] option:selected').val();
+
+        // 옵션 미 선택 시
+        if(quantity == "옵션 선택") {
+            alert("옵션을 선택해 주세요");
+            return;
+        }
+
+        var $button = $(this);
+        var oldValue = $button.parent().find('input').val();
+
+        if ($button.hasClass('inc')) {
+            if(parseInt(oldValue) < parseInt(quantity)) {
+                var newVal = parseFloat(oldValue) + 1;
+            }else{
+                newVal = oldValue;
+            }
+        } else {
+            if (oldValue > 1) {
+                var newVal = parseFloat(oldValue) - 1;
+            } else {
+                newVal = 1;
+            }
+        }
+        $button.parent().find('input').val(newVal);
+    });
+
 </script>

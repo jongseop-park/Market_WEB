@@ -29,5 +29,5 @@ public interface MenMapper {
     public List<ReviewVO> selectReviewList(int productSeq);
     public List<ReviewVO> selectReviewList2(int productSeq);
 
-    public int checkStockQuantity(OptionVO optionVO);
+    public Integer checkStockQuantity(OptionVO optionVO);
 }

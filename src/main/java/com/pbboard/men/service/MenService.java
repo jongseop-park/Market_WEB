@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface MenService {
     /* 제품 상세 조회 */
-    public ProductVO selectProduct(int seq);
+    public ProductVO selectProduct(int seq) throws Exception;
 
     /* 제품 목록 조회 */
     public List<ProductVO> selectProductList(SearchCriteria searchCriteria);

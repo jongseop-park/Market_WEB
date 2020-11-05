@@ -14,6 +14,9 @@ public class OptionVO {
 
     private String[] optionValues;
 
+    /** 옵션 수량 */
+    private int quantity;
+
     public String getOptionName() {
         return optionName;
     }
@@ -46,5 +49,13 @@ public class OptionVO {
 
     public void setProductSeq(int productSeq) {
         this.productSeq = productSeq;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

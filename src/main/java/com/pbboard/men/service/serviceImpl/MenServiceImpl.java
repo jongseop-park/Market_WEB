@@ -26,8 +26,12 @@ public class MenServiceImpl implements MenService {
     }
 
     @Override
-    public ProductVO selectProduct(int seq) {
-        return menMapper.selectProduct(seq);
+    public ProductVO selectProduct(int seq) throws Exception {
+        ProductVO productVO = menMapper.selectProduct(seq);
+        if(productVO == null)
+            throw new Exception();
+
+        return productVO;
     }
 
     @Override
@@ -64,32 +68,70 @@ public class MenServiceImpl implements MenService {
     @Override
     public List<OptionVO> selectOption(int seq) {
         List<OptionVO> optionVOSList = menMapper.selectOption(seq);
-
-        String[][] option = new String[2][];
         List<String> options = new ArrayList<>();
 
-        int num = 0;
+        // 옵션 없을 경우
+        if(optionVOSList.isEmpty()) {
+            return null;
+        }
+
+        // 옵션 배열
+        String[][] option = new String[optionVOSList.size()][];
+
+        // 옵션값 저장
+        int num = 0; // 옵션 개수 확인 값
         for(OptionVO optionVO : optionVOSList) {
              option[num] = optionVO.getOptionValues();
             num++;
         }
+        /* logger.info("num : " + num);*/
 
-        for(int i=0; i< option[0].length; i++) {
-            for(int j=0; j<option[1].length; j++) {
-                String value = option[0][i];
-                value += "/";
-                value += option[1][j];
-                /* logger.info("productSeq : " + seq  + "\n option : " +  value); */
+        // 옵션 1개 이상
+        if(num > 1) {
+            // 옵션 값 조합 (블랙,화이트 / S,M,L --> 블랙/S, 블랙M, 블랙L ...)
+            for (int i = 0; i < option[0].length; i++) {
+                for (int j = 0; j < option[1].length; j++) {
+                    String value = option[0][i];
+                    value += "/";
+                    value += option[1][j];
+                    /* logger.info("productSeq : " + seq  + "\n option : " +  value); */
+                    options.add(value);
+                    value = "";
+                }
+            }
+        } else {
+            for(int i=0; i< option[0].length; i++) {
+                String value = option[0][i];/*
+                logger.info(value);*/
                 options.add(value);
-                value = "";
             }
         }
 
+         List<OptionVO> stockCheckOptions = new ArrayList<>();
+
         for(String s : options) {
-            logger.info(s);
+            OptionVO optionVO = new OptionVO();
+            optionVO.setOptionName(s);
+            optionVO.setProductSeq(seq);
+
+            Integer quantity = menMapper.checkStockQuantity(optionVO);
+
+            OptionVO optionVO1 = new OptionVO();
+            optionVO1.setQuantity(quantity == null ? 0 : quantity);
+
+            // 체크 후 품절표시 or 그대로 저장
+            if(quantity == null) {
+                optionVO1.setOptionValue(s + "(품절)");
+            } else if(quantity == 0) {
+                optionVO1.setOptionValue(s + "(품절)");
+            } else if(quantity > 0) {
+                optionVO1.setOptionValue(s);
+            }
+
+            stockCheckOptions.add(optionVO1);
         }
 
-        return optionVOSList;
+        return stockCheckOptions;
     }
 
     @Override

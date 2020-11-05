@@ -70,8 +70,8 @@ public class ReviewController {
     /* 구매후기 작성 */
     @PostMapping("/mypage/modify_review")
     public String reviewModify(ReviewDTO reviewDTO) {
-        log.info("post review Modify");
-
+       /* log.info("post review Modify");
+*/
       /*  String id = SecurityContextHolder.getContext().getAuthentication().getName();
         reviewDTO.setUserId(id);
 

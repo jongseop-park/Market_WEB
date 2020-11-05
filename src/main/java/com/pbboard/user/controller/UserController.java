@@ -32,6 +32,8 @@ public class UserController {
 
     @GetMapping("/")
     public String main() {
+        logger.info("main");
+
         return "index";
     }
 
@@ -39,6 +41,8 @@ public class UserController {
     @GetMapping("/login")
     public String login(HttpServletRequest request)
     {
+        logger.info("login");
+
         // 현재 요청된 페이지의 링크 이전의 웹 페이지 주소를 저장
         String uri = request.getHeader("Referer");
 

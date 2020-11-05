@@ -39,24 +39,28 @@ public class MenController {
 
     @RequestMapping("/men/detail")
     public String detail(@RequestParam("seq") int seq
-            , Model model) {
+            , Model model) throws Exception {
         // 인증 객체 가져오기
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // 만약 비회원이 아니면 아이디 저장, 장바구니 등록 시에 사용
         if(principal != "anonymousUser") {
             String userId = ((UserInfo) principal).getUsername();
-             model.addAttribute("id", userId);
-             int userSeq = ((UserInfo)principal).getSeq();
-             model.addAttribute("userSeq", userSeq);
+            int userSeq = ((UserInfo)principal).getSeq();
+
+            model.addAttribute("id", userId);
+            model.addAttribute("userSeq", userSeq);
         }
 
-        ProductVO productVO = menService.selectProduct(seq);
-        model.addAttribute("product", productVO);
+        try {
+            ProductVO productVO = menService.selectProduct(seq);
+            model.addAttribute("product", productVO);
+        } catch(Exception e) {
+            return "redirect:/men/list";
+        }
 
         List<OptionVO> options = menService.selectOption(seq);
-        model.addAttribute("option", options);
-
+        model.addAttribute("options", options);
         List<ReviewVO> reviews = menService.selectReviewList2(seq);
 
         int sum = 0;
@@ -77,8 +81,8 @@ public class MenController {
 
     @ResponseBody
     @PostMapping("/men/cart")
-    public String cart(@RequestBody CartDTO cartDTO) {
-        logger.info(String.valueOf(cartDTO.getUserSeq()));
+    public String cart(@RequestBody CartDTO cartDTO) {/*
+        logger.info(String.valueOf(cartDTO.getUserSeq()));*/
         menService.insertCart2(cartDTO);
 
         return "성공";
