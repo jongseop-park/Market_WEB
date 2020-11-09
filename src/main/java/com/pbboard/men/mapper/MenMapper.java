@@ -23,11 +23,10 @@ public interface MenMapper {
 
     /* 장바구니 담기 */
     public void insertCart(CartDTO cartDTO);
-    public void insertCart2(CartDTO cartDTO);
 
     /* 리뷰 목록 조회 */
     public List<ReviewVO> selectReviewList(int productSeq);
-    public List<ReviewVO> selectReviewList2(int productSeq);
 
+    /* 재고 확인 */
     public Integer checkStockQuantity(OptionVO optionVO);
 }

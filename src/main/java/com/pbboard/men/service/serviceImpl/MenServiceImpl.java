@@ -27,7 +27,21 @@ public class MenServiceImpl implements MenService {
 
     @Override
     public ProductVO selectProduct(int seq) throws Exception {
+        List<ReviewVO> reviewVOS = menMapper.selectReviewList(seq);
+
+        int sum = 0;
+        int averageScore = 0;
+
+        for(ReviewVO reviewVO : reviewVOS) {
+            sum += reviewVO.getScore();
+        }
+
+        if(reviewVOS.size() > 0)
+            averageScore = sum / reviewVOS.size();
+
         ProductVO productVO = menMapper.selectProduct(seq);
+        productVO.setScore(averageScore);
+
         if(productVO == null)
             throw new Exception();
 
@@ -57,6 +71,7 @@ public class MenServiceImpl implements MenService {
             }
         }
 
+        // out of stock check
         return productVOList;
     }
 
@@ -79,6 +94,8 @@ public class MenServiceImpl implements MenService {
         String[][] option = new String[optionVOSList.size()][];
 
         // 옵션값 저장
+        // 1 사이즈 {S,M,L}
+        // 2 색상 {'화이트', '블랙'}
         int num = 0; // 옵션 개수 확인 값
         for(OptionVO optionVO : optionVOSList) {
              option[num] = optionVO.getOptionValues();
@@ -142,15 +159,5 @@ public class MenServiceImpl implements MenService {
     @Override
     public List<ReviewVO> selectReviewList(int productSeq) {
         return menMapper.selectReviewList(productSeq);
-    }
-
-    @Override
-    public void insertCart2(CartDTO cartDTO) {
-        menMapper.insertCart2(cartDTO);
-    }
-
-    @Override
-    public List<ReviewVO> selectReviewList2(int productSeq) {
-        return menMapper.selectReviewList2(productSeq);
     }
 }

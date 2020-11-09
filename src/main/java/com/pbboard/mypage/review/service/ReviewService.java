@@ -6,19 +6,21 @@ import com.pbboard.mypage.review.domain.ReviewVO;
 import java.util.List;
 
 public interface ReviewService {
-    public List<ReviewVO> selectReviewList(String id);
-    public List<ReviewVO> selectReviewList2(int userSeq);
+    /* 리뷰 목록 조회 */
+    public List<ReviewVO> selectReviewList(int userSeq);
 
+    /* 리뷰 생성 */
     public void insertReview(ReviewDTO reviewDTO);
-    public void insertReview2(ReviewDTO reviewDTO);
 
+    /* 리뷰 수정 */
     public ReviewVO updateReview(ReviewDTO reviewDTO);
-    public ReviewVO updateReview2(ReviewDTO reviewDTO);
 
+    /* 리뷰 작성 여부 확인 */
     public int checkReview(int seq);
 
+    /* 리뷰 조회 */
     public ReviewVO selectReview(int seq);
 
+    /* 리뷰 삭제 */
     public void deleteReview(ReviewDTO reviewDTO);
-    public void deleteReview2(ReviewDTO reviewDTO);
 }

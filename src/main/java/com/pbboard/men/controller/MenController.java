@@ -54,27 +54,15 @@ public class MenController {
 
         try {
             ProductVO productVO = menService.selectProduct(seq);
+            List<OptionVO> options = menService.selectOption(seq);
+            List<ReviewVO> reviews = menService.selectReviewList(seq);
+
             model.addAttribute("product", productVO);
+            model.addAttribute("options", options);
+            model.addAttribute("reviewList", reviews);
         } catch(Exception e) {
             return "redirect:/men/list";
         }
-
-        List<OptionVO> options = menService.selectOption(seq);
-        model.addAttribute("options", options);
-        List<ReviewVO> reviews = menService.selectReviewList2(seq);
-
-        int sum = 0;
-        int averageScore = 0;
-
-        for(ReviewVO reviewVO : reviews) {
-            sum += reviewVO.getScore();
-        }
-
-        if(reviews.size() > 0)
-            averageScore = sum / reviews.size();
-
-        model.addAttribute("averageScore", averageScore);
-        model.addAttribute("reviewList", reviews);
 
         return "/men/detail";
     }
@@ -83,7 +71,7 @@ public class MenController {
     @PostMapping("/men/cart")
     public String cart(@RequestBody CartDTO cartDTO) {/*
         logger.info(String.valueOf(cartDTO.getUserSeq()));*/
-        menService.insertCart2(cartDTO);
+        menService.insertCart(cartDTO);
 
         return "성공";
     }

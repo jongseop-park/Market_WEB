@@ -112,10 +112,14 @@
                 <div class="product__details__text">
                     <h3 th:text="${product.name}"><span>Brand: <td th:text="${product.brand}"></span></h3>
                     <div class="rating">
-                       <i class="fa fa-star"
+                      <!-- <i class="fa fa-star"
                           th:if="${averageScore > 0}"
                            th:each="num : ${#numbers.sequence(1, averageScore)}"></i>
-                       <span th:text="'(' + ${reviewList.size()} + ' reviews )'"></span>
+                      -->
+                        <i class="fa fa-star"
+                           th:if="${product.score > 0}"
+                           th:each="num : ${#numbers.sequence(1, product.score)}"></i>
+                        <span th:text="'(' + ${reviewList.size()} + ' reviews )'"></span>
                     </div>
                     <div class="product__details__price" th:text="${product.price}  + '원'"></div>
                     <p th:text="${product.summaryDesc}"></p>
@@ -201,9 +205,12 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab"
-                               th:text="'리뷰 ( ' + ${reviewList.size()} + ' )'">
+                               th:text="'구매후기 ( ' + ${reviewList.size()} + ' )'">
                                 리뷰
                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#tabs-4" role="tab">상품 문의</a>
                         </li>
                     </ul>
                     <div class="tab-content">
@@ -225,38 +232,48 @@
                                 quis, sem.</p>
                         </div>
                         <div class="tab-pane" id="tabs-3" role="tabpanel">
-                           <!-- <div class="blog__details__comment">
-                                <div class="blog__comment__item">
-                                    <div class="blog__comment__item__text">
-                                        <h6>홍길동</h6>
-                                        <p>제품이 아주 좋습니다.</p>
-                                        <div class="rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                        <ul>
-                                            <li><i class="fa fa-clock-o"></i> 2020-01-03 11:33</li>
-                                        </ul>
-                                    </div>
-                                </div>-->
-                                <div class="blog__comment__item" th:each="review : ${reviewList}">
-                                    <div class="blog__comment__item__text">
-                                        <h6 th:text="${review.nickName}"></h6>
-                                        <p th:text="${review.content}"></p>
-                                        <div class="rating">
-                                            <i class="fa fa-star" th:if="${review.score > 0}"
+                            <div class="blog__comment__item" th:each="review : ${reviewList}">
+                               <div class="blog__comment__item__text">
+                                  <h6 th:text="${review.nickName}"></h6>
+                                    <p th:text="${review.content}"></p>
+                                     <div class="rating">
+                                        <i class="fa fa-star" th:if="${review.score > 0}"
                                                 th:each="num : ${#numbers.sequence(1, review.score)}">
-                                            </i>
-                                        </div>
-                                        <ul>
-                                            <li th:text="${review.regDt}"><i class="fa fa-clock-o"></i></li>
-                                        </ul>
-                                    </div>
-                                </div>
+                                        </i>
+                                     </div>
+                                  <ul>
+                                    <li th:text="${review.regDt}"><i class="fa fa-clock-o"></i></li>
+                                  </ul>
+                               </div>
+                             </div>
+                        </div>
+                        <div class="tab-pane" id="tabs-4" role="tabpanel">
+                            <div class="blog__details__comment">
+                                <a href="#" class="leave-btn">작성하기</a>
+                                <h6>Q & A 상품 문의 (총 205건)</h6>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <th>번호</th>
+                                        <th>답변여부</th>
+                                        <th>구분</th>
+                                        <th>내용</th>
+                                        <th>작성자</th>
+                                        <th>등록일자</th>
+                                    </thead>
+                                    <tbody>
+                                     <tr>
+                                         <td>205</td>
+                                         <td>답변완료</td>
+                                         <td>배송</td>
+                                         <td>사이즈문의</td>
+                                         <td>tkd***</td>
+                                         <td>2020-11-06</td>
+                                     </tr>
+
+                                    </tbody>
+                                </table>
                             </div>
+                        </div>
                         </div>
                     </div>
                 </div>

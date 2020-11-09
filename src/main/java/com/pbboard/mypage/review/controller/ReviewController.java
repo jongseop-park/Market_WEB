@@ -6,7 +6,6 @@ import com.pbboard.user.domain.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,7 +28,7 @@ public class ReviewController {
     public String review(Model model) {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
         int userSeq = ((UserInfo)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getSeq();
-        List<ReviewVO> reviewVOS = reviewService.selectReviewList2(userSeq);
+        List<ReviewVO> reviewVOS = reviewService.selectReviewList(userSeq);
 
         /* 리뷰 목록을 가져온 후 */
         /* 리뷰 작성 여부에 따라 true, false 부여 */
@@ -40,20 +39,7 @@ public class ReviewController {
                 reviewVO.setReview(false);
         }
 
-        model.addAttribute("reviewList", reviewVOS); /*
-        String id = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<ReviewVO> reviewVOS = reviewService.selectReviewList(id);
-
-        *//* 리뷰 목록을 가져온 후 *//*
-        *//* 리뷰 작성 여부에 따라 true, false 부여 *//*
-        for(ReviewVO reviewVO : reviewVOS) {
-            if(reviewService.checkReview(reviewVO.getSeq()) > 0)
-                reviewVO.setReview(true);
-            else
-                reviewVO.setReview(false);
-        }
-
-        model.addAttribute("reviewList", reviewVOS);*/
+        model.addAttribute("reviewList", reviewVOS);
         return "/mypage/review/list";
     }
 
@@ -81,7 +67,7 @@ public class ReviewController {
                 .getAuthentication().getPrincipal()).getSeq();
         reviewDTO.setUserSeq(userSeq);
 
-        reviewService.insertReview2(reviewDTO);
+        reviewService.insertReview(reviewDTO);
 
         return "redirect:/mypage/review";
     }
@@ -101,7 +87,7 @@ public class ReviewController {
            reviewDTO.setUserSeq(userSeq);
            reviewDTO.setOrderDetailsSeq(orderDetailsSeq);
 
-           ReviewVO reviewVO = reviewService.updateReview2(reviewDTO);
+           ReviewVO reviewVO = reviewService.updateReview(reviewDTO);
            model.addAttribute("reviewInfo", reviewVO);
 
            return "/mypage/review/form";
@@ -122,7 +108,7 @@ public class ReviewController {
         reviewDTO.setUserSeq(userSeq);
         reviewDTO.setOrderDetailsSeq(orderDetailsSeq);
 
-        reviewService.deleteReview2(reviewDTO);
+        reviewService.deleteReview(reviewDTO);
 
         return "redirect:/mypage/review";
     }

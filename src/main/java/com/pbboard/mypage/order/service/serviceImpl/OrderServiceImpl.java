@@ -18,12 +18,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderVO> selectOrderList(String id) {
-        return orderMapper.selectOrderList(id);
+    public List<OrderVO> selectOrderList(int userSeq) {
+        return orderMapper.selectOrderList(userSeq);
     }
 
     @Override
-    public List<OrderVO> selectOrderList2(int userSeq) {
-        return orderMapper.selectOrderList2(userSeq);
+    public List<OrderVO> selectOrderDetailList(Long orderSeq) {
+        return orderMapper.selectOrderDetailList(orderSeq);
+    }
+
+    @Override
+    public com.pbboard.cart.domain.OrderVO selectOrderDetailInfo(Long orderSeq) {
+        return orderMapper.selectOrderDetailInfo(orderSeq);
     }
 }

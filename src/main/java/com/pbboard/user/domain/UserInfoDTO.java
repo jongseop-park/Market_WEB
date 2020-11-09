@@ -1,13 +1,28 @@
 package com.pbboard.user.domain;
 
 public class UserInfoDTO {
+    /** 아이디 */
     private String id;
+
+    /** 비밀번호 */
     private String password;
+
+    /** 권한 */
     private String auth;
+
+    /** 이름 */
     private String name;
+
+    /** 연락처 */
     private String phone;
+
+    /** 이메일 */
     private String email;
+
+    /** 닉네임 */
     private String nickName;
+
+    /** 주소 */
     private String address;
 
     public String getId() {

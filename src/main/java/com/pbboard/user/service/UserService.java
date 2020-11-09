@@ -3,18 +3,12 @@ package com.pbboard.user.service;
 import com.pbboard.user.domain.UserInfo;
 import com.pbboard.user.domain.UserInfoDTO;
 import com.pbboard.user.mapper.UserMapper;
-import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.Optional;
 
 // UserDetailsService 필수 구현
 @Service

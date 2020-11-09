@@ -76,7 +76,6 @@ public class ReviewVO {
         this.seq = seq;
     }
 
-
     public String getContent() {
         return content;
     }

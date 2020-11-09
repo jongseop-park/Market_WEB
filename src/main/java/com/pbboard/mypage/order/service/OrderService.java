@@ -7,6 +7,8 @@ import java.util.List;
 public interface OrderService {
 
     /* 주문 내역 조회 */
-    public List<OrderVO> selectOrderList(String id);
-    public List<OrderVO> selectOrderList2(int userSeq);
+    public List<OrderVO> selectOrderList(int userSeq);
+
+    public List<OrderVO> selectOrderDetailList(Long orderSeq);
+    public com.pbboard.cart.domain.OrderVO selectOrderDetailInfo(Long orderSeq);
 }

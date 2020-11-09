@@ -22,11 +22,6 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<ReviewVO> selectReviewList(String id) {
-        return reviewMapper.selectReviewList(id);
-    }
-
-    @Override
     public int checkReview(int seq) {
         return reviewMapper.checkReview(seq);
     }
@@ -34,6 +29,11 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewVO selectReview(int seq) {
         return reviewMapper.selectReview(seq);
+    }
+
+    @Override
+    public List<ReviewVO> selectReviewList(int userSeq) {
+        return reviewMapper.selectReviewList(userSeq);
     }
 
     @Override
@@ -49,25 +49,5 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void deleteReview(ReviewDTO reviewDTO) {
         reviewMapper.deleteReview(reviewDTO);
-    }
-
-    @Override
-    public List<ReviewVO> selectReviewList2(int userSeq) {
-        return reviewMapper.selectReviewList2(userSeq);
-    }
-
-    @Override
-    public void insertReview2(ReviewDTO reviewDTO) {
-        reviewMapper.insertReview2(reviewDTO);
-    }
-
-    @Override
-    public ReviewVO updateReview2(ReviewDTO reviewDTO) {
-        return reviewMapper.updateReview2(reviewDTO);
-    }
-
-    @Override
-    public void deleteReview2(ReviewDTO reviewDTO) {
-        reviewMapper.deleteReview2(reviewDTO);
     }
 }

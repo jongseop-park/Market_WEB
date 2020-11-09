@@ -4,7 +4,7 @@
                 "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.pbboard.mypage.order.mapper.OrderMapper">
     <!-- 주문 내역 조회 -->
-        <select id="selectOrderList2" parameterType="int"
+        <select id="selectOrderList" parameterType="int"
                             resultType="com.pbboard.mypage.order.domain.OrderVO">
         select o.seq as orderSeq,
         m.name as productName,
@@ -21,21 +21,35 @@
         and o.user_seq = #{userSeq}
         order by regdt desc
         </select>
-    <!--<select id="selectOrderList" parameterType="String"
-                            resultType="com.pbboard.mypage.order.domain.OrderVO">
-        select od.order_seq as orderSeq ,
-        mp.name as productName,
-         mp.image as productImage,
-          mp.brand as productBrand,
-           od.option_name as optionName
-        ,to_char(o.reg_dt, 'yyyy-MM-dd hh24:mi:ss (DY)') as regDt
-        , od.quantity as quantity,
-        to_char(mp.price * od.quantity, '999,999,999,999') as orderPrice
-        , order_status as orderStatus
-        from order_details_tbl2 od, order_tbl2 o, men_product_tbl2 mp
-        where od.order_seq = o.seq
-        and od.product_seq = mp.seq
-        and o.user_id = #{userId}
-        order by regdt desc
-        </select>-->
+
+    <!-- 주문 상세 목록 조회 -->
+     <select id="selectOrderDetailList" parameterType="long"
+                                        resultType="com.pbboard.mypage.order.domain.OrderVO">
+        select m.image as productImage,
+            m.brand as productBrand,
+            od.option_name as optionName,
+            to_char(m.price, '999,999,999') as orderPrice ,
+            m.name as productName,
+            od.quantity as quantity,
+            od.order_status as orderStatus
+        from order_details_tbl3 od, men_product_tbl2 m
+            where od.order_seq = #{orderSeq}
+            and m.seq = od.product_seq
+     </select>
+    <select id="selectOrderDetailInfo" parameterType="long"
+                                       resultType="com.pbboard.cart.domain.OrderVO">
+      select o.seq as seq,
+         to_char(o.reg_dt, 'yyyy.MM.dd hh24:mi') as regDt,
+         o.name as name,
+         o.phone as phone,
+         o.address as address,
+         o.note as note,
+         to_char(sum(decode(od.order_status, '주문완료', m.price)), '999,999,999') as totalPrice
+      from order_tbl3 o, order_details_tbl3 od, men_product_tbl2 m
+         where o.seq = od.order_seq
+         and od.product_seq = m.seq
+         and o.seq = #{orderSeq}
+      group by
+          o.seq, o.reg_dt, o.name, o.phone, o.address, o.note, o.total_price
+    </select>
 </mapper>
