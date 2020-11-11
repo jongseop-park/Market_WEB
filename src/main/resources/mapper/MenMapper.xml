@@ -122,4 +122,54 @@
             name = #{optionName}
         </if>
     </sql>
+
+    <select id="selectQnaList" parameterType="com.pbboard.men.domain.SearchCriteria"
+                                resultType="com.pbboard.men.domain.QnaVO">
+        select seq, ansYn, qnaType, qnaTitle, qnaContent, replyContent , replyDt , replyUserNickName , userId, regDt
+	        from (
+             select pq.seq,
+                pq.ans_yn as ansYn,
+                pq.qna_type as qnaType,
+                pq.qna_title as qnaTitle,
+                pq.qna_content as qnaContent,
+                pq.reply_content as replyContent,
+                to_char(pq.reply_dt, 'yyyy.MM.dd') as replyDt,
+                (select nickname from user_tbl3 where seq = pq.reply_user_seq) as replyUserNickName,
+                substr(u.id, 1, 1) || lpad('*', length(u.id)- 1, '*') as userId,
+              to_char(pq.reg_dt, 'yyyy-MM-dd') as regDt,
+			    row_number()
+			    over(order by pq.seq asc) as rNum
+        from product_qna_tbl3 pq, user_tbl3 u
+        where pq.product_seq = #{productSeq}
+        and u.seq = pq.user_seq
+        ) where rNum between #{rowStart} and #{rowEnd}
+    </select>
+   <select id="selectQnaList2" parameterType="com.pbboard.men.domain.SearchCriteria"
+                                resultType="com.pbboard.men.domain.QnaVO">
+        select seq, ansYn, qnaType, qnaTitle, qnaContent, replyContent , replyDt , replyUserNickName , userId, regDt
+	        from (
+             select pq.seq,
+                pq.ans_yn as ansYn,
+                pq.qna_type as qnaType,
+                pq.qna_title as qnaTitle,
+                pq.qna_content as qnaContent,
+                pq.reply_content as replyContent,
+                to_char(pq.reply_dt, 'yyyy.MM.dd') as replyDt,
+                (select nickname from user_tbl3 where seq = pq.reply_user_seq) as replyUserNickName,
+                substr(u.id, 1, 1) || lpad('*', length(u.id)- 1, '*') as userId,
+              to_char(pq.reg_dt, 'yyyy-MM-dd') as regDt,
+			    row_number()
+			    over(order by pq.seq asc) as rNum
+        from product_qna_tbl3 pq, user_tbl3 u
+        where pq.product_seq = #{productSeq}
+        and u.seq = pq.user_seq
+        ) where rNum between #{rowStart} and #{rowEnd}
+    </select>
+
+    <select id="countQna" parameterType="int"
+            resultType="int">
+        select count(seq)
+        from product_qna_tbl3
+        where product_seq = #{seq}
+    </select>
 </mapper>

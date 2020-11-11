@@ -29,4 +29,12 @@ public interface MenMapper {
 
     /* 재고 확인 */
     public Integer checkStockQuantity(OptionVO optionVO);
+
+    /* 문의 목록 조회 */
+    public List<QnaVO> selectQnaList(SearchCriteria searchCriteria);
+
+
+    public List<QnaVO> selectQnaList2(SearchCriteria searchCriteria);
+
+    public int countQna(int seq);
 }

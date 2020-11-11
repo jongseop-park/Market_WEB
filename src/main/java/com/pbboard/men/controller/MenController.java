@@ -10,7 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class MenController {
@@ -60,11 +62,30 @@ public class MenController {
             model.addAttribute("product", productVO);
             model.addAttribute("options", options);
             model.addAttribute("reviewList", reviews);
+
+            ////
+
+            List<QnaVO> qnaVOS = menService.selectQnaList(seq);
+            model.addAttribute("qnaList", qnaVOS);
+
+            // 페이지
+            PageMaker pageMaker = new PageMaker();
+            pageMaker.setCri(new SearchCriteria());
+            pageMaker.setTotalCount(menService.countQna(seq));
+
+            model.addAttribute("pageMaker", pageMaker);
+
         } catch(Exception e) {
+            e.printStackTrace();
             return "redirect:/men/list";
         }
 
         return "/men/detail";
+    }
+
+    @GetMapping("/men/detail/qna_form")
+    public String qnaForm() {
+        return "/men/qnaForm";
     }
 
     @ResponseBody
@@ -74,5 +95,22 @@ public class MenController {
         menService.insertCart(cartDTO);
 
         return "성공";
+    }
+
+    @ResponseBody
+    @PostMapping("/men/detail")
+    public Map<String, Object> selectQnaList(@RequestBody SearchCriteria searchCriteria) {
+        logger.info(String.valueOf(searchCriteria.getPage()));
+        List<QnaVO> qnaVOS = menService.selectQnaList2(searchCriteria);
+
+        PageMaker pageMaker = new PageMaker();
+        pageMaker.setCri(searchCriteria);
+        pageMaker.setTotalCount(menService.countQna(searchCriteria.getProductSeq()));
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("list", qnaVOS);
+        map.put("page", pageMaker);
+
+        return map;
     }
 }

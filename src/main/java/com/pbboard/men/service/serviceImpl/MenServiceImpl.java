@@ -160,4 +160,24 @@ public class MenServiceImpl implements MenService {
     public List<ReviewVO> selectReviewList(int productSeq) {
         return menMapper.selectReviewList(productSeq);
     }
+
+    @Override
+    public List<QnaVO> selectQnaList(int seq) {
+        SearchCriteria searchCriteria= new SearchCriteria();
+        searchCriteria.setProductSeq(seq);
+
+        List<QnaVO> qnaVOS = menMapper.selectQnaList(searchCriteria);
+
+        return qnaVOS;
+    }
+
+    @Override
+    public List<QnaVO> selectQnaList2(SearchCriteria searchCriteria) {
+        return menMapper.selectQnaList2(searchCriteria);
+    }
+
+    @Override
+    public int countQna(int seq) {
+        return menMapper.countQna(seq);
+    }
 }

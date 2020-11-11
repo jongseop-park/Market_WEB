@@ -5,6 +5,7 @@ public class SearchCriteria extends Criteria {
     private String searchType="";
     private String keyword="";
     private String category="";
+    private int productSeq;
 
     public String getCategory() {
         return category;
@@ -37,5 +38,13 @@ public class SearchCriteria extends Criteria {
                 ", keyword='" + keyword + '\'' +
                 ", category='" + category + '\'' +
                 '}';
+    }
+
+    public int getProductSeq() {
+        return productSeq;
+    }
+
+    public void setProductSeq(int productSeq) {
+        this.productSeq = productSeq;
     }
 }

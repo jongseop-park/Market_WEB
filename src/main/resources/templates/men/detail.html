@@ -210,7 +210,8 @@
                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#tabs-4" role="tab">상품 문의</a>
+                            <a class="nav-link" data-toggle="tab" href="#tabs-4" role="tab"
+                               th:text="'상품 문의 ( ' + ${pageMaker.getTotalCount()} + ' )'">상품 문의</a>
                         </li>
                     </ul>
                     <div class="tab-content">
@@ -248,9 +249,16 @@
                              </div>
                         </div>
                         <div class="tab-pane" id="tabs-4" role="tabpanel">
-                            <div class="blog__details__comment">
-                                <a href="#" class="leave-btn">작성하기</a>
-                                <h6>Q & A 상품 문의 (총 205건)</h6>
+                            <td class="blog__details__comment">
+                                <a href="/men/detail/qna_form"
+                                   onClick="window.open(this.href, '', 'width=700, height=700, left=100, right=100');
+                                    return false;"
+                                    class="leave-btn">작성하기</a>
+                                <h6 th:text="'Q & A 상품 문의 (총 '
+                                + ${pageMaker.totalCount == null ? 0 : pageMaker.totalCount} + '건)'">
+                                    Q & A 상품 문의 (총 205건)
+                                </h6>
+                                <!-- 문의 목록 시작 -->
                                 <table class="table table-bordered">
                                     <thead>
                                         <th>번호</th>
@@ -260,18 +268,64 @@
                                         <th>작성자</th>
                                         <th>등록일자</th>
                                     </thead>
-                                    <tbody>
-                                     <tr>
-                                         <td>205</td>
-                                         <td>답변완료</td>
-                                         <td>배송</td>
-                                         <td>사이즈문의</td>
-                                         <td>tkd***</td>
-                                         <td>2020-11-06</td>
-                                     </tr>
+                                     <tbody id="testBody">
+                                     <div th:if="${qnaList.size() > 0}"
+                                          th:each="idx : ${#numbers.sequence(0, qnaList.size() - 1)}">
+                                         <!-- 문의 목록 시작 -->
+                                        <tr>
+                                          <td th:text="${qnaList.get(idx).seq}">205</td>
+                                          <td th:text="${qnaList.get(idx).ansYn}">답변완료</td>
+                                          <td th:text="${qnaList.get(idx).qnaType}">배송</td>
+                                          <td>
+                                              <a th:onclick= "'detail(`q' + ${idx} + '`)'"
+                                              th:text="${qnaList.get(idx).qnaTitle}">사이즈문의</a>
+                                          </td>
+                                          <td th:text="${qnaList.get(idx).userId}">tkd***</td>
+                                          <td th:text="${qnaList.get(idx).regDt}">2020-11-06</td>
+                                        </tr>
 
-                                    </tbody>
+                                        <!-- 문의 상세 -->
+                                        <tr th:attr="id='q' + ${idx}" style="display: none">
+                                           <td  colspan="6"
+                                                   th:text="${qnaList.get(idx).qnaContent}">
+                                           </td>
+                                        </tr>
+                                         <!-- 문의 답변 -->
+                                         <tr th:if="${qnaList.get(idx).replyUserNickName != null}"
+                                             th:attr="id='a' + ${idx}" style="display: none">
+                                            <td class="font-weight-bold" th:text="${qnaList.get(idx).replyUserNickName}"></td>
+                                             <td colspan="4"
+                                                     th:text="${qnaList.get(idx).replyContent}"></td>
+                                             <td th:text="${qnaList.get(idx).replyDt}"></td>
+                                         </tr>
+                                     </div>
+                                     </tbody>
                                 </table>
+                                <!-- 문의 목록 끝 -->
+
+                                <!-- 페이징 시작 -->
+                                <div class="col-lg-12 text-center">
+                                    <div class="pagination__option testPage"
+                                         th:with="startPage=${pageMaker.startPage}, endPage=${pageMaker.endPage}">
+                                        <a th:if="${pageMaker.prev}">
+                                            <i class="fa fa-angle-left"></i>
+                                        </a>
+                                        <a th:each="idx : ${#numbers.sequence(startPage, endPage)}"
+                                           th:if="${pageMaker.totalCount != 0}"
+                                           th:onclick="'test('+${idx}+')'"
+                                           th:text="${idx}">
+                                        </a>
+                                        <span th:if="${pageMaker.totalCount == 0}">
+                                            상품 문의가 존재하지 않습니다.
+                                        </span>
+                                        <a th:if="${pageMaker.next && pageMaker.endPage > 0}"
+                                           th:onclick="'test('+${endPage + 1}+')'">
+                                            <i class="fa fa-angle-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- 페이징 끝 -->
+                            </div>
                             </div>
                         </div>
                         </div>
@@ -491,4 +545,109 @@
         $button.parent().find('input').val(newVal);
     });
 
+    function test(value) {
+        console.log(value);
+
+        var data = {
+            page: value,
+            productSeq: getParameter("seq")
+        };
+
+        $.ajax({
+                url: "/men/detail",
+                type: "POST",
+                contentType : "application/json",
+                data : JSON.stringify(data),
+                success : function(data) {
+                    var html = "";
+
+                    console.log(data);
+                    console.log(data.list);
+                    console.log(data.page);
+                    var listSize = parseInt(data.list.length);
+
+                    for(value in data.list) {
+
+                        html += '<tr>';
+                        html += '<td>' + data.list[value].seq + '</td>';
+                        html += '<td>' + data.list[value].ansYn + '</td>';
+                        html += '<td>' + data.list[value].qnaType + '</td>';
+                        html += '<td><a onclick="detail(`q' + --data.list[value].seq + '`)">' + data.list[value].qnaTitle + '</a></td>';
+                        html += '<td>' + data.list[value].userId + '</td>';
+                        html += '<td>' + data.list[value].regDt + '</td>';
+                        html += '</tr>';
+
+                        html += '<tr id="q' + data.list[value].seq + '" style="display: none">';
+                        html += '<td colspan="6">' + data.list[value].qnaContent + '</td>';
+                        html += '</tr>';
+
+                        if (data.list[value].replyUserNickName != null) {
+                            html += '<tr id="a' + data.list[value].seq + '" style="display: none">';
+                            html += '<td class="font-weight-bold">' + data.list[value].replyUserNickName + '</td>';
+                            html += '<td colspan="4">' + data.list[value].replyContent + '</td>';
+                            html += '<td>' + data.list[value].replyDt + '</td>';
+                            html += '</tr>';
+                        }
+                    }
+
+                    $('#testBody').empty();
+                    $('#testBody').append(html);
+
+                    var pageHtml = "";
+
+                    pageHtml += '<div class="pagination__option">';
+                    if(data.page.prev)
+                        pageHtml += '<a onclick=test(' + (data.page.cri.startPage - 1) + ')>'
+                           + '<i class="fa fa-angle-left"></i></a>';
+
+                    for(let i= data.page.startPage; i <= data.page.endPage; i++) {
+                        pageHtml += '<a onclick=test(' + i + ')>' + i + '</a>';
+                    }
+                    if(data.page.next) {
+                        var num = parseInt(data.page.endPage);
+                        num  = num + 1;
+                        pageHtml += '<a onclick=test(' + num + ')>'
+                            + '<i class="fa fa-angle-right"></i></a>';
+                    }
+                    pageHtml += '</div>';
+
+
+                    $('.testPage').empty();
+                    $('.testPage').append(pageHtml);
+
+                    },
+                error : function(jqXhr) {
+                    alert("error");
+                }
+        });
+    }
+
+    function detail(data) {
+        var question = data;
+        var answer = data.replace('q', 'a');
+
+        if($('#' + question).css('display') == "none") {
+            $('#' + question).css('display', 'table-row');
+            $('#' + answer).css('display', 'table-row');
+        }
+        else {
+            $('#' + question).css('display', 'none');
+            $('#' + answer).css('display', 'none');
+        }
+
+/*
+        if($('#data').css("display") == "none") {
+            $('#hide').show();
+        } else {
+            $('#hide').hide();
+        }*/
+
+        /*if($('#hide').style.display == 'none') {
+            alert("hide");
+            // $('#hide').css('display', 'block');
+        } else {
+            alert("not hide");
+        /!*    $('#hide').style.display = 'none';
+        *!/*/
+    }
 </script>

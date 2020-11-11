@@ -23,4 +23,10 @@ public interface MenService {
     /* 리뷰 목록 조회 */
     public List<ReviewVO> selectReviewList(int productSeq);
 
+    /* 문의 목록 조회 */
+    public List<QnaVO> selectQnaList(int seq);
+
+    public List<QnaVO> selectQnaList2(SearchCriteria searchCriteria);
+
+    public int countQna(int seq);
 }
