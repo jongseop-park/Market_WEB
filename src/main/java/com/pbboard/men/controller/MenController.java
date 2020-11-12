@@ -42,19 +42,20 @@ public class MenController {
     @RequestMapping("/men/detail")
     public String detail(@RequestParam("seq") int seq
             , Model model) throws Exception {
-        // 인증 객체 가져오기
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        // 만약 비회원이 아니면 아이디 저장, 장바구니 등록 시에 사용
-        if(principal != "anonymousUser") {
-            String userId = ((UserInfo) principal).getUsername();
-            int userSeq = ((UserInfo)principal).getSeq();
-
-            model.addAttribute("id", userId);
-            model.addAttribute("userSeq", userSeq);
-        }
-
         try {
+            // 인증 객체 가져오기
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            // 만약 비회원이 아니면 아이디 저장, 장바구니 등록 시에 사용
+            if(principal != "anonymousUser") {
+                String userId = ((UserInfo) principal).getUsername();
+                int userSeq = ((UserInfo)principal).getSeq();
+
+                model.addAttribute("id", userId);
+                model.addAttribute("userSeq", userSeq);
+            }
+
+
             ProductVO productVO = menService.selectProduct(seq);
             List<OptionVO> options = menService.selectOption(seq);
             List<ReviewVO> reviews = menService.selectReviewList(seq);
@@ -63,12 +64,9 @@ public class MenController {
             model.addAttribute("options", options);
             model.addAttribute("reviewList", reviews);
 
-            ////
-
             List<QnaVO> qnaVOS = menService.selectQnaList(seq);
             model.addAttribute("qnaList", qnaVOS);
 
-            // 페이지
             PageMaker pageMaker = new PageMaker();
             pageMaker.setCri(new SearchCriteria());
             pageMaker.setTotalCount(menService.countQna(seq));
@@ -84,17 +82,19 @@ public class MenController {
     }
 
     @GetMapping("/men/detail/qna_form")
-    public String qnaForm() {
+    public String qnaForm(@RequestParam int seq, Model model) throws Exception {
+        ProductVO productVO = menService.selectProduct(seq);
+        model.addAttribute("product", productVO);
+
         return "/men/qnaForm";
     }
 
     @ResponseBody
     @PostMapping("/men/cart")
-    public String cart(@RequestBody CartDTO cartDTO) {/*
-        logger.info(String.valueOf(cartDTO.getUserSeq()));*/
-        menService.insertCart(cartDTO);
+    public String cart(@RequestBody CartDTO cartDTO) {
+        String result = menService.insertCart(cartDTO);
 
-        return "성공";
+        return result;
     }
 
     @ResponseBody
@@ -112,5 +112,13 @@ public class MenController {
         map.put("page", pageMaker);
 
         return map;
+    }
+
+    @ResponseBody
+    @PostMapping("/men/write_qna")
+    public String writeQna(@RequestBody QnaDTO qnaDTO) {
+        String result = menService.insertQna(qnaDTO);
+
+        return result;
     }
 }

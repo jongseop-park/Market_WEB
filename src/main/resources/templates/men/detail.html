@@ -249,11 +249,14 @@
                              </div>
                         </div>
                         <div class="tab-pane" id="tabs-4" role="tabpanel">
-                            <td class="blog__details__comment">
-                                <a href="/men/detail/qna_form"
+                            <div class="blog__details__comment">
+                                <a th:if="${id} != null"
+                                   th:href="@{/men/detail/qna_form(seq=${product.seq})}"
                                    onClick="window.open(this.href, '', 'width=700, height=700, left=100, right=100');
                                     return false;"
                                     class="leave-btn">작성하기</a>
+                                <a href="/login" class="leave-btn"><td th:if="${id == null}"
+                                                     th:text="작성하기"></td></a>
                                 <h6 th:text="'Q & A 상품 문의 (총 '
                                 + ${pageMaker.totalCount == null ? 0 : pageMaker.totalCount} + '건)'">
                                     Q & A 상품 문의 (총 205건)
@@ -409,6 +412,10 @@
 </footer>
 <!-- Footer Section End -->
 
+<!-- userInfo -->
+<input type="hidden" id="userId" th:attr="value=${id}">
+<!---->
+
 <!-- Search Begin -->
 <div class="search-model">
     <div class="h-100 d-flex align-items-center justify-content-center">
@@ -529,6 +536,7 @@
         var $button = $(this);
         var oldValue = $button.parent().find('input').val();
 
+        // 수량 제한
         if ($button.hasClass('inc')) {
             if(parseInt(oldValue) < parseInt(quantity)) {
                 var newVal = parseFloat(oldValue) + 1;
@@ -545,6 +553,7 @@
         $button.parent().find('input').val(newVal);
     });
 
+    // 페이징
     function test(value) {
         console.log(value);
 
@@ -622,6 +631,7 @@
         });
     }
 
+    /* 문의 상세 */
     function detail(data) {
         var question = data;
         var answer = data.replace('q', 'a');

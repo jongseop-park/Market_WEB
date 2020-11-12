@@ -54,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                /* .antMatchers("/login").permitAll()
                             // login 전부 허용*/
-                .antMatchers("/mypage/**", "/cart/**").hasRole("USER")
+                .antMatchers("/mypage/**", "/cart/**", "/men/detail/qna_form").hasRole("USER")
                             // 마이페이지, 장바구니 페이지는 사용자만 사용(USER 권한)
                 .antMatchers("/**").permitAll()
                             // 나머지 상품목록 확인 가능

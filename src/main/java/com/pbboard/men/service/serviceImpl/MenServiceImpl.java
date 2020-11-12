@@ -3,9 +3,11 @@ package com.pbboard.men.service.serviceImpl;
 import com.pbboard.men.domain.*;
 import com.pbboard.men.mapper.MenMapper;
 import com.pbboard.men.service.MenService;
+import com.pbboard.user.domain.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
@@ -152,8 +154,13 @@ public class MenServiceImpl implements MenService {
     }
 
     @Override
-    public void insertCart(CartDTO cartDTO) {
-        menMapper.insertCart(cartDTO);
+    public String insertCart(CartDTO cartDTO) {
+        try {
+            menMapper.insertCart(cartDTO);
+            return "success";
+        } catch(Exception e) {
+            return "fail";
+        }
     }
 
     @Override
@@ -179,5 +186,20 @@ public class MenServiceImpl implements MenService {
     @Override
     public int countQna(int seq) {
         return menMapper.countQna(seq);
+    }
+
+    @Override
+    public String insertQna(QnaDTO qnaDTO) {
+        try {
+            int userSeq = ((UserInfo)SecurityContextHolder.getContext()
+                    .getAuthentication().getPrincipal()).getSeq();
+
+            qnaDTO.setUserSeq(userSeq);
+            menMapper.insertQna(qnaDTO);
+            return "success";
+        } catch(Exception e) {
+            e.printStackTrace();
+            return "fail";
+        }
     }
 }

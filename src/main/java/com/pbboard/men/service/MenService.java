@@ -18,7 +18,7 @@ public interface MenService {
     public List<OptionVO> selectOption(int seq);
 
     /* 장바구니 담기 */
-    public void insertCart(CartDTO cartDTO);
+    public String insertCart(CartDTO cartDTO);
 
     /* 리뷰 목록 조회 */
     public List<ReviewVO> selectReviewList(int productSeq);
@@ -29,4 +29,5 @@ public interface MenService {
     public List<QnaVO> selectQnaList2(SearchCriteria searchCriteria);
 
     public int countQna(int seq);
+    public String insertQna(QnaDTO qnaDTO);
 }

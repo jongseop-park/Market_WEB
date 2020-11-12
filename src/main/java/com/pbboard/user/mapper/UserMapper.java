@@ -33,5 +33,6 @@ public interface UserMapper {
     /* 권한 부여 */
     void authorizationUser(String id);
 
+    /* 인증 */
     void insertIdAuthentication(UserInfoDTO userInfoDTO);
 }

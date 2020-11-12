@@ -138,7 +138,7 @@
                 substr(u.id, 1, 1) || lpad('*', length(u.id)- 1, '*') as userId,
               to_char(pq.reg_dt, 'yyyy-MM-dd') as regDt,
 			    row_number()
-			    over(order by pq.seq asc) as rNum
+			    over(order by pq.seq desc) as rNum
         from product_qna_tbl3 pq, user_tbl3 u
         where pq.product_seq = #{productSeq}
         and u.seq = pq.user_seq
@@ -159,7 +159,7 @@
                 substr(u.id, 1, 1) || lpad('*', length(u.id)- 1, '*') as userId,
               to_char(pq.reg_dt, 'yyyy-MM-dd') as regDt,
 			    row_number()
-			    over(order by pq.seq asc) as rNum
+			    over(order by pq.reg_dt desc) as rNum
         from product_qna_tbl3 pq, user_tbl3 u
         where pq.product_seq = #{productSeq}
         and u.seq = pq.user_seq
@@ -172,4 +172,12 @@
         from product_qna_tbl3
         where product_seq = #{seq}
     </select>
+
+    <insert id="insertQna" parameterType="com.pbboard.men.domain.QnaDTO">
+        insert into product_qna_tbl3
+        (seq, product_seq, user_seq, qna_type, qna_title, qna_content
+        , reg_dt, mod_dt, ans_yn, sec_yn)
+        values(product_qna_sequence.nextval, #{productSeq}, #{userSeq}
+        , #{qnaType},  #{qnaTitle}, #{qnaContent} , sysDate, null, 'n', 'n')
+    </insert>
 </mapper>

@@ -33,8 +33,12 @@ public interface MenMapper {
     /* 문의 목록 조회 */
     public List<QnaVO> selectQnaList(SearchCriteria searchCriteria);
 
-
+    /* 문의 목록 조회 */
     public List<QnaVO> selectQnaList2(SearchCriteria searchCriteria);
 
+    /* 문의사항 개수 */
     public int countQna(int seq);
+
+    /* 문의 작성 */
+    public void insertQna(QnaDTO qnaDTO);
 }
