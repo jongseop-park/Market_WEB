@@ -6,19 +6,28 @@ import com.pbboard.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 
 @Controller
 public class UserController {
     private final UserService userService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Qualifier("javaMailService")
+    @Autowired
+    JavaMailSender javaMailSender;
 
     @Autowired
     public UserController(UserService userService) {
@@ -106,5 +115,35 @@ public class UserController {
             return "true";
         else
             return "false";
+    }
+
+    /* 인증번호 메일 전송 */
+    @ResponseBody
+    @PostMapping("/email")
+    public boolean sendEmail(@RequestBody String email) throws UnsupportedEncodingException, MessagingException {
+        logger.info("email : " + email);
+        try {
+            userService.sendEmail(email);
+            return true;
+        } catch(Exception e) {
+            return false;
+        }
+    }
+
+
+    /* 인증번호 확인 */
+    @ResponseBody
+    @PostMapping("/confirmEmail")
+    public boolean confirmEmail(@RequestBody String key) {
+        logger.info("authenticationKey : " + userService.authenticationKey);
+        logger.info("key : " + key.replaceAll("\"", ""));
+
+        key = key.replaceAll("\"", "");
+
+        // 인증번호 일치 여부에 따라 true/false 반환
+        if(userService.authenticationKey.equals(key))
+            return true;
+
+        return false;
     }
 }
