@@ -76,32 +76,6 @@
         and seq = #{seq}
     </select>
 
-    <!-- 수량 변경 -->
-    <update id="changeQuantity" parameterType="com.pbboard.cart.domain.OrderDetailVO">
-        update stock_tbl3
-        set quantity= quantity - #{quantity}
-        where product_seq = #{productSeq}
-        <include refid="optionName"></include>
-    </update>
-
-    <sql id="optionName">
-        <if test='optionName == ""'>
-            and name is null;
-        </if>
-        <if test='optionName != null'>
-            and name = #{optionName}
-        </if>
-    </sql>
-
-    <!-- 재고 목록 -->
-    <select id="selectStock" parameterType="com.pbboard.cart.domain.OrderDetailVO"
-                            resultType="Integer" >
-        select quantity
-        from stock_tbl3
-        where product_Seq = #{productSeq}
-        <include refid="optionName"></include>
-    </select>
-
     <!-- 장바구니에 주문 목록 -->
     <select id="cartList" parameterType="int"
             resultType="com.pbboard.cart.domain.OrderDetailVO">
@@ -118,12 +92,44 @@
     <insert id="insertOrderDetails" parameterType="com.pbboard.cart.domain.OrderDetailVO">
        insert into order_details_tbl3(seq, order_seq,
        product_seq, option_name,
-       quantity, order_status)
+       quantity)
        values(tbl_order_details_seq.nextval,
         #{orderSeq},
         #{productSeq},
         #{optionName, jdbcType=VARCHAR},
-        #{quantity},
-        #{orderStatus})
+        #{quantity}
+        )
     </insert>
+
+    <select id="selectTotalPrice" resultType="Long" parameterType="int">
+        select sum(p.price * c.quantity) as totalPrice from cart_tbl3 c, men_product_tbl2 p
+        where p.seq = c.product_seq
+        and c.user_seq = #{userSeq}
+    </select>
+
+    <!-- 수량 변경 -->
+    <!--<update id="changeQuantity" parameterType="com.pbboard.cart.domain.OrderDetailVO">
+        update stock_tbl3
+        set quantity= quantity - #{quantity}
+        where product_seq = #{productSeq}
+        <include refid="optionName"></include>
+    </update>-->
+
+    <!--<sql id="optionName">
+         <if test='optionName == ""'>
+             and name is null;
+         </if>
+         <if test='optionName != null'>
+             and name = #{optionName}
+         </if>
+     </sql>-->
+
+    <!--&lt;!&ndash; 재고 목록 &ndash;&gt;-->
+    <!--<select id="selectStock" parameterType="com.pbboard.cart.domain.OrderDetailVO"
+                            resultType="Integer" >
+        select quantity
+        from stock_tbl3
+        where product_Seq = #{productSeq}
+        <include refid="optionName"></include>
+    </select>&ndash;&gt;-->
 </mapper>

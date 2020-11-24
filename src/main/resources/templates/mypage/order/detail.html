@@ -109,9 +109,8 @@
                             <thead class="h4">
                             <tr>
                                 <th>상품정보</th>
-                                <th>주문금액</th>
+                                <th>금액</th>
                                 <th class="text-center">수량</th>
-                                <th class="text-center">주문 상태</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -130,7 +129,8 @@
                                 </td>
                                 <td class="cart__total" th:text="${orderDetail.orderPrice} + '원'">100,000원</td>
                                 <td class="text-center" th:text="${orderDetail.quantity}">1개</td>
-                                <td class="text-center" th:text="${orderDetail.orderStatus}">주문완료</td>
+                                <!--
+                                <td class="text-center" th:text="${orderDetail.orderStatus}">주문완료</td>-->
                                 <!--<td class="cart__product__item">
                                     <img src="/static/img/product/product-2.jpg" alt=""
                                          width="90px" height="90px">
@@ -163,7 +163,7 @@
                             <h5>최종 주문 정보</h5>
                         </div>
                         <table class="table table-bordered">
-                            <tr><th>최종 주문 금액</th>
+                            <tr><th>최종 결제 금액</th>
                             <td th:text="${orderDetailInfo.totalPrice == null ? 0 : orderDetailInfo.totalPrice} + '원'">
                                 100,000원
                             </td>
@@ -187,7 +187,7 @@
             <div class="col-lg-4 col-md-6 col-sm-7">
                 <div class="footer__about">
                     <div class="footer__logo">
-                        <a href="./index.html"><img src="../static/img/logo.png" alt=""></a>
+                        <a href="./index.html"><img src="/static/img/logo.png" alt=""></a>
                     </div>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
                         cilisis.</p>

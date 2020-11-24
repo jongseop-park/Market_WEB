@@ -14,11 +14,12 @@
         to_char(o.reg_dt, 'yyyy-MM-dd hh24:mi:ss (DY)') as regDt,
         od.quantity as quantity,
         to_char(m.price * od.quantity, '999,999,999') as orderPrice,
-        od.order_Status as orderStatus
+        o.status as orderStatus
         from order_details_tbl3 od, order_tbl3 o, men_product_tbl2 m
         where o.seq = od.order_seq
         and m.seq = od.product_seq
         and o.user_seq = #{userSeq}
+        and o.status = '결제완료'
         order by regdt desc
         </select>
 
@@ -30,8 +31,7 @@
             od.option_name as optionName,
             to_char(m.price, '999,999,999') as orderPrice ,
             m.name as productName,
-            od.quantity as quantity,
-            od.order_status as orderStatus
+            od.quantity as quantity
         from order_details_tbl3 od, men_product_tbl2 m
             where od.order_seq = #{orderSeq}
             and m.seq = od.product_seq
@@ -44,7 +44,7 @@
          o.phone as phone,
          o.address as address,
          o.note as note,
-         to_char(sum(decode(od.order_status, '주문완료', m.price)), '999,999,999') as totalPrice
+         o.total_price as totalPrice
       from order_tbl3 o, order_details_tbl3 od, men_product_tbl2 m
          where o.seq = od.order_seq
          and od.product_seq = m.seq
@@ -52,4 +52,41 @@
       group by
           o.seq, o.reg_dt, o.name, o.phone, o.address, o.note, o.total_price
     </select>
+
+    <!-- 주문되어야 할 금액 조회 -->
+    <select id="selectAmountToBePaid" parameterType="String" resultType="Long">
+        select total_price from order_tbl3 where seq= #{orderSeq}
+    </select>
+
+    <!-- 주문상태 업데이트 -->
+    <update id="updateOrderData" parameterType="com.pbboard.mypage.order.domain.OrderVO">
+        update order_tbl3
+        set status = #{orderStatus},
+        pay_at = #{payAt},
+        pay_method = #{payMethod}
+        where seq = #{orderSeq}
+    </update>
+
+    <!-- 주문목록 가져오기 -->
+    <select id="selectOrderDataList" parameterType="String"
+                                    resultType="com.pbboard.mypage.order.domain.OrderDetailVO">
+        select * from order_details_tbl3 where order_seq= #{orderSeq}
+    </select>
+
+    <!-- 재고 목록 -->
+    <select id="selectStock" parameterType="com.pbboard.mypage.order.domain.OrderDetailVO"
+                            resultType="int">
+        select quantity
+        from stock_tbl3
+        where product_Seq = #{productSeq}
+        and name= #{optionName}
+    </select>
+
+    <!-- 수량 변경 -->
+    <update id="changeQuantity" parameterType="com.pbboard.mypage.order.domain.OrderDetailVO">
+        update stock_tbl3
+        set quantity= quantity - #{quantity}
+        where product_seq = #{productSeq}
+        and name = #{optionName}
+    </update>
 </mapper>

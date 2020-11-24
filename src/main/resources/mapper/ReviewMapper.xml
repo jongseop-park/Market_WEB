@@ -16,7 +16,7 @@
       where od.order_seq = o.seq
       and od.product_seq = mp.seq
       and o.user_seq = #{userSeq}
-      and od.order_status = '주문완료'
+      and o.status = '결제완료'
       order by regdt desc
     </select>
 

@@ -47,12 +47,13 @@ public class CartController {
         return "cart/checkout";
     }
 
+    @ResponseBody
     @PostMapping("/cart/order")
-    public String order(OrderVO orderVO ,Model model) throws Exception {
+    public OrderVO order(@RequestBody OrderVO orderVO ,Model model) throws Exception {
         OrderVO orderResult = cartService.insertOrder(orderVO);
         model.addAttribute("orderResult", orderResult);
 
-        return "/cart/order";
+        return orderResult;
     }
 
     @GetMapping("/cart/order")

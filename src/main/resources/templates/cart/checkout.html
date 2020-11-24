@@ -83,35 +83,35 @@
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="checkout__form__input">
                                     <p>이름(수령인) <span>*</span></p>
-                                    <input type="text" name="name" value="박승용">
+                                    <input type="text" name="name" value="박승용" id="name">
                                 </div>
                             </div>
                             <div class="col-lg-12">
                                 <div class="checkout__form__input">
                                     <p>주소 <span>*</span></p>
-                                    <input type="text" placeholder="" name="address"
+                                    <input type="text" placeholder="" name="address" id="address"
                                     value="서울 은평구 불광로">
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="checkout__form__input">
                                     <p>연락처 <span>*</span></p>
-                                    <input type="text" name="phone"
+                                    <input type="text" name="phone" id="phone"
                                     value="010-3333-4444">
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="checkout__form__input">
                                     <p>이메일 <span>*</span></p>
-                                    <input type="text" name="email"
+                                    <input type="text" name="email" id="email"
                                     value="klasdjf@naver.com">
                                 </div>
                             </div>
                             <div class="col-lg-12">
                                <div class="checkout__form__input">
                                   <p>배송 메모 <span>*</span></p>
-                                   <input type="text" name="note"
-                                    placeholder="주문에 대한 참고 사항 (예:배송을위한 특별 번호)"
+                                   <input type="text" name="note" id="note"
+                                   placeholder="주문에 대한 참고 사항 (예:배송을위한 특별 번호)"
                                    value="현관비밀번호 3333">
                                </div>
                             </div>
@@ -140,7 +140,7 @@
                                     </ul>
                                 </div>
                                 <input type="hidden" name="totalPrice" id="totalPrice" th:attr="value=${cartTotalPrice}">
-                                <button type="submit" class="site-btn">주문하기</button>
+                                <button type="button" class="site-btn" id="paymentBtn">결제하기</button>
                             </div>
                         </div>
                     </div>
@@ -148,7 +148,6 @@
             </div>
         </section>
         <!-- Checkout Section End -->
-
 
         <!-- Footer Section Begin -->
         <footer class="footer">
@@ -244,6 +243,87 @@
         <script src="../static/js/owl.carousel.min.js"></script>
         <script src="../static/js/jquery.nicescroll.min.js"></script>
         <script src="../static/js/main.js"></script>
-    </body>
 
-    </html>
+    <!-- 아임포트 api -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+    <!---->
+
+</body>
+</html>
+
+<script>
+    // 결제하기 버튼
+    $('#paymentBtn').on('click', function() {
+         $.ajax({
+           url: "/cart/order",
+           method: "POST",
+           headers: {"Content-Type": "application/json"},
+           data: JSON.stringify({
+               name: $('#name').val(),
+               address: $('#address').val(),
+               phone: $('#phone').val(),
+               note: $('#note').val(),
+               email: $('#email').val(),
+               totalPrice: $('#totalPrice').val()
+           })
+       }).done(function (data) {
+           payment(data);
+       })
+    });
+
+    function payment(data) {
+        var IMP = window.IMP; // 생략가능
+        IMP.init('imp90411228');
+
+        IMP.request_pay({
+            pg : 'kakaopay', // version 1.1.0부터 지원.
+            pay_method : 'card',
+            merchant_uid : data.seq,
+            name : '주문명:결제테스트',
+            amount : $('#totalPrice').val(), // 가격
+            buyer_email : data.email,
+            buyer_name : data.name,
+            buyer_tel : data.phone,
+            buyer_addr : data.address,
+            buyer_postcode : '123-456',
+            confirm_url: 'http://499a9002218a.ngrok.io/payments/confirm'
+        }, function(rsp) {
+            if ( rsp.success ) {
+                // 결제 성공 시 서버요청
+                jQuery.ajax({
+                url: "/payments/complete",
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                data: JSON.stringify({
+                    imp_uid: rsp.imp_uid,
+                    merchant_uid: rsp.merchant_uid
+                })
+                }).done(function (data) {
+                    console.log(data);
+                    var msg = "";
+
+                    switch(data.status) {
+                        case "success": // 가맹점 서버 결제 API 성공시 로직
+                            msg += '결제가 완료되었습니다.';
+                            alert(msg);
+                            location.href="/mypage/order/detail?orderSeq=" + rsp.merchant_uid;
+                            break;
+                        case "forgery": // 금액 위변조 시
+                            msg = data.message;
+                            alert(msg);
+                            break;
+                        case "failed": // 실패시 (재고)
+                            msg = data.message;
+                            alert(msg);
+                            break;
+                    }
+                })
+            } else { // 실패시 (취소 등)
+                var msg = '결제에 실패하였습니다.';
+                msg += '에러내용 : ' + rsp.error_msg;
+                alert(msg);
+            }
+        });
+    }
+</script>

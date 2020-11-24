@@ -43,4 +43,6 @@ public interface CartMapper {
 
     /* 장바구니 삭제 */
     public void deleteCart(CartDTO cartDTO);
+
+    public Long selectTotalPrice(int userSeq);
 }

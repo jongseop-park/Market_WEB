@@ -28,6 +28,9 @@ public class OrderVO {
     /** 회원 시퀀스 */
     private int userSeq;
 
+    /** 이메일 */
+    private String email;
+
     public Long getSeq() {
         return seq;
     }
@@ -98,5 +101,13 @@ public class OrderVO {
 
     public void setUserSeq(int userSeq) {
         this.userSeq = userSeq;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

@@ -29,6 +29,12 @@ public class OrderVO {
     /** 주문 상태 */
     private String orderStatus;
 
+    /** 결제 시간 */
+    private Long payAt;
+
+    /** 결제 수단 */
+    private String payMethod;
+
     public long getOrderSeq() {
         return orderSeq;
     }
@@ -99,5 +105,22 @@ public class OrderVO {
 
     public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+
+    public String getPayMethod() {
+        return payMethod;
+    }
+
+    public void setPayMethod(String payMethod) {
+        this.payMethod = payMethod;
+    }
+
+    public Long getPayAt() {
+        return payAt;
+    }
+
+    public void setPayAt(Long payAt) {
+        this.payAt = payAt;
     }
 }

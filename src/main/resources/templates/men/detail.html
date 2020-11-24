@@ -123,19 +123,34 @@
                     </div>
                     <div class="product__details__price" th:text="${product.price}  + '원'"></div>
                     <p th:text="${product.summaryDesc}"></p>
-                    <div class="product__details__button" th:if="${options != null}">
+                    <div class="product__details__button" >
+                        <div th:if="${options != null}">
                         <div class="quantity">
                             <span>수량:</span>
                             <div class="pro-qty">
                                 <input type="text" class="quantityValue" value="1" readonly="readonly">
                             </div>
                         </div>
-                        <a href="#" class="cart-btn"><span class="icon_bag_alt"></span> 장바구니 담기</a>
-                       <!-- <ul>
-                            <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                            <li><a href="#"><span class="icon_adjust-horiz"></span></a></li>
-                        </ul>-->
+                        <a href="#" class="cart-btn">
+                            <span class="icon_bag_alt">
+                            </span> 장바구니 담기
+                        </a>
+                        </div>
+                        <ul>
+                            <li th:if="${like != null}">
+                              <a th:if="${like == true}" href="#" class="heartBtnBack" style="background-color: #c80000">
+                                <span class="icon_heart_alt heartBtn" style="color: #FFFFFF"
+                                 ></span>
+                              </a>
+                              <a th:if="${like == false}" href="#" class="heartBtnBack" style="background-color: #ffffff">
+                                <span class="icon_heart_alt heartBtn" style="color: #000000"
+                                  ></span>
+                              </a>
+                            </li>
+                            <!--<li><a href="#"><span class="icon_adjust-horiz"></span></a></li>-->
+                        </ul>
                     </div>
+
                     <div class="product__details__widget">
                         <ul>
                            <!-- <li th:each="options : ${option}">
@@ -414,6 +429,8 @@
 
 <!-- userInfo -->
 <input type="hidden" id="userId" th:attr="value=${id}">
+<input type="hidden" id="userSeq" th:attr="value=${userSeq}">
+
 <!---->
 
 <!-- Search Begin -->
@@ -427,9 +444,6 @@
 </div>
 <!-- Search End -->
 
-<!-- user Info-->
-<input type="hidden" id="id" th:attr="value=${id}">
-<input type="hidden" id="userSeq" th:attr="value=${userSeq}">
 
 <!-- Js Plugins -->
 <script src="../static/js/jquery-3.3.1.min.js"></script>
@@ -660,4 +674,52 @@
         /!*    $('#hide').style.display = 'none';
         *!/*/
     }
+
+    $('.heartBtn').on('click', function() {
+        var heartBtnBack = $('.heartBtnBack').css("background-color")
+        var heartBtn = $('.heartBtn').css("color");
+
+        var object = {};
+        object["userSeq"]= $('#userSeq').val();
+        object["productSeq"]= $('#productSeq').val();
+
+
+        /* 로그인한 상태에서만 노출되도록 수정 */
+        if(object["userSeq"] == "") {
+            alert("로그인 후 사용하실 수 있습니다.");
+            return false;
+        }
+
+        $.ajax({
+            url: "/men/like_product",
+            type: "POST",
+            contentType : "application/json",
+            data : JSON.stringify(object),
+            success : function(data) {
+                if(data == true) {
+                    $('.heartBtnBack').css('background-color', "#c80000");
+                    $('.heartBtn').css('color', "#FFFFFF");
+                } else if(data == false) {
+                    $('.heartBtnBack').css('background-color', "#FFFFFF");
+                    $('.heartBtn').css('color', "#000000");
+                }
+            },
+            error : function(jqXhr) {
+                alert("error");
+            }
+        })
+
+/*
+        if(heartBtnBack == 'rgb(200, 0, 0)') {
+            $('#heartBtnBack').css('background-color', "#FFFFFF");
+            $('#heartBtn').css('color', "#000000");
+        } else {
+            $('#heartBtnBack').css('background-color', "#c80000");
+            $('#heartBtn').css('color', "#FFFFFF");
+        }*/
+    })
+
+
+
+
 </script>

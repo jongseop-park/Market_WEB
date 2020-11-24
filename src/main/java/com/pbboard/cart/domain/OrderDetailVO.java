@@ -19,9 +19,6 @@ public class OrderDetailVO {
     /** 회원아이디 */
     private String userId;
 
-    /** 주문 상태 */
-    private String orderStatus;
-
     public int getSeq() {
         return seq;
     }
@@ -68,13 +65,5 @@ public class OrderDetailVO {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public String getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
     }
 }

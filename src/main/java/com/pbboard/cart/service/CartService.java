@@ -24,9 +24,6 @@ public interface CartService {
     /* 장바구니 목록 */
     public List<OrderDetailVO> cartList(int userSeq);
 
-    /* 재고 조회 */
-    public Boolean selectStock(OrderDetailVO orderDetailVO);
-
     /* 수량 변경 */
     public void changeQuantity(OrderDetailVO orderDetailVO);
 

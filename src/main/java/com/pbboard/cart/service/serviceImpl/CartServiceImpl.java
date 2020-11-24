@@ -61,14 +61,17 @@ public class CartServiceImpl implements CartService {
         int userSeq = ((UserInfo)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getSeq();
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
 
+        // 넘겨받은 값이 아니라 DB 저장된 값으로 계산하여 저장
+        Long totalPrice = cartMapper.selectTotalPrice(userSeq);
+
         // 만약 총합계금액 존재하지 않을 경우
-        if(orderVO.getTotalPrice() == null || orderVO.getTotalPrice() == "")
+        if(totalPrice == null)
             throw new RuntimeException();
 
         // 주문번호 생성
         Long orderSeq = createOrderSeq();
 
-        orderVO.setTotalPrice(orderVO.getTotalPrice().replaceAll(",", ""));
+        orderVO.setTotalPrice(String.valueOf(totalPrice));
         orderVO.setUserId(id);
         orderVO.setUserSeq(userSeq);
         orderVO.setSeq(orderSeq);
@@ -76,52 +79,24 @@ public class CartServiceImpl implements CartService {
         // 주문 생성
         cartMapper.insertOrder(orderVO);
 
-        // 주문 상세 목록 조회
+        // 장바구니에서  목록 조회
         List<OrderDetailVO> cartList = cartMapper.cartList(userSeq);
 
-        // 재고 확인
-        for(OrderDetailVO orderDetailsVO : cartList) { // 장바구니 목록
-            if(selectStock(orderDetailsVO)) { // 재고 있을 경우
-                orderDetailsVO.setOrderStatus("주문완료");
-                cartMapper.changeQuantity(orderDetailsVO);
-            }
+        for(OrderDetailVO orderDetailsVO : cartList) {
+            //orderDetailsVO.setOrderStatus("ready");
             orderDetailsVO.setOrderSeq(orderSeq);
-
-            insertOrderDetails(orderDetailsVO); // 주문 상세 생성
+            
+            // 주문 상세 생성
+            insertOrderDetails(orderDetailsVO);
         }
 
-        //장바구니 목록 삭제
-        deleteCartList(userSeq);
-
         // 주문 결과
-        OrderVO orderResult = selectOrderResult(orderVO);
-
-        return orderResult;
+        return selectOrderResult(orderVO);
     }
 
     @Override
     public List<OrderDetailVO> cartList(int userSeq) {
         return cartMapper.cartList(userSeq);
-    }
-
-    @Override
-    public Boolean selectStock(OrderDetailVO orderDetailVO) {
-        Integer stockQuantity;
-        stockQuantity = cartMapper.selectStock(orderDetailVO);
-
-        int orderQuantity = orderDetailVO.getQuantity();
-
-       /* logger.info("주문 수량 : " + orderDetailVO.getQuantity());
-        logger.info("재고 수량 : " + stockQuantity);*/
-
-        // 재고가 없거나 주문수량보다 재고가 적을 경우
-        if(stockQuantity == null || (orderQuantity > stockQuantity)) {
-            /*   logger.info("false");
-             */   return false;
-        }
-
-        /*logger.info("true");
-         */return true;
     }
 
     @Override
