@@ -172,7 +172,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="sidebar__filter">
+                  <!--  <div class="sidebar__filter">
                         <div class="section-title">
                             <h4>가격 별</h4>
                         </div>
@@ -188,8 +188,8 @@
                             </div>
                         </div>
                         <a href="#">Filter</a>
-                    </div>
-                    <div class="sidebar__sizes">
+                    </div>-->
+                    <!--<div class="sidebar__sizes">
                         <div class="section-title">
                             <h4>사이즈</h4>
                         </div>
@@ -235,8 +235,8 @@
                                 <span class="checkmark"></span>
                             </label>
                         </div>
-                    </div>
-                    <div class="sidebar__color">
+                    </div>-->
+              <!--      <div class="sidebar__color">
                         <div class="section-title">
                             <h4>컬러</h4>
                         </div>
@@ -282,7 +282,7 @@
                                 <span class="checkmark"></span>
                             </label>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
             </div><!--
             <tr th:each="data : ${productList}">
@@ -313,8 +313,13 @@
                                         th:each="num :
                                         ${#numbers.sequence(1, (product.score == null ? '1' : product.score))}">
                                       </i>
-                                      <span th:if="${product.review > 0}"
-                                            th:text="'(' + ${product.review} + ' reviews )'"></span>
+                                      <span
+                                       th:text="'(' + ${product.review == null ? '0' : product.review} + ' reviews )'">
+                                      </span>
+                                  </div>
+                                  <div>
+                                      <span class="icon_heart_alt"></span>
+                                      <a th:text=" ${product.likeNum == null ? 0 : product.likeNum}"></a>
                                   </div>
                           </div>
                         </div>

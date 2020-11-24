@@ -44,6 +44,8 @@ public class ProductVO {
 
     private String regDt;
 
+    private Integer likeNum;
+
     public int getSeq() {
         return seq;
     }
@@ -171,4 +173,33 @@ public class ProductVO {
     public void setRegDt(String regDt) {
         this.regDt = regDt;
     }
+
+    public Boolean getStock() {
+        return stock;
+    }
+
+    public void setStock(Boolean stock) {
+        this.stock = stock;
+    }
+
+    public Integer getLikeNum() {
+        return likeNum;
+    }
+
+    public void setLikeNum(Integer likeNum) {
+        this.likeNum = likeNum;
+    }
+
+    /*@Override
+    public int compareTo(ProductVO o) {
+        int compareLikeNum = o.getLikeNum() == null ? 0 : o.getLikeNum();
+        int likeNum = this.likeNum == null ? 0 : this.likeNum;
+
+        if(likeNum > compareLikeNum)
+            return 1;
+        else if(likeNum < compareLikeNum)
+            return -1;
+        else
+            return 0;
+    }*/
 }

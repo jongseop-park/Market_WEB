@@ -12,10 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class MenServiceImpl implements MenService {
@@ -201,5 +198,24 @@ public class MenServiceImpl implements MenService {
             e.printStackTrace();
             return "fail";
         }
+    }
+
+    @Override
+    public boolean saveProductLike(Map<String, Object> data) {
+            int result = menMapper.selectProductLike(data);
+
+            if(result > 0) { // 좋아요 누른 적 있으면
+                menMapper.deleteProductLike(data);
+                return false;
+
+            } else { // 좋아요 누른적 없으면 새로 생성
+                menMapper.insertProductLike(data);
+                return true;
+            }
+    }
+
+    @Override
+    public int selectProductLike(Map<String, Object> data) {
+        return menMapper.selectProductLike(data);
     }
 }

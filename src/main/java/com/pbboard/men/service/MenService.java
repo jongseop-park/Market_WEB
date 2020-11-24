@@ -3,6 +3,7 @@ package com.pbboard.men.service;
 import com.pbboard.men.domain.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MenService {
     /* 제품 상세 조회 */
@@ -30,4 +31,8 @@ public interface MenService {
 
     public int countQna(int seq);
     public String insertQna(QnaDTO qnaDTO);
+
+    public boolean saveProductLike(Map<String, Object> data);
+
+   public int selectProductLike(Map<String, Object> data);
 }

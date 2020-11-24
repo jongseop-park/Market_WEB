@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,9 @@ public class MenController {
     public String listSearch(@ModelAttribute("scri")SearchCriteria searchCriteria,
                              Model model) {
         List<ProductVO> productVOList = menService.selectProductList(searchCriteria);
+
+        //Collections.sort(productVOList);
+
         model.addAttribute("productList", productVOList);
 
         PageMaker pageMaker = new PageMaker();
@@ -53,8 +57,16 @@ public class MenController {
 
                 model.addAttribute("id", userId);
                 model.addAttribute("userSeq", userSeq);
-            }
 
+                Map<String, Object> data = new HashMap<>();
+                data.put("productSeq", seq);
+                data.put("userSeq", userSeq);
+                int like = menService.selectProductLike(data);
+
+                boolean isLike = like > 0 ? true : false;
+
+                model.addAttribute("like", isLike);
+            }
 
             ProductVO productVO = menService.selectProduct(seq);
             List<OptionVO> options = menService.selectOption(seq);
@@ -119,6 +131,13 @@ public class MenController {
     public String writeQna(@RequestBody QnaDTO qnaDTO) {
         String result = menService.insertQna(qnaDTO);
 
+        return result;
+    }
+
+    @ResponseBody
+    @PostMapping("/men/like_product")
+    public Boolean menProductLike(@RequestBody Map<String, Object> data) {
+        boolean result = menService.saveProductLike(data);
         return result;
     }
 }

@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @Mapper
@@ -41,4 +42,9 @@ public interface MenMapper {
 
     /* 문의 작성 */
     public void insertQna(QnaDTO qnaDTO);
+
+    public int selectProductLike(Map<String, Object> data);
+    public void deleteProductLike(Map<String, Object> data);
+    public void insertProductLike(Map<String, Object> data);
+
 }
