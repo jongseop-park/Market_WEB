@@ -118,7 +118,7 @@ public class OrderServiceImpl implements OrderService {
             logger.info("결제 금액 불일치. 위/변조 된 결제");
             paymentData.put("status", "forgery");
             paymentData.put("message", "위조된 결제시도");
-            orderVO.setOrderStatus("결제실패");
+            orderVO.setOrderStatus("결제실패(위조된 결제 시도)");
         }
 
         // 결제정보 update

@@ -110,4 +110,36 @@
         values(#{userId}, 2)
     </insert>
     <!---->
+
+    <insert id="registerUser" parameterType="com.pbboard.user.domain.UserInfoDTO">
+        insert into user_tbl3(seq, id, email, token, reg_dt)
+        values(user_sequence.nextval, #{id}, #{email}, #{token}, sysDate)
+    </insert>
+
+    <select id="selectEmailToken" parameterType="com.pbboard.user.domain.UserInfoDTO"
+                                resultType="String">
+        select token
+        from user_tbl3
+        where id=#{id}
+        and email=#{email}
+    </select>
+
+    <update id="updateEmailToken" parameterType="com.pbboard.user.domain.UserInfoDTO">
+        update user_tbl3
+        set token = 'y'
+        where id=#{id}
+        and email=#{email}
+    </update>
+
+    <update id="updateUserInfo" parameterType="com.pbboard.user.domain.UserInfoDTO">
+        update user_tbl3
+        set password = #{password},
+         name = #{name},
+         phone=#{phone},
+         del_yn='n',
+         address=#{address},
+         nickName = #{nickName}
+         where id=#{id}
+          and email=#{email}
+    </update>
 </mapper>

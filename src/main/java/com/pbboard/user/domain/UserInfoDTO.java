@@ -25,6 +25,8 @@ public class UserInfoDTO {
     /** 주소 */
     private String address;
 
+    private String token;
+
     public String getId() {
         return id;
     }
@@ -87,5 +89,13 @@ public class UserInfoDTO {
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

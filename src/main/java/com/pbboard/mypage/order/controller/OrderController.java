@@ -66,6 +66,8 @@ public class OrderController {
          return orderService.verifyPayment(imp_uid, merchant_uid, request, response);
     }
 
+
+    /* 결제 확인 */
     @ResponseBody
     @PostMapping("/payments/confirm")
     public ResponseEntity<JSONObject> paymentConfirm(@RequestBody Map<String, Object> data) {

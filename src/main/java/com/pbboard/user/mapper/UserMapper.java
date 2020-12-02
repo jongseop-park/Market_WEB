@@ -35,4 +35,10 @@ public interface UserMapper {
 
     /* 인증 */
     void insertIdAuthentication(UserInfoDTO userInfoDTO);
+
+    void registerUser(UserInfoDTO userInfoDTO);
+
+    String selectEmailToken(UserInfoDTO userInfoDTO);
+    void updateEmailToken(UserInfoDTO userInfoDTO);
+    void updateUserInfo(UserInfoDTO userInfoDTO);
 }

@@ -53,6 +53,13 @@
                                 <div class="input-group">
                                     <label class="label">비밀번호</label>
                                     <input class="input--style-4" type="password" name="password" id="password"
+                                           value="1234"
+                                           placeholder="비밀번호(숫자,영문,특수문자 조합 최소8자)">
+                                </div>
+                                <div class="input-group">
+                                    <label class="label">비밀번호 확인</label>
+                                    <input class="input--style-4" type="password" name="passwordConfirm" id="passwordConfirm"
+                                           value="1234"
                                            placeholder="비밀번호(숫자,영문,특수문자 조합 최소8자)">
                                 </div>
                             </div>
@@ -62,11 +69,13 @@
                                     <div class="input-group">
                                         <label class="label">이름</label>
                                         <input class="input--style-4" type="text" name="name" id="name"
+                                               value="홍길동"
                                                placeholder="이름">
                                     </div>
                                     <div class="input-group">
                                         <label class="label">닉네임</label>
                                         <input class="input--style-4" type="text" name="nickName" id="nickName"
+                                               value="각시탈"
                                               placeholder="닉네임">
                                     </div>
                                 </div>
@@ -90,7 +99,7 @@
                         <div class="row">
                         <div class="input-group">
                             <label class="label">인증번호 입력</label>
-                            <input class="input--style-4" type="text" name="id" id="email_authentication"
+                            <input class="input--style-4" type="text" name="email_authentication" id="email_authentication"
                                    placeholder="인증번호 입력">
                         </div>
                         <div class="p-t-30">
@@ -104,6 +113,7 @@
                                 <div class="input-group">
                                     <label class="label">연락처</label>
                                     <input class="input--style-4" type="text" name="phone" id="phone"
+                                           value="010-3333-4444"
                                      placeholder="전화번호 입력 예:010-3333-4444">
                                 </div>
                             </div>
@@ -111,6 +121,7 @@
                                 <div class="input-group">
                                     <label class="label">주소</label>
                                     <input class="input--style-4" type="text" name="address" id="address"
+                                           value="서울 은평구 불광로"
                                      placeholder="주소">
                                 </div>
                             </div>
@@ -157,7 +168,8 @@
             phone: $('#phone').val(),
             email: $('#email').val(),
             nickName: $('#nickName').val(),
-            address: $('#address').val()
+            address: $('#address').val(),
+            token: $('#email_authentication').val()
         };
 
         if(data.id != checkid) {
@@ -204,6 +216,9 @@
         });
     }
 
+    var idCheckFlag = false;
+    var emailCheckFlag = false;
+
     $('#idCheckBtn').on('click', function() {
         checkid = $('#id').val();
        $.ajax({
@@ -239,12 +254,20 @@
 
 
     $('#email_authentication_btn').on('click', function() {
+        if(idCheckFlag == 0) {
+            alert('id 중복 체크 해주세요.');
+            return false;
+        }
+
         $.ajax({
            url: "/email",
            type: "POST",
            dataType: "text",
            contentType: "application/json",
-           data: JSON.stringify($('#email').val()),
+           data: JSON.stringify({
+               email:$('#email').val(),
+               id:$('#id').val()
+            }),
             success: function(result) {
                 if(result == "true") {
                     alert("입력하신 이메일로 인증번호가 발송되었습니다.");
@@ -264,7 +287,11 @@
             type: "POST",
             dataType: "text",
             contentType: "application/json",
-            data: JSON.stringify($('#email_authentication').val()),
+            data: JSON.stringify({
+                token:$('#email_authentication').val(),
+                id:$('#id').val(),
+                email:$('#email').val()
+            }),
             success: function(result) {
                 if(result == "true") {
                     alert("인증 되었습니다.");
@@ -317,6 +344,4 @@
         emailCheckFlag = false;
     });
 
-    var idCheckFlag = false;
-    var emailCheckFlag = false;
 </script>

@@ -19,6 +19,7 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 @Controller
 public class UserController {
@@ -120,30 +121,26 @@ public class UserController {
     /* 인증번호 메일 전송 */
     @ResponseBody
     @PostMapping("/email")
-    public boolean sendEmail(@RequestBody String email) throws UnsupportedEncodingException, MessagingException {
-        logger.info("email : " + email);
+    public boolean sendEmail(@RequestBody UserInfoDTO userInfoDTO) {
+        //logger.info("email : " + map.get("email"));
+        //logger.info("id : " + map.get("id"));
+        logger.info("email : " + userInfoDTO.getEmail());
+        logger.info("id : " + userInfoDTO.getId());
+
         try {
-            userService.sendEmail(email);
+            userService.sendEmail(userInfoDTO);
+            //userService.sendEmail(email);
             return true;
         } catch(Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
 
-
     /* 인증번호 확인 */
     @ResponseBody
     @PostMapping("/confirmEmail")
-    public boolean confirmEmail(@RequestBody String key) {
-        logger.info("authenticationKey : " + userService.authenticationKey);
-        logger.info("key : " + key.replaceAll("\"", ""));
-
-        key = key.replaceAll("\"", "");
-
-        // 인증번호 일치 여부에 따라 true/false 반환
-        if(userService.authenticationKey.equals(key))
-            return true;
-
-        return false;
+    public boolean confirmEmail(@RequestBody UserInfoDTO userInfoDTO) {
+        return userService.selectEmailToken(userInfoDTO);
     }
 }

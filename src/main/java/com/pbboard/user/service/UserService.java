@@ -17,6 +17,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 import java.util.UUID;
 
 // UserDetailsService 필수 구현
@@ -46,10 +47,17 @@ public class UserService implements UserDetailsService {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             infoDTO.setPassword(encoder.encode(infoDTO.getPassword()));
 
-            userMapper.insertUser(infoDTO);
-            userMapper.insertIdAuthentication(infoDTO);
-            /*userMapper.userAuthority(infoDTO.getId());*/
-            return "success";
+            logger.info("emailToken : " + userMapper.selectEmailToken(infoDTO));
+
+            if((userMapper.selectEmailToken(infoDTO)).equals("y")) {
+                //userMapper.insertUser(infoDTO);
+                userMapper.updateUserInfo(infoDTO);
+                userMapper.insertIdAuthentication(infoDTO);
+                /*userMapper.userAuthority(infoDTO.getId());*/
+                return "success";
+            } else {
+                return "false";
+            }
         } catch(Exception e) {
             e.printStackTrace();
             return "fail";
@@ -82,9 +90,19 @@ public class UserService implements UserDetailsService {
         return userMapper.checkId(id);
     }
 
-    public void sendEmail(String recipientEmail) throws UnsupportedEncodingException, MessagingException {
+    public void sendEmail(UserInfoDTO userInfoDTO) throws UnsupportedEncodingException, MessagingException {
+        String recipientEmail = userInfoDTO.getEmail();
+        String id = userInfoDTO.getId();
+
+        logger.info("recipientEmail : " + recipientEmail);
+
         // 인증키 생성
         authenticationKey = createKey();
+        userInfoDTO.setToken(authenticationKey);
+        userInfoDTO.setId(id);
+
+        // DB 데이터 추가
+        userMapper.registerUser(userInfoDTO);
 
         // 보낼 메일 내용
         MimeMessage message1 = mailSender.createMimeMessage();
@@ -112,6 +130,7 @@ public class UserService implements UserDetailsService {
 
         // 인증번호와 함께 메일 전송
         mailSender.send(message1);
+
     }
 
     public static String createKey() {
@@ -120,5 +139,18 @@ public class UserService implements UserDetailsService {
         String key = uuid.substring(0,8);
 
         return key;
+    }
+
+    public boolean selectEmailToken(UserInfoDTO userInfoDTO) {
+        String inputToken = userInfoDTO.getToken();
+        String token = userMapper.selectEmailToken(userInfoDTO);
+
+        if(inputToken.equals(token)) {
+            // token status 변경
+            userMapper.updateEmailToken(userInfoDTO);
+            return true;
+        }
+
+       return false;
     }
 }
